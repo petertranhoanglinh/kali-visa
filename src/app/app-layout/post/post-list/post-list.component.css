@@ -1,0 +1,53 @@
+.page-content {
+  padding: 20px 15px;
+  font-family: 'Times New Roman', Times, serif;
+  text-align: left; /* Căn trái nội dung */
+}
+.blog-list {
+  list-style: none; /* Loại bỏ dấu đầu dòng */
+  padding: 0;
+  margin: 0; /* Đảm bảo không có margin tự động */
+}
+
+.blog-item {
+  /* Không cần border-bottom ở đây, sẽ được thực hiện trong thẻ card */
+}
+
+.blog-title {
+  font-size: 2rem; /* Tăng cỡ chữ cho tiêu đề */
+  font-weight: bold;
+  line-height: 1.3;
+}
+
+.blog-title a {
+  color: #333; /* Màu chữ tiêu đề */
+  text-decoration: none;
+}
+
+.blog-title a:hover {
+  color: #0056b3; /* Màu khi hover */
+  text-decoration: underline;
+}
+
+.text-muted {
+  font-size: 1.1rem; /* Tăng cỡ chữ cho văn bản phụ */
+  color: #666;
+}
+
+.card {
+  transition: transform 0.2s; /* Hiệu ứng chuyển động */
+}
+
+.card:hover {
+  transform: translateY(-5px); /* Hiệu ứng khi hover */
+}
+
+@media (max-width: 768px) {
+  .blog-title {
+      font-size: 1.8rem; /* Giảm đôi chút cho màn hình nhỏ */
+  }
+
+  .text-muted {
+      font-size: 1rem; /* Giảm đôi chút cho văn bản phụ */
+  }
+}

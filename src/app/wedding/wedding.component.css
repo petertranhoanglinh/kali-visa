@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Dancing Script', cursive;
+  background-color: #f9f9f9;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.wedding-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.background-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 192, 203, 0.5);
+  z-index: -1;
+}
+
+.content {
+  position: relative;
+  padding: 50px 30px;
+  color: #ff4d4d; /* Đổi màu chữ đậm hơn */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Giảm độ mờ của bóng */
+  -webkit-font-smoothing: antialiased;
+}
+
+.couple-names h1 {
+  font-size: 48px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-stroke: 0.5px #ff4d4d; /* Đường viền mỏng cho độ nét */
+}
+
+.date-time h2 {
+  font-size: 36px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-stroke: 0.5px #ff4d4d;
+}
+
+.location p {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.photos {
+  display: flex;
+  justify-content: center;
+  margin: 30px 0;
+}
+
+.photo {
+  width: 45%;
+  margin: 0 5%;
+}
+
+.photo img {
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(255, 192, 203, 0.8);
+}
+
+.video-section {
+  margin: 30px 0;
+}
+
+.qr-section {
+  margin: 30px 0;
+}
+
+.thank-you p {
+  font-size: 20px;
+  font-style: italic;
+  margin: 20px 0;
+}
+
+.text-muted {
+  font-size: 16px;
+  color: #ff6666; /* Màu chữ đậm hơn cho độ tương phản */
+}

@@ -1,0 +1,54 @@
+<div class="containershop">
+  <div class="card">
+      <div class="card-body">
+          <div class="row">
+              <div class="form-section">
+                  <h1 class="title">Create Account</h1>
+                  <p class="subtitle">Join our community and start shopping</p>
+
+                  <form [formGroup]="userForm">
+                      <div class="form-group">
+                          <i class="fas fa-user form-icon"></i>
+                          <input type="text" class="form-control" formControlName="username" placeholder=" ">
+                          <label class="form-label">Full Name</label>
+                      </div>
+
+                      <div class="form-group">
+                          <i class="fas fa-envelope form-icon"></i>
+                          <input type="email" class="form-control" formControlName="email" placeholder=" ">
+                          <label class="form-label">Email Address</label>
+                      </div>
+
+                      <div class="form-group">
+                          <i class="fas fa-lock form-icon"></i>
+                          <input type="password" class="form-control" formControlName="password" placeholder=" ">
+                          <label class="form-label">Password</label>
+                      </div>
+
+                      <div class="form-group">
+                          <i class="fas fa-key form-icon"></i>
+                          <input type="password" class="form-control" formControlName="rePassword" placeholder=" ">
+                          <label class="form-label">Confirm Password</label>
+                      </div>
+
+                      <div class="terms">
+                          <input type="checkbox" formControlName="isTermsAccepted">
+                          <label>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+                      </div>
+
+                      <button (click)="addUser()" class="btn-register">Create Account</button>
+                  </form>
+              </div>
+
+              <div class="brand-section">
+                  <img src="../../../../assets/images/logo.png" alt="Company Logo" class="brand-logo">
+                  <h2>Welcome to Our Store</h2>
+                  <p class="brand-description">
+                      Discover amazing products with easy shopping experience, secure payments, and fast shipping.
+                      Join us today and enjoy exclusive member benefits!
+                  </p>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>

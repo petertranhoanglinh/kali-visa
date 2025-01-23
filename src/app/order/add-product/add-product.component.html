@@ -1,0 +1,76 @@
+<div class="container mt-5">
+  <!-- Product Search Section -->
+  <div class="card p-3 mb-4 shadow-lg">
+    <div class="input-group">
+      <input type="text" class="form-control" placeholder="Enter Product" aria-label="Tên dự án">
+      <div class="input-group-append">
+        <button type="button" class="btn btn-secondary" (click)="openPopup()">Search Product</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Form -->
+  <div class="card p-4 shadow-lg mb-5">
+    <div class="form-group">
+      <label for="productName" class="font-weight-bold">Name Product</label>
+      <input type="text" class="form-control" id="productName" [(ngModel)]="product.name" name="productName" placeholder="Enter product name" required>
+    </div>
+
+    <div class="form-group">
+      <label for="productPrice" class="font-weight-bold">Price</label>
+      <input type="number" class="form-control" id="productPrice" [(ngModel)]="product.price" name="productPrice" placeholder="Enter price" required>
+    </div>
+
+    <div class="form-group">
+      <label for="productPrice" class="font-weight-bold">Rate</label>
+      <input type="number" class="form-control" id="productPrice" [(ngModel)]="product.rate" name="productPrice" placeholder="Enter rate" required>
+    </div>
+
+
+    <div class="form-group">
+      <label for="stock" class="font-weight-bold">Stock</label>
+      <input type="number" class="form-control" id="stock" [(ngModel)]="product.stock" name="stock" placeholder="Enter stock" required>
+    </div>
+
+
+    <!-- Product Description -->
+    <div class="form-group">
+      <label for="productDescription" class="font-weight-bold">Description</label>
+      <div class="form-control" contenteditable="true" #descriptionContent id="productDescription"></div>
+    </div>
+
+
+
+
+    <!-- Product Images Upload -->
+    <div class="form-group">
+      <label class="font-weight-bold">Product show detail</label>
+      <div class="d-flex flex-wrap justify-content-start">
+        <app-image-upload class="me-2 mb-2 shadow-sm" [imageUrl]="sliderName1" (changeFile)="changeFileName($event,'slider1')"></app-image-upload>
+        <app-image-upload class="me-2 mb-2 shadow-sm" [imageUrl]="sliderName2" (changeFile)="changeFileName($event,'slider2')"></app-image-upload>
+        <app-image-upload class="me-2 mb-2 shadow-sm" [imageUrl]="sliderName3" (changeFile)="changeFileName($event,'slider3')"></app-image-upload>
+        <app-image-upload class="mb-2 shadow-sm" [imageUrl]="sliderName4" (changeFile)="changeFileName($event,'slider4')"></app-image-upload>
+        <app-image-upload class="mb-2 shadow-sm" [imageUrl]="sliderName5" (changeFile)="changeFileName($event,'slider5')"></app-image-upload>
+        <app-image-upload class="mb-2 shadow-sm" [imageUrl]="sliderName6" (changeFile)="changeFileName($event,'slider6')"></app-image-upload>
+
+
+      </div>
+    </div>
+
+    <!-- Product Show Cart Image -->
+    <div class="form-group">
+      <label class="font-weight-bold">Show in list product</label>
+      <app-image-upload class="mb-2 shadow-sm" (changeFile)="changeFileName($event,'img')" [imageUrl]="imgName"></app-image-upload>
+    </div>
+
+    <!-- Submit Button -->
+    <button type="button" class="btn btn-primary btn-block mt-4 shadow-sm" (click)="onSubmit()">Add/Edit</button>
+  </div>
+
+  <!-- Popup for Product Search -->
+  <app-popup [isOpen]="isPopupOpen" (close)="closePopup()" [title]="'Search Product'">
+    <app-table-template [isPaging]="true" [tableConfig]="config" [data]="items" [isChangePageSize]="false"
+      (handelChangePage)="handlePageEvent($event)" [len]="len" [total]="total" (clickRow)="clickRow($event)">
+    </app-table-template>
+  </app-popup>
+</div>

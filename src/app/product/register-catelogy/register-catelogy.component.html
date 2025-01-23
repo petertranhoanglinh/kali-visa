@@ -1,0 +1,112 @@
+<div class="container MT-5">
+    <div class="col">
+      <div class="card shadow-lg">
+        <div class="card-body">
+          <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
+
+            <div class="mb-3">
+              <label for="categoryName" class="form-label">Tên Danh Mục *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="categoryName"
+                formControlName="categoryName"
+                [ngClass]="{ 'is-invalid': submitted && f['categoryName'].errors }"
+              >
+              <div class="invalid-feedback" *ngIf="submitted && f['categoryName'].errors">
+                <div *ngIf="f['categoryName'].errors['required']">Vui lòng nhập tên danh mục</div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="description" class="form-label">Mô Tả *</label>
+              <textarea
+                class="form-control"
+                id="description"
+                rows="3"
+                formControlName="description"
+                [ngClass]="{ 'is-invalid': submitted && f['description'].errors }"
+              ></textarea>
+              <div class="invalid-feedback" *ngIf="submitted && f['description'].errors">
+                <div *ngIf="f['description'].errors['required']">Vui lòng nhập mô tả</div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="parentCategory" class="form-label">Danh Mục Cha</label>
+              <select
+                class="form-select"
+                id="parentCategory"
+                formControlName="parentCategory"
+              >
+                <option value="">-- Chọn danh mục cha --</option>
+                <option value="1">Điện thoại</option>
+                <option value="2">Laptop</option>
+                <option value="3">Máy tính bảng</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Trạng Thái</label>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  id="statusActive"
+                  value="active"
+                  formControlName="status"
+                >
+                <label class="form-check-label" for="statusActive">
+                  Hoạt động
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  id="statusInactive"
+                  value="inactive"
+                  formControlName="status"
+                >
+                <label class="form-check-label" for="statusInactive">
+                  Không hoạt động
+                </label>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="imageUrl" class="form-label">Hình Ảnh</label>
+              <input
+                type="file"
+                class="form-control"
+                id="imageUrl"
+                (change)="onFileChange($event)"
+                accept="image/*"
+              >
+            </div>
+
+            <div class="mb-3">
+              <label for="sortNo" class="form-label">Thứ Tự Hiển Thị *</label>
+              <input
+                type="number"
+                class="form-control"
+                id="sortNo"
+                formControlName="sortNo"
+                [ngClass]="{ 'is-invalid': submitted && f['sortNo'].errors }"
+              >
+              <div class="invalid-feedback" *ngIf="submitted && f['sortNo'].errors">
+                <div *ngIf="f['sortNo'].errors['required']">Vui lòng nhập thứ tự hiển thị</div>
+                <div *ngIf="f['sortNo'].errors['min']">Thứ tự hiển thị phải lớn hơn hoặc bằng 0</div>
+              </div>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <button type="button" class="btn btn-secondary me-md-2">Hủy</button>
+              <button type="submit" class="btn btn-primary">Đăng Ký</button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+</div>

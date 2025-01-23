@@ -1,0 +1,36 @@
+.container {
+  max-width: 100%; /* Make sure the container fits well */
+}
+
+.table {
+  margin-bottom: 20px; /* Add spacing for better appearance */
+}
+
+.table th, .table td {
+  vertical-align: middle; /* Align content vertically */
+  text-align: center; /* Center-align text */
+}
+
+.table thead th {
+  background-color: #343a40; /* Custom dark background */
+  color: #fff; /* White text for contrast */
+}
+
+.table tbody tr:hover {
+  background-color: #f1f1f1; /* Slight hover effect for rows */
+  cursor: pointer; /* Indicate clickable rows */
+}
+
+.table td {
+  white-space: nowrap; /* Prevent text wrapping */
+}
+
+.table-responsive {
+  overflow-x: auto; /* Handle responsiveness */
+}
+
+.app-paging {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}

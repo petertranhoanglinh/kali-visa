@@ -1,0 +1,173 @@
+<div class="container py-5">
+  <!-- Order Status Report Section -->
+  <div class="card">
+      <div class="card-header">Order Status Report</div>
+      <div class="card-body">
+          <div class="row">
+              <div class="col-md-6">
+                  <h5>Orders Over Time</h5>
+                  <h6 id="chartTitle" class="text-muted">Displaying orders for the last 6 months</h6>
+                  <div class="chart-container">
+                      <canvas id="orderChart"></canvas>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <h5>Current Order Status</h5>
+                  <table class="table table-striped">
+                      <thead>
+                          <tr>
+                              <th scope="col">Status</th>
+                              <th scope="col">Number of Orders</th>
+                              <th scope="col">Percentage</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr>
+                              <td>Completed</td>
+                              <td>120</td>
+                              <td>50%</td>
+                          </tr>
+                          <tr>
+                              <td>Pending</td>
+                              <td>60</td>
+                              <td>25%</td>
+                          </tr>
+                          <tr>
+                              <td>Cancelled</td>
+                              <td>40</td>
+                              <td>17%</td>
+                          </tr>
+                          <tr>
+                              <td>In Progress</td>
+                              <td>20</td>
+                              <td>8%</td>
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- Revenue, Costs & Profit Report Section -->
+  <div class="card">
+      <div class="card-header">Revenue, Costs & Profit Report</div>
+      <div class="card-body">
+          <div class="row">
+              <div class="col-md-6">
+                  <h5>Monthly Revenue</h5>
+                  <div class="chart-container">
+                      <canvas id="revenueChart"></canvas>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <h5>Revenue Breakdown</h5>
+                  <table class="table table-striped">
+                      <thead>
+                          <tr>
+                              <th scope="col">Category</th>
+                              <th scope="col">Amount</th>
+                              <th scope="col">Percentage</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr>
+                              <td>Revenue</td>
+                              <td>$100,000</td>
+                              <td>65%</td>
+                          </tr>
+                          <tr>
+                              <td>Costs</td>
+                              <td>$40,000</td>
+                              <td>26%</td>
+                          </tr>
+                          <tr>
+                              <td>Profit</td>
+                              <td>$20,000</td>
+                              <td>9%</td>
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- Customer Trend Analysis Section -->
+  <div class="card">
+      <div class="card-header">Customer Trend Analysis</div>
+      <div class="card-body">
+          <h5>Shopping Trends</h5>
+          <div class="chart-container">
+              <canvas id="customerTrendChart"></canvas>
+          </div>
+      </div>
+  </div>
+
+  <!-- Shipping & Payment Methods Performance Section -->
+  <div class="card">
+      <div class="card-header">Shipping & Payment Methods Performance</div>
+      <div class="card-body">
+          <div class="row">
+              <div class="col-md-6">
+                  <h5>Shipping Methods</h5>
+                  <table class="table table-striped">
+                      <thead>
+                          <tr>
+                              <th scope="col">Method</th>
+                              <th scope="col">Number of Orders</th>
+                              <th scope="col">Satisfaction Rate</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr>
+                              <td>Standard Shipping</td>
+                              <td>80</td>
+                              <td>90%</td>
+                          </tr>
+                          <tr>
+                              <td>Express Shipping</td>
+                              <td>50</td>
+                              <td>85%</td>
+                          </tr>
+                          <tr>
+                              <td>Next-Day Delivery</td>
+                              <td>30</td>
+                              <td>80%</td>
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+              <div class="col-md-6">
+                  <h5>Payment Methods</h5>
+                  <table class="table table-striped">
+                      <thead>
+                          <tr>
+                              <th scope="col">Method</th>
+                              <th scope="col">Number of Transactions</th>
+                              <th scope="col">Usage Rate</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr>
+                              <td>Credit Card</td>
+                              <td>90</td>
+                              <td>60%</td>
+                          </tr>
+                          <tr>
+                              <td>PayPal</td>
+                              <td>40</td>
+                              <td>30%</td>
+                          </tr>
+                          <tr>
+                              <td>Cash on Delivery</td>
+                              <td>20</td>
+                              <td>10%</td>
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>

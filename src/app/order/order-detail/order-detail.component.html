@@ -1,0 +1,76 @@
+<!-- order-details.component.html -->
+<div class="container mt-5" *ngIf="orderDetails">
+
+
+     <!-- Search Order Section -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Enter Order ID" [(ngModel)]="orderId" />
+            <button class="btn btn-primary" (click)="searchOrder()">Search</button>
+        </div>
+        </div>
+    </div>
+    <!-- Order Details -->
+    <h2>Order Details</h2>
+    <div class="card mb-3">
+      <div class="card-body">
+        <p><strong>Order ID:</strong> {{ orderDetails.order.id }}</p>
+        <p><strong>User ID:</strong> {{ orderDetails.order.userid }}</p>
+        <p><strong>Order Date:</strong> {{ orderDetails.order.orderDate | date }}</p>
+        <p><strong>Status:</strong> {{ orderDetails.order.status }}</p>
+        <h5>Items</h5>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Product ID</th>
+              <th>Product Name</th>
+              <th>Quantity</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of orderDetails.order.items">
+              <td>{{ item.productId }}</td>
+              <td>{{ item.productName || 'N/A' }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ item.price | currency }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <p><strong>Total Amount:</strong> {{ orderDetails.order.totalAmount | currency }}</p>
+      </div>
+    </div>
+  
+    <!-- Delivery Information -->
+    <h2>Delivery Information</h2>
+    <div class="card mb-3">
+      <div class="card-body">
+        <p><strong>First Name:</strong> {{ orderDetails.orderDeli.firstName || 'N/A' }}</p>
+        <p><strong>Last Name:</strong> {{ orderDetails.orderDeli.lastName }}</p>
+        <p><strong>Email:</strong> {{ orderDetails.orderDeli.email }}</p>
+        <p><strong>Address 1:</strong> {{ orderDetails.orderDeli.addr1 }}</p>
+        <p><strong>Address 2:</strong> {{ orderDetails.orderDeli.addr2 }}</p>
+        <p><strong>City:</strong> {{ orderDetails.orderDeli.city }}</p>
+        <p><strong>State:</strong> {{ orderDetails.orderDeli.state }}</p>
+        <p><strong>Country:</strong> {{ orderDetails.orderDeli.country }}</p>
+        <p><strong>Post Code:</strong> {{ orderDetails.orderDeli.post }}</p>
+      </div>
+    </div>
+  
+    <!-- Payment Method -->
+    <h2>Payment Method</h2>
+    <div class="card mb-3">
+      <div class="card-body">
+        <p><strong>Provider:</strong> {{ orderDetails.paymentMethod.provider }}</p>
+        <p><strong>Card Number:</strong> {{ orderDetails.paymentMethod.cardNumber }}</p>
+        <p><strong>Expiry Date:</strong> {{ orderDetails.paymentMethod.expiryDate }}</p>
+        <p><strong>SWIFT Code:</strong> {{ orderDetails.paymentMethod.swiftCode }}</p>
+      </div>
+    </div>
+  </div>
+  
+  <div *ngIf="!orderDetails">
+    <p>Loading order details...</p>
+  </div>
+  

@@ -1,0 +1,72 @@
+<div class="card product-card d-none">
+  <div class="badge-container">
+    <span *ngIf="product.best" class="badge badge-success">Best</span>
+    <span *ngIf="product.new" class="badge badge-primary">New</span>
+    <span *ngIf="product.sale" class="badge badge-danger">Sale</span>
+  </div>
+  <img (click)="handleLink()" [src]="apiUrl + '/' + product.img" class="card-img-top product-image"
+    alt="New Balance 990v5">
+  <div class="card-body">
+    <h5 class="card-title">{{ product.name }}</h5>
+    <div class="price-container">
+      <p class="product-price">
+        <span *ngIf="true" class="original-price"> ${{ product.price }}</span>
+        ${{product.price * (1 - product.rate) | round}}
+      </p>
+      <p *ngIf="true" class="discount-percent">-{{ product.rate * 100 | round }}%</p>
+    </div>
+    <div class="rating mb-3">
+      <span class="fa fa-star" [ngClass]="{'text-warning': product.rating >= 1}"></span>
+      <span class="fa fa-star" [ngClass]="{'text-warning': product.rating >= 2}"></span>
+      <span class="fa fa-star" [ngClass]="{'text-warning': product.rating >= 3}"></span>
+      <span class="fa fa-star" [ngClass]="{'text-warning': product.rating >= 4}"></span>
+      <span class="fa fa-star" [ngClass]="{'text-warning': product.rating >= 5}"></span>
+      <span class="text-muted">({{reviewCount }} reviews)</span>
+    </div>
+    <a (click)="clickBuy(product)" class="btn btn-primary">Buy Now</a>
+  </div>
+</div>
+<div class="product">
+  <figure class="product-media">
+    <span class="product-label label-sale">Sale</span>
+    <a (click)="handleLink()">
+      <img [src]="apiUrl + '/' + product.img" alt="Product image" class="product-image">
+    </a>
+
+    <div class="product-action-vertical">
+      <a href="javascript:void(0)" class="btn-product-icon btn-wishlist btn-expandable"
+        (click)="clickBuy(product)"><span>add to wishlist</span></a>
+      <a href="javascript:void(0)" class="btn-product-icon btn-compare" title="Compare"><span>Compare</span></a>
+      <a href="popup/quickView.html" class="btn-product-icon btn-quickview" title="Quick view"><span>Quick
+          view</span></a>
+    </div><!-- End .product-action-vertical -->
+
+    <div class="product-action">
+      <a href="javascript:void(0)" class="btn-product btn-cart" title="Add to cart"
+        (click)="clickBuy(product)"><span>add to cart</span></a>
+    </div><!-- End .product-action -->
+  </figure><!-- End .product-media -->
+
+  <div class="product-body">
+    <div class="product-cat">
+      <a href="javascript:void(0)">Lighting</a>
+    </div><!-- End .product-cat -->
+    <h3 class="product-title"><a (click)="handleLink()">{{product.name}}</a></h3><!-- End .product-title -->
+    <div class="product-price">
+      <span class="new-price">${{product.price * (1 - product.rate) | round}}</span>
+      <span class="old-price">Was ${{ product.price }}</span>
+    </div><!-- End .product-price -->
+    <div class="ratings-container">
+      <div class="ratings">
+        <div class="ratings-val" style="width: 60%;"></div><!-- End .ratings-val -->
+      </div><!-- End .ratings -->
+      <span class="ratings-text">( {{reviewCount }} Reviews )</span>
+    </div><!-- End .rating-container -->
+
+    <div class="product-nav product-nav-dots">
+      <a href="javascript:void(0)" class="active" style="background: #dddad5;"><span class="sr-only">Color
+          name</span></a>
+      <a href="javascript:void(0)" style="background: #825a45;"><span class="sr-only">Color name</span></a>
+    </div><!-- End .product-nav -->
+  </div><!-- End .product-body -->
+</div><!-- End .product -->

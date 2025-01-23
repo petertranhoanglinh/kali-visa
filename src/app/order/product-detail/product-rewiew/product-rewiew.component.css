@@ -1,0 +1,47 @@
+.rating-stars .fa-star {
+  cursor: pointer;
+}
+
+
+.fa-star {
+  font-size: 24px;
+  color: lightgray;
+  cursor: pointer;
+}
+
+.fa-star.filled {
+  color: gold;
+}
+.rating .fa-star,
+.rating .fa-star-half-alt {
+  color: #ffc107;
+}
+.fa-star {
+  color: lightgray;
+}
+
+.fa-star.checked {
+  color: gold;
+}
+.reviews .media-body {
+  margin-left: 1rem;
+}
+.review-card {
+  border: none;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border-radius: 0.5rem;
+}
+.review-card .card-body {
+  padding: 1.5rem;
+}
+.review-card .card-img-top {
+  border-radius: 50%;
+  width: 64px;
+  height: 64px;
+}
+
+.custom-img {
+  width: 100px; /* Điều chỉnh kích thước hình ảnh, ví dụ: 100px */
+  height: auto; /* Giữ tỷ lệ của hình ảnh */
+  margin-right: 15px; /* Khoảng cách giữa hình ảnh và nội dung khác */
+}

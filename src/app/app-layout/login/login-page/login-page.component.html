@@ -1,0 +1,39 @@
+<body>
+  <div class="login-container">
+      <div class="logo">
+          <img src="../../../../assets/images/logo.png" alt="Logo">
+      </div>
+
+      <h2 class="welcome-text">Welcome Back!</h2>
+
+      <form method="POST">
+          <div class="form-group">
+              <i class="fas fa-envelope form-icon"></i>
+              <input type="email" [(ngModel)]="email" class="form-control" id="email" placeholder="Email" required>
+          </div>
+
+          <div class="form-group">
+              <i class="fas fa-lock form-icon"></i>
+              <input type="password" [(ngModel)]="password" class="form-control" id="password" placeholder="Password" required>
+          </div>
+
+          <button type="button" class="btn-login" (click)="loginPage()">Sign In</button>
+      </form>
+
+      <div class="divider">
+          <span>or</span>
+      </div>
+
+      <div id="googleID" class="google-login">
+          <!-- Google login button will be rendered here -->
+      </div>
+
+      <div class="forgot-password">
+          <a href="#">Forgot Password?</a>
+      </div>
+
+      <div class="register-link">
+          Don't have an account? <a routerLink="/register">Sign up</a>
+      </div>
+  </div>
+</body>

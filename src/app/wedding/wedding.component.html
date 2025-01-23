@@ -1,0 +1,56 @@
+<div class="container">
+  <div class="wedding-card">
+    <div class="background-image">
+      <img src="../../assets/images/wedding-background.jpg" alt="Wedding Background">
+      <div class="overlay"></div>
+    </div>
+    <div class="content">
+      <div class="couple-names">
+        <h1>HOÀNG LINH <span class="hearts">&</span> THU THANH</h1>
+      </div>
+      <div class="date-time">
+        <h2>CHỦ NHẬT, 11 - 10 - 2024</h2>
+      </div>
+      <div class="location">
+        <p>Trung tâm tổ chức sự kiện ANH KHANG</p>
+      </div>
+      <div class="photos">
+        <div class="photo bride-photo">
+          <img src="../../assets/images/SUKA0073 (3).jpg">
+        </div>
+        <div class="photo groom-photo">
+          <img src="../../assets/images/SUKA0523.jpg">
+        </div>
+      </div>
+      <div class="video-section">
+        <h5>Video Chúc Mừng</h5>
+        <video width="100%" height="100%" controls>
+          <source src="../../assets/images/IMG_1912.mp4" type="video/mp4">
+          Trình duyệt của bạn không hỗ trợ thẻ video.
+      </video>
+
+      </div>
+      <div class="qr-section">
+        <h5>Quét mã QR để xem bản đồ</h5>
+        <div class="qr-code">
+          <qrcode
+            [qrdata]="weddingDetails.mapUrl"
+            [width]="200"
+            [errorCorrectionLevel]="'M'"
+            [margin]="2"
+            [colorDark]="'#000000'"
+            [colorLight]="'#ffffff'"
+          ></qrcode>
+        </div>
+        <small class="text-muted">
+          Hoặc nhấp vào link:
+          <a [href]="weddingDetails.mapUrl" target="_blank">Google Maps</a>
+        </small>
+      </div>
+      <div class="thank-you">
+        <p>Sự hiện diện của quý khách là niềm vinh hạnh cho gia đình chúng tôi!</p>
+        <p>Trân trọng kính mời</p>
+      </div>
+    </div>
+  </div>
+</div>

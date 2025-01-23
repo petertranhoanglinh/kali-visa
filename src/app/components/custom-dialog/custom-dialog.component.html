@@ -1,0 +1,15 @@
+<!-- custom-dialog.component.html -->
+<div class="modal-header" [ngClass]="!isOpen?'d-none':'' ">
+  <h5 class="modal-title">{{ data.title || 'Notification' }}</h5>
+  <button type="button" class="close" (click)="onClose()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="alert" [ngClass]="getAlertClass()">
+    {{ data.message }}
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-primary" (click)="onClose()">OK</button>
+</div>

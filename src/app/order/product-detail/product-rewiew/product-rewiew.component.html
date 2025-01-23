@@ -1,0 +1,52 @@
+<!-- Reviews Section -->
+<div class="reviews mt-5">
+  <h3>Customer Reviews</h3>
+  <div class="media mb-4">
+    <div class="media-body">
+      <ng-container *ngFor="let item of items">
+        <h5 class="mt-0">{{item.userid}}</h5>
+        <div class="rating">
+          <span class="fa" *ngFor="let star of [1, 2, 3, 4, 5]" [ngClass]="{'fa-star checked': star <= item.rating}">
+          </span>
+        </div>
+        <p>{{item.cmt}}</p>
+        <div *ngIf="item.imageName" class="review-image d-flex align-items-start" (click)="clickProduct(item)">
+          <img [src]="getImageUrl(item.imageName)" alt="Review Image" class="img-fluid img-thumbnail custom-img"  />
+        </div>
+      </ng-container>
+    </div>
+  </div>
+  <app-paging (handelChangePage)="handlePageEvent($event)" [pageSize]="len" [length]="total"></app-paging>
+  <div class="add-review mt-5">
+    <h3>Write a Review</h3>
+    <form (submit)="submitReview()">
+      <div class="form-group">
+        <label for="reviewText">Your Review</label>
+        <textarea id="reviewText" class="form-control" rows="4" placeholder="Write your review here..."
+          [(ngModel)]="reviewText" name="reviewText"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="reviewRating">Rating</label>
+        <div class="rating-stars" id="reviewRating">
+          <span class="fa fa-star" *ngFor="let star of stars; let i = index"
+            [class.filled]="i < hoverRating || i < rating" (mouseenter)="onMouseEnter(i)" (mouseleave)="onMouseLeave()"
+            (click)="rate(i)">
+          </span>
+        </div>
+        <input type="hidden" id="ratingValue" name="ratingValue" [value]="rating">
+      </div>
+
+      <app-image-upload (changeFile)="changeFileName($event)"></app-image-upload>
+      <button type="submit" class="btn btn-primary">Submit Review</button>
+    </form>
+  </div>
+</div>
+<app-popup [isOpen]="isPopupOpen" (close)="closePopup()">
+  <div class="promo-content p-4">
+    <div class="text-center my-3">
+      <img [src]="productClick" class="img-fluid rounded" alt="Product Image"
+           style="max-width: 100%; max-height: 50vh; object-fit: contain;">
+    </div>
+  </div>
+</app-popup>
+

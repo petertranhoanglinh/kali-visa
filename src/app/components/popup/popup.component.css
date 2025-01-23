@@ -1,0 +1,4 @@
+/* Optional: Add any additional styling for your popup here */
+.modal.show {
+  display: block;
+}

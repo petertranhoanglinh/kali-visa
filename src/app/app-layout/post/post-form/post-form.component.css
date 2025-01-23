@@ -1,0 +1,38 @@
+
+  h2 {
+    color: #333;
+  }
+  button {
+    background-color: #007bff;
+    border: none;
+  }
+  button:hover {
+    background-color: #0056b3;
+  }
+
+
+  ::ng-deep .ck-editor__editable {
+    min-height: 300px !important; /* Điều chỉnh giá trị theo ý muốn */
+  }
+
+
+:host ::ng-deep .ck-content .text-align-left {
+  text-align: left;
+}
+
+:host ::ng-deep .ck-content .text-align-center {
+    text-align: center;
+}
+
+:host ::ng-deep .ck-content .text-align-right {
+    text-align: right;
+}
+
+:host ::ng-deep .ck-content .text-align-justify {
+    text-align: justify;
+}
+
+/* Thêm styles cho editor container nếu cần */
+:host ::ng-deep .ck-editor__editable {
+    min-height: 300px;
+}

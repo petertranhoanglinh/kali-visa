@@ -1,0 +1,9 @@
+{
+  "projects": {
+    "default": "auth-webixx",
+    "staging": "auth-webixx",
+    "webixx": "auth-webixx"
+  },
+  "targets": {},
+  "etags": {}
+}

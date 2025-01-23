@@ -1,0 +1,15 @@
+<div class="container mt-5">
+  <div class="row">
+    <ng-container *ngIf="items.length > 0; else noData">
+      <ng-container *ngFor="let product of items">
+        <div [product]="product" class="col-md-4 mb-4"></div>
+      </ng-container>
+    </ng-container>
+    <ng-template #noData>
+      <div class="col-12 text-center">
+        <h5>No Data</h5>
+      </div>
+    </ng-template>
+  </div>
+  <app-paging (handelChangePage)="handlePageEvent($event)" [pageSize]="len" [length]="total"></app-paging>
+</div>

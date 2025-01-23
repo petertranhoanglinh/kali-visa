@@ -1,0 +1,60 @@
+<div class="page-content">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+      <div class="card shadow-lg border-0">
+        <div class="card-body p-5">
+          <form (ngSubmit)="submitForm()">
+            <div class="mb-4">
+              <label for="title" class="form-label fw-bold">Tiêu đề</label>
+              <input
+                type="text"
+                id="title"
+                class="form-control form-control-lg"
+                placeholder="Vui lòng nhập tiêu đề"
+                [(ngModel)]="blog.title"
+                name="title"
+                required
+              />
+            </div>
+            <div class="mb-4">
+              <label for="author" class="form-label fw-bold">Tác giả</label>
+              <input
+                type="text"
+                id="author"
+                class="form-control form-control-lg"
+                placeholder="Vui lòng nhập tên tác giả"
+                [(ngModel)]="blog.author"
+                name="author"
+                required
+              />
+            </div>
+            <div class="mb-4">
+              <label for="category" class="form-label fw-bold">Danh mục</label>
+              <select
+                id="category"
+                class="form-select form-select-lg custom-select"
+                [(ngModel)]="blog.category"
+                name="category"
+                required
+              >
+                <option value="Chọn danh mục của bạn" disabled selected>Chọn Danh mục</option>
+              </select>
+            </div>
+
+            <div class="mb-4">
+              <label for="content" class="form-label fw-bold">Nội dung</label>
+              <ckeditor
+                [(ngModel)]="blog.content"
+                name="content"
+                [editor]="Editor"
+                [config]="editorConfig"
+                (ready)="onReady($event)"
+              ></ckeditor>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg w-100">Lưu Blog</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

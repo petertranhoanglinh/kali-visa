@@ -1,0 +1,80 @@
+<div class="chat_window">
+    <div class="top_menu">
+      <div class="buttons">
+        <div class="button close"></div>
+        <div class="button minimize"></div>
+        <div class="button maximize"></div>
+      </div>
+      <div class="title">
+        <img src="../../../../assets/images/logo.png" width="25px" height="25px">
+      </div>
+    </div>
+    <ul class="messages" #messages>
+      <li class="message right" *ngFor="let item of messageList"
+      [ngClass]="{'left': item.message_side === 'receiver', 'right': item.message_side === 'sender'}"
+      >
+        <div class="avatar"></div>
+        <div class="text_wrapper">
+          <div class="name">{{ item.user }}</div>
+          <div class="text" [innerHTML] = "item.message" ></div>
+
+          <img
+            *ngIf="isImage(item.image)"
+            (click)="imgClick(apiUrl + '/' + item.image)"
+            [src]="apiUrl + '/' + item.image"
+            class="img-fluid rounded chat-image"
+            alt="Chat image"
+          />
+
+          <a
+            *ngIf="!isImage(item.image) && item.image"
+            class="file-attachment"
+            [href]="apiUrl + '/' + item.image"
+            download="{{ apiUrl + '/' + item.image }}"
+          >
+            <i class="fas fa-file file-icon"></i>
+            <span class="file-name">{{item.image.replace("upload/product/", "")}}</span>
+            <i class="fas fa-download download-icon"></i>
+          </a>
+        </div>
+      </li>
+
+    </ul>
+    <div class="bottom_wrapper clearfix">
+      <div class="message_input_wrapper">
+        <input class="message_input" placeholder="Message..." [(ngModel)]="messageInput"
+        (keyup.enter)="sendMessage(false)"/>
+      </div>
+
+      <div class="send_message" (click)="sendMessage(false)">
+        <div class="icon"></div>
+        <div class="text">Send</div>
+      </div>
+      <app-image-upload class="mb-2 shadow-sm" [isShowImg]="false" (changeFile)="changeFileName($event)" [imageUrl]="imgName"></app-image-upload>
+    </div>
+  </div>
+
+  <app-popup [isOpen]="isPopupOpen" (close)="closePopup()">
+      <h4 class="text-center">Please enter the room ID</h4>
+      <button type="button" class="close" (click)="closePopup()">
+        <span>&times;</span>
+      </button>
+
+      <div class="form-group">
+        <label for="roomId">Name:</label>
+        <input type="text" id="roomId" class="form-control" [(ngModel)]="id" placeholder="Enter Room ID">
+        <label for="roomId">Room ID:</label>
+        <input type="text" id="roomId" class="form-control" [(ngModel)]="romId" placeholder="Enter Room ID">
+      </div>
+      <button type="button" class="btn btn-primary" (click)="closePopup()">Submit</button>
+  </app-popup>
+
+  <audio #notificationSound src="../../../../assets/audio/notifiaction.mp3"></audio>
+  <app-popup [isOpen]="isPopupOpenImg" (close)="closePopupImg()">
+    <div class="promo-content p-4">
+      <div class="text-center my-3">
+        <img [src]="imageClick" class="img-fluid rounded" alt="Product Image"
+             style="max-width: 100%; max-height: 50vh; object-fit: contain;">
+      </div>
+    </div>
+  </app-popup>

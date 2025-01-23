@@ -1,0 +1,57 @@
+<div class="page-content">
+  <div class="container">
+    <article class="entry single-entry entry-fullwidth">
+      <div class="row">
+        <div class="col-lg-11">
+          <div class="entry-body">
+            <h3 class="text-center">
+              {{ blog.title }}
+            </h3>
+          </div>
+        </div>
+        <div class="col-lg-11 mt-4">
+          <span class="entry-author">
+            Tác giả: <a href="#">{{ blog.author }}</a>
+          </span>
+          <span class="meta-separator">|</span>
+          <a href="#">Ngày đăng: {{ blog.createdAt | date: 'shortDate' }}</a>
+          <span class="meta-separator">|</span>
+        </div>
+        <div class="col-lg-11">
+          <div class="product-description overflow-hidden">
+            <div [innerHTML]="sanitizedContent"></div>
+          </div>
+        </div>
+
+      </div>
+    </article>
+    <div class="comments">
+      <h3 class="title">0 Bình luận</h3>
+    </div>
+    <div class="reply">
+      <div class="heading">
+        <h3 class="title">Để lại phản hồi</h3>
+        <p class="title-desc">Địa chỉ email của bạn sẽ không được công khai. Các trường bắt buộc được đánh dấu *</p>
+      </div>
+      <form action="#">
+        <label for="reply-message" class="sr-only">Bình luận</label>
+        <textarea name="reply-message" id="reply-message" cols="30" rows="4" class="form-control" required placeholder="Bình luận *"></textarea>
+        <div class="row">
+          <div class="col-md-6">
+            <label for="reply-name" class="sr-only">Họ và tên</label>
+            <input type="text" class="form-control" id="reply-name" name="reply-name" required placeholder="Họ và tên *">
+          </div>
+          <div class="col-md-6">
+            <label for="reply-email" class="sr-only">Email</label>
+            <input type="email" class="form-control" id="reply-email" name="reply-email" required placeholder="Email *">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-outline-primary">
+          <span>ĐĂNG BÌNH LUẬN</span>
+          <i class="icon-long-arrow-right"></i>
+        </button>
+      </form>
+    </div>
+
+  </div>
+</div>

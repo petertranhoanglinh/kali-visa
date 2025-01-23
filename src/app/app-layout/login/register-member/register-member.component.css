@@ -1,0 +1,169 @@
+.containershop {
+  width: 100%;
+  padding: 20px;
+  background: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.card-body {
+  padding: 3rem;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.form-section {
+  flex: 1;
+  min-width: 300px;
+}
+
+.brand-section {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
+  padding: 2rem;
+  border-radius: 15px;
+  color: white;
+}
+
+.title {
+  color: #333;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.subtitle {
+  color: #666;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.8rem 1rem 0.8rem 3rem;
+  border: 2px solid #e1e1e1;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #8ec5fc;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(142, 197, 252, 0.2);
+}
+
+.form-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #8ec5fc;
+}
+
+.form-label {
+  position: absolute;
+  left: 3rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.form-control:focus + .form-label,
+.form-control:not(:placeholder-shown) + .form-label {
+  top: -0.5rem;
+  left: 1rem;
+  font-size: 0.8rem;
+  background: white;
+  padding: 0 0.5rem;
+}
+
+.terms {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1.5rem 0;
+}
+
+.terms a {
+  color: #8ec5fc;
+  text-decoration: none;
+}
+
+.btn-register {
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-register:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(142, 197, 252, 0.4);
+}
+
+.brand-logo {
+  width: 180px;
+  height: 180px;
+  object-fit: contain;
+  margin-bottom: 2rem;
+}
+
+.brand-description {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .card-body {
+      padding: 2rem;
+  }
+
+  .row {
+      flex-direction: column-reverse;
+  }
+
+  .brand-section {
+      margin-bottom: 2rem;
+  }
+}

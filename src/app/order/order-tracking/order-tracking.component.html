@@ -1,0 +1,80 @@
+<!-- order-tracking.component.html -->
+<div class="container">
+  <div class="tracking-card">
+      <form [formGroup]="trackingForm" (ngSubmit)="trackOrder()" class="tracking-form">
+          <div class="form-group">
+              <label for="order-id">Order ID</label>
+              <input type="text"
+                     id="order-id"
+                     formControlName="orderId"
+                     placeholder="Enter your order ID">
+              <div *ngIf="trackingForm.get('orderId')?.invalid && trackingForm.get('orderId')?.touched"
+                   class="error-message">
+                  Please enter order ID
+              </div>
+          </div>
+          <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email"
+                     id="email"
+                     formControlName="email"
+                     placeholder="Enter your order email">
+              <div *ngIf="trackingForm.get('email')?.invalid && trackingForm.get('email')?.touched"
+                   class="error-message">
+                  <span *ngIf="trackingForm.get('email')?.errors?.['required']">
+                    Please enter email
+                  </span>
+                  <span *ngIf="trackingForm.get('email')?.errors?.['email']">
+                    Invalid email format
+                  </span>
+              </div>
+          </div>
+          <button type="submit"
+                  class="btn-track"
+                  [disabled]="trackingForm.invalid || isLoading">
+            {{ isLoading ? 'Loading...' : 'Track Order' }}
+          </button>
+      </form>
+
+      <div class="tracking-result" *ngIf="orderDetails != null">
+          <div class="status-line"></div>
+          <div class="tracking-status">
+              <div class="status-item">
+                  <div class="status-point" [ngClass]="{'active': isStepActive(1)}"></div>
+                  <div class="status-label">Ordered</div>
+              </div>
+              <div class="status-item">
+                  <div class="status-point" [ngClass]="{'active': isStepActive(2)}"></div>
+                  <div class="status-label">Confirmed</div>
+              </div>
+              <div class="status-item">
+                  <div class="status-point" [ngClass]="{'active': isStepActive(3)}"></div>
+                  <div class="status-label">In Transit</div>
+              </div>
+              <div class="status-item">
+                  <div class="status-point" [ngClass]="{'active': isStepActive(4)}"></div>
+                  <div class="status-label">Delivered</div>
+              </div>
+          </div>
+
+          <div class="order-details">
+              <div class="detail-row">
+                  <span class="detail-label">Order ID:</span>
+                  <span class="detail-value">{{orderDetails.orderId}}</span>
+              </div>
+              <div class="detail-row">
+                  <span class="detail-label">Order Date:</span>
+                  <span class="detail-value">{{orderDetails.orderDate}}</span>
+              </div>
+              <div class="detail-row">
+                  <span class="detail-label">Status:</span>
+                  <span class="detail-value">{{orderDetails.status}}</span>
+              </div>
+              <div class="detail-row">
+                  <span class="detail-label">Shipping Address:</span>
+                  <span class="detail-value">{{orderDetails.shippingAddress}}</span>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>

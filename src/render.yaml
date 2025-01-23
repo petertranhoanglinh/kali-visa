@@ -1,0 +1,5 @@
+services:
+  - type: web
+    name: angular-metarial
+    env: static
+    staticPublishPath: dist/angular-metarial

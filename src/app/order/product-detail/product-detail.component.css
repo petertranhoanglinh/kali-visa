@@ -1,0 +1,18 @@
+.product-slider .carousel-inner img {
+  width: 100%;
+  height: auto;
+}
+.product-name {
+  font-size: 2rem;
+  font-weight: bold;
+}
+.price {
+  font-size: 1.5rem;
+  color: #28a745;
+  font-weight: bold;
+}
+.related-products .card {
+  border: none;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}

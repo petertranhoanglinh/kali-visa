@@ -1,0 +1,14 @@
+<div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')" *ngIf="pageHeading.isShow">
+  <div class="container">
+    <h1 class="page-title">{{pageHeading.menu.label}}</h1>
+  </div><!-- End .container -->
+</div><!-- End .page-header -->
+  <nav aria-label="breadcrumb" class="breadcrumb-nav">
+      <div class="container">
+          <ol class="breadcrumb">
+              <li class="breadcrumb-item" *ngIf="parts.length >= 0 && parts[0] != null && parts[0] != ''"><a  >{{ parts[0]}}</a></li>
+              <li class="breadcrumb-item" *ngIf="parts.length >= 1 && parts[1] != null && parts[1] != ''"><a >{{ parts[1]}}</a></li>
+              <li class="breadcrumb-item active" *ngIf=" parts.length >= 2 && parts[2] != null && parts[2] != ''" aria-current="page">{{ parts[2]}}</li>
+          </ol>
+      </div><!-- End .container -->
+</nav><!-- End .breadcrumb-nav -->
