@@ -7,4 +7,5 @@
     author:string,
     createdAt:string,
     updateAt:string,
+    description:string ,
   }
