@@ -31,10 +31,10 @@ function mobileInit(){
 		e.stopPropagation();
 	});
 
-	// Sticky header 
+	// Sticky header
     var catDropdown = $('.category-dropdown'),
         catInitVal = catDropdown.data('visible');
-        
+
 	if ( $('.sticky-header').length && $(window).width() >= 992 ) {
 		var sticky = new Waypoint.Sticky({
 			element: $('.sticky-header')[0],
@@ -52,7 +52,7 @@ function mobileInit(){
                 if ( catDropdown.hasClass('show') ) {
                     catDropdown.removeClass('show').find('.dropdown-menu').removeClass('show');
                     catDropdown.find('.dropdown-toggle').attr('aria-expanded', 'false');
-                } 
+                }
             }
 		});
 	}
@@ -114,7 +114,7 @@ function mobileInit(){
 
 }
 $(document).ready(function () {
-    
+
 	// Sidebar Filter - Show & Hide
     var $sidebarToggler = $('.sidebar-toggler');
     $sidebarToggler.on('click', function (e) {
@@ -198,20 +198,20 @@ $(document).ready(function () {
 	// Product countdown
 	if ( $.fn.countdown ) {
 		$('.product-countdown').each(function () {
-			var $this = $(this), 
+			var $this = $(this),
 				untilDate = $this.data('until'),
 				compact = $this.data('compact'),
                 dateFormat = ( !$this.data('format') ) ? 'DHMS' : $this.data('format'),
-                newLabels = ( !$this.data('labels-short') ) ? 
+                newLabels = ( !$this.data('labels-short') ) ?
                                 ['Years', 'Months', 'Weeks', 'Days', 'Hours', 'Minutes', 'Seconds'] :
                                 ['Years', 'Months', 'Weeks', 'Days', 'Hours', 'Mins', 'Secs'],
-                newLabels1 = ( !$this.data('labels-short') ) ? 
+                newLabels1 = ( !$this.data('labels-short') ) ?
                                 ['Year', 'Month', 'Week', 'Day', 'Hour', 'Minute', 'Second'] :
                                 ['Year', 'Month', 'Week', 'Day', 'Hour', 'Min', 'Sec'];
 
             var newDate;
 
-            // Split and created again for ie and edge 
+            // Split and created again for ie and edge
             if ( !$this.data('relative') ) {
                 var untilDateArr = untilDate.split(", "), // data-until 2019, 10, 8 - yy,mm,dd
                     newDate = new Date(untilDateArr[0], untilDateArr[1] - 1, untilDateArr[2]);
@@ -236,7 +236,7 @@ $(document).ready(function () {
 		// $('.product-countdown').countdown('pause');
 	}
 
-	
+
     // Product Image Zoom plugin - product pages
     if ( $.fn.elevateZoom ) {
         $('#product-zoom').elevateZoom({
@@ -278,7 +278,7 @@ $(document).ready(function () {
         });
     }
 
-    // Product Gallery - product-gallery.html 
+    // Product Gallery - product-gallery.html
     if ( $.fn.owlCarousel && $.fn.elevateZoom ) {
         var owlProductGallery = $('.product-gallery-carousel');
 
@@ -333,7 +333,7 @@ $(document).ready(function () {
         });
     }
 
-     // Product Gallery Separeted- product-sticky.html 
+     // Product Gallery Separeted- product-sticky.html
     if ( $.fn.elevateZoom ) {
         $('.product-separated-item').find('img').elevateZoom({
             zoomType: "inner",
@@ -396,7 +396,7 @@ $(document).ready(function () {
     	e.preventDefault();
     });
 
-  
+
 
     /* Masonry / Grid Layout & Isotope Filter for blog/portfolio etc... */
     if ( typeof imagesLoaded === 'function' && $.fn.isotope) {
@@ -439,12 +439,12 @@ $(document).ready(function () {
                 $(this.element).countTo();
             }, {
                 offset: '90%',
-                triggerOnce: true 
+                triggerOnce: true
             });
         } else {
             $countItem.countTo();
-        }    
-    } else { 
+        }
+    } else {
         // fallback
         // Get the data-to value and add it to element
         $countItem.each(function () {
@@ -668,7 +668,7 @@ $(document).ready(function () {
                 }
             }, 0);
         }, 500);
-        
+
         e.preventDefault();
     });
 
@@ -728,7 +728,7 @@ function isotopeFilter ( filterNav, container) {
             filter: filter,
             transitionDuration: '0.7s'
         });
-        
+
         // Add active class
         $this.closest('li').addClass('active');
         e.preventDefault();
@@ -785,7 +785,7 @@ function owlCarousels($wrap, options) {
                 newOwlSettings = $.extend({}, owlSettings, $this.data('owl-options'));
 
             $this.owlCarousel(newOwlSettings);
-            
-        });   
+
+        });
     }
 }

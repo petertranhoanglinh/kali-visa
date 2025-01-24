@@ -25,39 +25,6 @@ export class HomePageComponent implements OnInit ,  AfterViewInit {
   apiUrl = environment.apiUrl;
 
   observer!: IntersectionObserver;
-
-  swiperConfig = {
-    loop: true, // Lặp lại các slide
-    navigation: {
-      nextEl: '.swiper-button-next',
-      prevEl: '.swiper-button-prev',
-    },
-    pagination: {
-      el: '.swiper-pagination',
-      clickable: true,
-      dynamicBullets: true, // Dynamic pagination bullets
-    },
-    slidesPerView: 1, // Hiển thị 1 slide tại một thời điểm
-    effect: 'slide', // Hiệu ứng trượt
-    autoplay: {
-      delay: 5000, // Tự động chuyển slide sau 5 giây
-      disableOnInteraction: false,
-    },
-    spaceBetween: 10, // Khoảng cách giữa các slide
-    breakpoints: {
-      320: { slidesPerView: 1, spaceBetween: 10 }, // Điện thoại nhỏ
-      480: { slidesPerView: 1, spaceBetween: 15 }, // Điện thoại lớn
-      768: { slidesPerView: 1, spaceBetween: 20 }, // Tablet
-      1024: { slidesPerView: 1, spaceBetween: 25 }, // Laptop nhỏ
-      1440: { slidesPerView: 1, spaceBetween: 30 }, // Màn hình lớn
-    },
-  };
-
-  brands = [
-    { img: 'assets/images/demos/demo-2/slider/slide-1.jpg', alt: 'Brand 1' },
-    { img: 'assets/images/demos/demo-2/slider/slide-2.jpg', alt: 'Brand 2' },
-    { img: 'assets/images/demos/demo-2/slider/slide-3.jpg', alt: 'Brand 3' },
-  ];
   constructor(private productStore: Store<ProductState>
     , private _swiperService: SwiperService ,
      private router: Router) {
@@ -65,12 +32,7 @@ export class HomePageComponent implements OnInit ,  AfterViewInit {
   }
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this._swiperService.createSwiper(
-        'reviewSwiper',
-        this.swiperConfig
-      );
-    }, 1000);
+
     this.loadProduct();
     this.items$.subscribe((res) => {
       if (res && res.products.length) {

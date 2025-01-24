@@ -8,7 +8,7 @@ export const environment = {
 
   production: true,
   // apiUrl: "https://spring-mongodb-sample.onrender.com",
-  comId : 'webixx'
+  comId : 'webixx',
   apiUrl: 'http://localhost:8888'
 };
 

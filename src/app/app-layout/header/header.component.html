@@ -1,36 +1,5 @@
 <header class="header header-2 header-intro-clearance">
-  <div class="header-top">
-      <div class="container">
-          <div class="header-left">
-              <p>Special collection already available.</p><a href="#">&nbsp;Read more ...</a>
-          </div><!-- End .header-left -->
-          <div class="header-right">
-              <ul class="top-menu">
-                  <li>
-                      <a href="#">Links</a>
-                      <ul>
-                          <li>
-                              <div class="header-dropdown">
-                                  <a href="#">English</a>
-                                  <div class="header-menu">
-                                      <ul>
-                                          <li><a href="#">English</a></li>
-                                          <li><a href="#">VietName</a></li>
-                                      </ul>
-                                  </div><!-- End .header-menu -->
-                              </div>
-                          </li>
-                          <li *ngIf="!isLogin"><a href="javascript:void(0)" routerLink="/login">Sign in / Sign up</a></li>
-                          <li *ngIf="isLogin"><a href="javascript:void(0)" (click)="logOut()">Log Out</a></li>
-                      </ul>
-                  </li>
-              </ul><!-- End .top-menu -->
-          </div><!-- End .header-right -->
-
-      </div><!-- End .container -->
-  </div><!-- End .header-top -->
-
-  <div class="header-middle">
+  <div class="header-middle custom-header">
       <div class="container">
           <div class="header-left">
               <button class="mobile-menu-toggler">
@@ -38,7 +7,7 @@
                   <i class="icon-bars"></i>
               </button>
 
-              <a href="index.html" class="logo">
+              <a [routerLink]="['/']" routerLinkActive="router-link-active"  class="logo">
                   <img src="../../../assets/images/logo.png" alt="Webixx Logo" width="105" height="25">
               </a>
           </div><!-- End .header-left -->
@@ -49,7 +18,7 @@
                   <form action="#" method="get">
                       <div class="header-search-wrapper search-wrapper-wide">
                           <label for="q" class="sr-only">Search</label>
-                          <input type="search" class="form-control" name="q" id="q" placeholder="Search product ..." required>
+                          <input type="search" class="form-control" name="q" id="q" placeholder="Tìm kiếm dịch vụ ..." required>
                           <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
                       </div><!-- End .header-search-wrapper -->
                   </form>
@@ -57,6 +26,12 @@
           </div>
 
           <div class="header-right">
+             <div class="social-icons">
+                <a href="#" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>
+                <a href="#" class="social-icon" target="_blank" title="Twitter"><i class="icon-twitter"></i></a>
+                <a href="#" class="social-icon" target="_blank" title="Instagram"><i class="icon-instagram"></i></a>
+                <a href="#" class="social-icon" target="_blank" title="Youtube"><i class="icon-youtube"></i></a>
+              </div>
               <ng-container *ngFor="let menu of menus">
                 <ng-container *ngIf="menu.kind == 'mt' && menu.icon != null">
                   <div [ngClass]="menu.label == 'Account' ? 'account' : 'wishlist'" (click)="onMenuClick(menu)">
@@ -70,71 +45,6 @@
 
                 </ng-container>
               </ng-container>
-
-              <div class="dropdown cart-dropdown">
-                  <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
-                      <div class="icon">
-                          <i class="icon-shopping-cart"></i>
-                          <span class="cart-count">2</span>
-                      </div>
-                      <p>Cart</p>
-                  </a>
-
-                  <div class="dropdown-menu dropdown-menu-right">
-                      <div class="dropdown-cart-products">
-                          <div class="product">
-                              <div class="product-cart-details">
-                                  <h4 class="product-title">
-                                      <a href="product.html">Beige knitted elastic runner shoes</a>
-                                  </h4>
-
-                                  <span class="cart-product-info">
-                                      <span class="cart-product-qty">1</span>
-                                      x $84.00
-                                  </span>
-                              </div><!-- End .product-cart-details -->
-
-                              <figure class="product-image-container">
-                                  <a href="product.html" class="product-image">
-                                      <img src="assets/images/products/cart/product-1.jpg" alt="product">
-                                  </a>
-                              </figure>
-                              <a href="#" class="btn-remove" title="Remove Product"><i class="icon-close"></i></a>
-                          </div><!-- End .product -->
-
-                          <div class="product">
-                              <div class="product-cart-details">
-                                  <h4 class="product-title">
-                                      <a href="product.html">Blue utility pinafore denim dress</a>
-                                  </h4>
-
-                                  <span class="cart-product-info">
-                                      <span class="cart-product-qty">1</span>
-                                      x $76.00
-                                  </span>
-                              </div><!-- End .product-cart-details -->
-
-                              <figure class="product-image-container">
-                                  <a href="product.html" class="product-image">
-                                      <img src="assets/images/products/cart/product-2.jpg" alt="product">
-                                  </a>
-                              </figure>
-                              <a href="#" class="btn-remove" title="Remove Product"><i class="icon-close"></i></a>
-                          </div><!-- End .product -->
-                      </div><!-- End .cart-product -->
-
-                      <div class="dropdown-cart-total">
-                          <span>Total</span>
-
-                          <span class="cart-total-price">$160.00</span>
-                      </div><!-- End .dropdown-cart-total -->
-
-                      <div class="dropdown-cart-action">
-                          <a routerLink="/shopping/cart" class="btn btn-primary" (click)="initMenu('/shopping/cart')">View Cart</a>
-                          <a routerLink="/shopping/checkout" class="btn btn-outline-primary-2" (click)="initMenu('/shopping/checkout')"><span>Checkout</span><i class="icon-long-arrow-right"></i></a>
-                      </div><!-- End .dropdown-cart-total -->
-                  </div><!-- End .dropdown-menu -->
-              </div><!-- End .cart-dropdown -->
           </div><!-- End .header-right -->
       </div><!-- End .container -->
   </div><!-- End .header-middle -->
@@ -142,32 +52,6 @@
   <div class="header-bottom sticky-header">
       <div class="container">
           <div class="header-left">
-              <div class="dropdown category-dropdown">
-                  <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static" title="Browse Categories">
-                      Browse Categories
-                  </a>
-
-                  <div class="dropdown-menu">
-                      <nav class="side-nav">
-                          <ul class="menu-vertical sf-arrows">
-                              <li class="item-lead"><a href="#">Daily offers</a></li>
-                              <li class="item-lead"><a href="#">Gift Ideas</a></li>
-                              <li><a href="#">Beds</a></li>
-                              <li><a href="#">Lighting</a></li>
-                              <li><a href="#">Sofas & Sleeper sofas</a></li>
-                              <li><a href="#">Storage</a></li>
-                              <li><a href="#">Armchairs & Chaises</a></li>
-                              <li><a href="#">Decoration </a></li>
-                              <li><a href="#">Kitchen Cabinets</a></li>
-                              <li><a href="#">Coffee & Tables</a></li>
-                              <li><a href="#">Outdoor Furniture </a></li>
-                          </ul><!-- End .menu-vertical -->
-                      </nav><!-- End .side-nav -->
-                  </div><!-- End .dropdown-menu -->
-              </div><!-- End .category-dropdown -->
-          </div><!-- End .header-left -->
-
-          <div class="header-center">
             <nav class="main-nav">
               <ul class="menu sf-arrows">
                 <li *ngFor="let menu of menus">
@@ -196,12 +80,6 @@
                 </li>
               </ul>
             </nav>
-          </div>
-
-
-
-          <div class="header-right">
-              <i class="la la-lightbulb-o"></i><p>Clearance<span class="highlight">&nbsp;Up to 30% Off</span></p>
           </div>
       </div><!-- End .container -->
   </div><!-- End .header-bottom -->
@@ -258,23 +136,6 @@
                   </ul>
                 </nav><!-- End .mobile-nav -->
               </div><!-- .End .tab-pane -->
-                <div class="tab-pane fade" id="mobile-cats-tab" role="tabpanel" aria-labelledby="mobile-cats-link">
-                    <nav class="mobile-cats-nav">
-                        <ul class="mobile-cats-menu">
-                            <li><a class="mobile-cats-lead" href="#">Daily offers</a></li>
-                            <li><a class="mobile-cats-lead" href="#">Gift Ideas</a></li>
-                            <li><a href="#">Beds</a></li>
-                            <li><a href="#">Lighting</a></li>
-                            <li><a href="#">Sofas &amp; Sleeper sofas</a></li>
-                            <li><a href="#">Storage</a></li>
-                            <li><a href="#">Armchairs &amp; Chaises</a></li>
-                            <li><a href="#">Decoration </a></li>
-                            <li><a href="#">Kitchen Cabinets</a></li>
-                            <li><a href="#">Coffee &amp; Tables</a></li>
-                            <li><a href="#">Outdoor Furniture </a></li>
-                        </ul><!-- End .mobile-cats-menu -->
-                    </nav><!-- End .mobile-cats-nav -->
-                </div><!-- .End .tab-pane -->
             </div><!-- End .tab-content -->
 
             <div class="social-icons">
