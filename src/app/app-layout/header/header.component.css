@@ -334,3 +334,23 @@
 .dropdown-submenu.show .dropdown-menu {
   display: block;
 }
+/* Ẩn menu con mặc định */
+.mobile-menu ul {
+  display: none;
+}
+
+/* Hiển thị menu con khi class open được áp dụng */
+.mobile-menu li.open > ul {
+  display: block;
+}
+
+/* Ẩn menu con mặc định */
+.mobile-menu ul {
+  display: none;
+  list-style-type: none; /* Ẩn dấu chấm */
+}
+
+/* Hiển thị menu con khi class open được áp dụng */
+.mobile-menu li.open > ul {
+  display: block;
+}

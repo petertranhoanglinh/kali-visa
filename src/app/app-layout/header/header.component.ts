@@ -120,23 +120,13 @@ export class HeaderComponent implements OnInit {
       this.menus.push({
         label: 'Administrator',
         items: [
-          { label: 'Product Manager', route: '',  items : [
-            {label : "Edit Product" , route: '/shopping/addProduct' },
-            {label : "New Product" , route: '/shopping/newProduct' },
-            {label : "Edit Cate" , route: '/product/regcate' }
-          ] },
-          {
-            label: 'Order Manager' , route: '' , items : [
-             {label: 'Order Tracking', route: '/shopping/order-tracking' },
-             {label: 'Order Analysic', route: '/shopping/order-analysic' },
-             {label: 'Order Detail', route: '/shopping/order-detail' },
-            ]
-          },
-          {
-            label: 'Blog Manager' , route: '' , items : [
-             {label: 'New Blog', route: '/blog/blog-edit' },
-            ]
-          }
+          {label : "Edit Product" , route: '/shopping/addProduct' },
+          {label : "New Product" , route: '/shopping/newProduct' },
+          {label : "Edit Cate" , route: '/product/regcate' },
+          {label: 'Order Tracking', route: '/shopping/order-tracking' },
+          {label: 'Order Analysic', route: '/shopping/order-analysic' },
+          {label: 'Order Detail', route: '/shopping/order-detail' },
+          {label: 'New Blog', route: '/blog/blog-edit' },
         ]
       })
     }
@@ -235,7 +225,12 @@ export class HeaderComponent implements OnInit {
   }
 
   onMenuClick(menu: Menu): void {
-    this.currentPath = this.findMenuPath(String(menu.route));
+  
+
+    if(ValidationUtil.isNotNullAndNotEmpty(menu.route)){
+      
+      this.currentPath = this.findMenuPath(String(menu.route));
+    }
     const pageHeading : PageHeading = {
       chilren:this.currentPath,
       isShow: true,
@@ -304,12 +299,26 @@ closeMobileMenu() {
   }
 }
 
+// Phương thức để toggle class open
+toggleMenu(menuItem: HTMLLIElement , menu: Menu): void {
+
+  this.onMenuClick(menu);
+  if (menuItem.classList.contains('open')) {
+    this.renderer.removeClass(menuItem, 'open'); // Đóng menu
+  } else {
+    this.renderer.addClass(menuItem, 'open'); // Mở menu
+  }
+}
 
 
 
 
 
 
+
+preventDefault(event: Event): void {
+  event.preventDefault(); // Ngăn chuyển hướng
+}
 }
 
 

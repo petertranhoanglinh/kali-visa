@@ -22,7 +22,7 @@ const routes: Routes = [
   {
     path: '', component: AppLayoutComponent, children: [
 
-       { path: '', component: role == 'admin' ? OrderAnalysicComponent : HomePageComponent },
+       { path: '', component: HomePageComponent },
        { path: 'auth', loadChildren: authModule },
        { path: 'shopping',canActivate : [AuthGuardService]  , loadChildren: orderModule },
        { path: 'product',canActivate : [AuthGuardService]  , loadChildren: productModule },

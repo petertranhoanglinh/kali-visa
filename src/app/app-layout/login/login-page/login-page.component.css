@@ -5,7 +5,7 @@
 }
 
 body {
-  background: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
+  background: linear-gradient(120deg, RGB(19, 74, 134) 0%, #8ec5fc 100%);
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -25,12 +25,13 @@ body {
 .logo {
   text-align: center;
   margin-bottom: 2rem;
-  color: #134a86;
+  background-color: #134a86;
 }
 
 .logo img {
   width: 150px;
   height: auto;
+  color: #134a86;
 }
 
 .welcome-text {
@@ -75,7 +76,7 @@ body {
   padding: 1rem;
   border: none;
   border-radius: 10px;
-  background: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
+  background: linear-gradient(120deg, RGB(19, 74, 134) 0%, #8ec5fc 100%);
   color: white;
   font-size: 1.1rem;
   font-weight: 600;
@@ -107,7 +108,7 @@ body {
 }
 
 .forgot-password a:hover {
-  color: #e0c3fc;
+  color: RGB(19, 74, 134);
 }
 
 .register-link {
@@ -124,7 +125,7 @@ body {
 }
 
 .register-link a:hover {
-  color: #e0c3fc;
+  color: RGB(19, 74, 134);
 }
 
 .divider {
