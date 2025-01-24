@@ -35,13 +35,13 @@
 
 .btn-outline-primary {
   background-color: transparent;
-  border: 2px solid #007bff;
-  color: #007bff;
+  border: 2px solid #134a86;
+  color: #134a86;
   transition: all 0.3s ease;
 }
 
 .btn-outline-primary:hover {
-  background-color: #007bff;
+  background-color: #134a86;
   color: white;
 }
 

@@ -1,6 +1,6 @@
 /* Topbar */
 .bg-primary {
-  background-color: #007bff !important; /* Màu nền chính */
+  background-color: #134a86 !important; /* Màu nền chính */
 }
 
 .text-secondary {
@@ -36,7 +36,7 @@
 
 .btn-outline-light:hover {
   background-color: #ffffff;
-  color: #007bff; /* Màu khi hover */
+  color: #134a86; /* Màu khi hover */
 }
 
 
@@ -49,7 +49,7 @@
 .navbar-brand h1 {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #007bff; /* Màu chữ logo */
+  color: #134a86; /* Màu chữ logo */
 }
 
 .navbar-brand img {
@@ -68,7 +68,7 @@
 }
 
 .nav-link:hover {
-  color: #007bff !important; /* Màu khi hover */
+  color: #134a86 !important; /* Màu khi hover */
 }
 
 
@@ -82,8 +82,8 @@
 }
 
 .btn-primary {
-  background-color: #007bff;
-  border-color: #007bff;
+  background-color: #134a86;
+  border-color: #134a86;
   transition: all 0.3s ease;
 }
 
@@ -159,7 +159,7 @@
 }
 
 .mobile-menu a:hover {
-  color: #007bff; /* Màu khi hover */
+  color: #134a86; /* Màu khi hover */
 }
 
 .social-icons {
@@ -175,7 +175,7 @@
 }
 
 .social-icons a:hover {
-  color: #007bff; /* Màu khi hover */
+  color: #134a86; /* Màu khi hover */
 }
 
 /* Search Modal */
@@ -320,7 +320,7 @@
 
 .dropdown-item:hover {
   background-color: #f8f9fa; /* Màu nền khi hover */
-  color: #007bff; /* Màu chữ khi hover */
+  color: #134a86; /* Màu chữ khi hover */
 }
 
 /* Submenu (cấp 3) */
