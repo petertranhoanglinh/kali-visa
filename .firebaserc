@@ -1,6 +1,6 @@
 {
   "projects": {
-    "default": "thuthanhkalivisa",
+    "default": "minhminh-kalivisa",
     "staging": "auth-webixx",
     "webixx": "auth-webixx"
   },
