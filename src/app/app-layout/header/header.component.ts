@@ -1,5 +1,5 @@
 import { PageHeading } from './../../model/page-heading';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
 import { GuardsCheckEnd, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
@@ -34,6 +34,9 @@ export class HeaderComponent implements OnInit {
 
   isPopupOpen = false;
 
+  // Biến để kiểm soát trạng thái mobile menu
+  isMobileMenuOpen = false;
+
 
 
   menus: Menu[] = [
@@ -62,13 +65,21 @@ export class HeaderComponent implements OnInit {
 
 
   constructor(private headerStore: Store<HeaderState>,private authStore: Store<AuthState>,
-    private router: Router, private cartService: CartService,
+    private router: Router, private cartService: CartService,private renderer: Renderer2,
+    private el: ElementRef ,
     private coinStore: Store<CoinState>) {
     this.isHeader$ = this.headerStore.select(getIsHeader);
     this.resultConnect$ = this.coinStore.select(getTestConnect);
     this.quantityCart$ = this.authStore.select(getCartNumber)
   }
   ngOnInit(): void {
+
+    const overlay = this.el.nativeElement.querySelector('.mobile-menu-overlay');
+    if (overlay) {
+      this.renderer.listen(overlay, 'click', () => {
+        this.closeMobileMenu();
+      });
+    }
     setTimeout(() => {
       mobileInit()
     }, 500);
@@ -265,6 +276,33 @@ export class HeaderComponent implements OnInit {
   closePopup(): void {
     this.isPopupOpen = false;
   }
+ // Hàm mở mobile menu
+ openMobileMenu() {
+  const overlay = this.el.nativeElement.querySelector('.mobile-menu-overlay');
+  const menuContainer = this.el.nativeElement.querySelector('.mobile-menu-container');
+
+  if (overlay && menuContainer) {
+    this.renderer.setStyle(overlay, 'display', 'block'); // Hiển thị overlay
+    this.renderer.addClass(menuContainer, 'open'); // Mở menu
+    this.isMobileMenuOpen = true;
+  } else {
+    console.error('Không tìm thấy phần tử .mobile-menu-overlay hoặc .mobile-menu-container');
+  }
+}
+
+// Hàm đóng mobile menu
+closeMobileMenu() {
+  const overlay = this.el.nativeElement.querySelector('.mobile-menu-overlay');
+  const menuContainer = this.el.nativeElement.querySelector('.mobile-menu-container');
+
+  if (overlay && menuContainer) {
+    this.renderer.setStyle(overlay, 'display', 'none'); // Ẩn overlay
+    this.renderer.removeClass(menuContainer, 'open'); // Đóng menu
+    this.isMobileMenuOpen = false;
+  } else {
+    console.error('Không tìm thấy phần tử .mobile-menu-overlay hoặc .mobile-menu-container');
+  }
+}
 
 
 
@@ -273,3 +311,5 @@ export class HeaderComponent implements OnInit {
 
 
 }
+
+

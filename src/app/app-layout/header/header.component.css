@@ -1,3 +1,336 @@
-.custom-header{
-background-color: #003366 !important;
+/* Topbar */
+.bg-primary {
+  background-color: #007bff !important; /* Màu nền chính */
+}
+
+.text-secondary {
+  color: #ffc107 !important; /* Màu chữ phụ (ví dụ: biểu tượng) */
+}
+
+.text-muted {
+  color: #ffffff !important; /* Màu chữ chính */
+}
+
+.text-muted:hover {
+  color: #ffc107 !important; /* Màu khi hover */
+}
+
+.btn-square {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.btn-square:hover {
+  background-color: rgba(255, 255, 255, 0.1); /* Hiệu ứng hover */
+}
+
+.btn-outline-light {
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+.btn-outline-light:hover {
+  background-color: #ffffff;
+  color: #007bff; /* Màu khi hover */
+}
+
+
+/* Navbar */
+.nav-bar {
+  background-color: #ffffff; /* Màu nền */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Đổ bóng */
+}
+
+.navbar-brand h1 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #007bff; /* Màu chữ logo */
+}
+
+.navbar-brand img {
+  max-height: 40px;
+  margin-right: 10px;
+}
+
+.nav-item {
+  margin: 0 10px;
+}
+
+.nav-link {
+  color: #333333 !important; /* Màu chữ menu */
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #007bff !important; /* Màu khi hover */
+}
+
+
+.btn-md-square {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3; /* Màu khi hover */
+  border-color: #0056b3;
+}
+
+
+/* Mobile Menu */
+.mobile-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Màu nền overlay */
+  z-index: 1000;
+  display: none; /* Ẩn mặc định */
+}
+
+.mobile-menu-container {
+  position: fixed;
+  top: 0;
+  left: -100%;
+  width: 300px;
+  height: 100%;
+  background-color: #ffffff; /* Màu nền menu */
+  z-index: 1001;
+  transition: left 0.3s ease;
+}
+
+.mobile-menu-container.open {
+  left: 0; /* Hiển thị menu khi có class 'open' */
+}
+
+.mobile-menu-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #333333;
+}
+
+.mobile-search {
+  padding: 20px;
+  background-color: #f8f9fa; /* Màu nền thanh tìm kiếm */
+}
+
+.mobile-search .form-control {
+  border-radius: 20px;
+}
+
+.mobile-nav {
+  padding: 20px;
+}
+
+.mobile-menu {
+  list-style: none;
+  padding: 0;
+}
+
+.mobile-menu li {
+  margin-bottom: 10px;
+}
+
+.mobile-menu a {
+  color: #333333;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.mobile-menu a:hover {
+  color: #007bff; /* Màu khi hover */
+}
+
+.social-icons {
+  padding: 20px;
+  text-align: center;
+}
+
+.social-icons a {
+  margin: 0 10px;
+  color: #333333;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: #007bff; /* Màu khi hover */
+}
+
+/* Search Modal */
+.modal-content {
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+  border-bottom: none;
+  padding: 20px;
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #333333;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.input-group {
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.form-control {
+  border: none;
+  box-shadow: none;
+}
+
+.form-control:focus {
+  box-shadow: none;
+}
+
+.btn-primary {
+  border-radius: 0 20px 20px 0;
+}
+
+
+/* Responsive */
+@media (max-width: 992px) {
+  .navbar-nav {
+    margin-top: 10px;
+  }
+
+  .navbar-brand h1 {
+    font-size: 1.25rem;
+  }
+
+  .btn-md-square {
+    width: 35px;
+    height: 35px;
+  }
+
+  .btn-primary {
+    font-size: 0.875rem;
+    padding: 5px 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-container {
+    width: 250px;
+  }
+
+  .mobile-search {
+    padding: 15px;
+  }
+
+  .mobile-nav {
+    padding: 15px;
+  }
+
+  .social-icons {
+    padding: 15px;
+  }
+}
+/* Mobile Menu Overlay */
+.mobile-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Màu nền overlay */
+  z-index: 1000;
+  display: none; /* Ẩn mặc định */
+}
+
+/* Mobile Menu Container */
+.mobile-menu-container {
+  position: fixed;
+  top: 0;
+  left: -100%; /* Ẩn menu ban đầu */
+  width: 300px;
+  height: 100%;
+  background-color: #ffffff; /* Màu nền menu */
+  z-index: 1001;
+  transition: left 0.3s ease; /* Hiệu ứng chuyển động */
+}
+
+/* Khi menu được mở */
+.mobile-menu-container.open {
+  left: 0; /* Hiển thị menu */
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000; /* Đảm bảo menu con hiển thị trên các phần tử khác */
+  display: none; /* Ẩn menu con mặc định */
+  min-width: 10rem;
+  padding: 0.5rem 0;
+  margin: 0.125rem 0 0;
+  font-size: 1rem;
+  color: #333333; /* Màu chữ rõ ràng */
+  background-color: burlywood; /* Màu nền trắng */
+  border: 1px solid rgba(0, 0, 0, 0.15); /* Viền để phân biệt */
+  border-radius: 0.25rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ */
+  opacity: 1 !important; /* Đảm bảo không bị mờ */
+  filter: none !important; /* Loại bỏ hiệu ứng filter nếu có */
+}
+
+/* Hiển thị menu con khi click */
+.nav-item.dropdown.show .dropdown-menu {
+  display: block;
+}
+
+/* Dropdown Item */
+.dropdown-item {
+  color: #333333; /* Màu chữ đen */
+  padding: 0.5rem 1rem; /* Padding để dễ nhấn */
+  transition: all 0.3s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa; /* Màu nền khi hover */
+  color: #007bff; /* Màu chữ khi hover */
+}
+
+/* Submenu (cấp 3) */
+.dropdown-submenu {
+  position: relative;
+}
+
+
+/* Hiển thị submenu khi hover hoặc click */
+.dropdown-submenu:hover .dropdown-menu,
+.dropdown-submenu.show .dropdown-menu {
+  display: block;
 }

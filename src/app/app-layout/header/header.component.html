@@ -1,151 +1,181 @@
-<header class="header header-2 header-intro-clearance">
-  <div class="header-middle custom-header">
-      <div class="container">
-          <div class="header-left">
-              <button class="mobile-menu-toggler">
-                  <span class="sr-only">Toggle mobile menu</span>
-                  <i class="icon-bars"></i>
-              </button>
+<!-- Topbar Start -->
+<div class="container-fluid bg-primary px-5 d-none d-lg-block">
+  <div class="row gx-0 align-items-center">
+    <div class="col-lg-5 text-center text-lg-start mb-lg-0">
+      <div class="d-flex">
+        <a href="#" class="text-muted me-4"><i class="fas fa-envelope text-secondary me-2"></i>Example@gmail.com</a>
+        <a href="#" class="text-muted me-0"><i class="fas fa-phone-alt text-secondary me-2"></i>+01234567890</a>
+      </div>
+    </div>
+    <div class="col-lg-3 row-cols-1 text-center mb-2 mb-lg-0">
+      <div class="d-inline-flex align-items-center" style="height: 45px;">
+        <a class="btn btn-sm btn-outline-light btn-square rounded-circle me-2" href=""><i
+            class="fab fa-twitter fw-normal text-secondary"></i></a>
+        <a class="btn btn-sm btn-outline-light btn-square rounded-circle me-2" href=""><i
+            class="fab fa-facebook-f fw-normal text-secondary"></i></a>
+        <a class="btn btn-sm btn-outline-light btn-square rounded-circle me-2" href=""><i
+            class="fab fa-linkedin-in fw-normal text-secondary"></i></a>
+        <a class="btn btn-sm btn-outline-light btn-square rounded-circle me-2" href=""><i
+            class="fab fa-instagram fw-normal text-secondary"></i></a>
+        <a class="btn btn-sm btn-outline-light btn-square rounded-circle" href=""><i
+            class="fab fa-youtube fw-normal text-secondary"></i></a>
+      </div>
+    </div>
+    <div class="col-lg-4 text-center text-lg-end">
+      <div class="d-inline-flex align-items-center" style="height: 45px;">
+        <a href="#" class="text-muted me-2"> Help</a><small> / </small>
+        <a href="#" class="text-muted mx-2"> Support</a><small> / </small>
+        <a href="#" class="text-muted ms-2"> Contact</a>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Topbar End -->
 
-              <a [routerLink]="['/']" routerLinkActive="router-link-active"  class="logo">
-                  <img src="../../../assets/images/logo.png" alt="Webixx Logo" width="105" height="25">
+<!-- Navbar & Hero Start -->
+<div class="container-fluid nav-bar p-0">
+  <nav class="navbar navbar-expand-lg navbar-light bg-white px-4 px-lg-5 py-3 py-lg-0">
+    <a href="" class="navbar-brand p-0">
+      <h1 class="display-5 text-secondary m-0"><img src="img/brand-logo.png" class="img-fluid" alt="">Travisa</h1>
+    </a>
+    <!-- Mobile Menu Toggler -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+      (click)="openMobileMenu()">
+      <span class="fa fa-bars"></span>
+    </button>
+    <!-- Navbar Content -->
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <div class="navbar-nav ms-auto py-0">
+        <ng-container *ngFor="let menu of menus">
+          <ng-container *ngIf="menu.kind != 'mt'">
+            <!-- Nếu menu không có cấp con -->
+            <div *ngIf="!menu.items?.length; else dropdownMenu">
+              <a [routerLink]="menu.route ? [menu.route] : []" class="nav-item nav-link" (click)="onMenuClick(menu)">
+                {{ menu.label }}
               </a>
-          </div><!-- End .header-left -->
+            </div>
 
-          <div class="header-center">
-              <div class="header-search header-search-extended header-search-visible header-search-no-radius d-none d-lg-block">
-                  <a href="#" class="search-toggle" role="button"><i class="icon-search"></i></a>
-                  <form action="#" method="get">
-                      <div class="header-search-wrapper search-wrapper-wide">
-                          <label for="q" class="sr-only">Search</label>
-                          <input type="search" class="form-control" name="q" id="q" placeholder="Tìm kiếm dịch vụ ..." required>
-                          <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
-                      </div><!-- End .header-search-wrapper -->
-                  </form>
-              </div><!-- End .header-search -->
-          </div>
+            <!-- Nếu menu có cấp con -->
+            <ng-template #dropdownMenu>
+              <div class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                  {{ menu.label }}
+                </a>
+                <div class="dropdown-menu m-0">
+                  <!-- Lặp qua các mục cấp 2 -->
+                  <ng-container *ngFor="let item of menu.items">
+                    <a [routerLink]="item.route ? [item.route] : []" class="dropdown-item" (click)="onMenuClick(item)">
+                      {{ item.label }}
+                    </a>
 
-          <div class="header-right">
-             <div class="social-icons">
-                <a href="#" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>
-                <a href="#" class="social-icon" target="_blank" title="Twitter"><i class="icon-twitter"></i></a>
-                <a href="#" class="social-icon" target="_blank" title="Instagram"><i class="icon-instagram"></i></a>
-                <a href="#" class="social-icon" target="_blank" title="Youtube"><i class="icon-youtube"></i></a>
+                    <!-- Nếu mục cấp 2 có cấp con (cấp 3) -->
+                    <div *ngIf="item.items?.length" class="dropdown-submenu">
+                      <a *ngFor="let subItem of item.items" [routerLink]="subItem.route ? [subItem.route] : []"
+                        class="dropdown-item" (click)="onMenuClick(subItem)">
+                        {{ subItem.label }}
+                      </a>
+                    </div>
+                  </ng-container>
+                </div>
               </div>
-              <ng-container *ngFor="let menu of menus">
-                <ng-container *ngIf="menu.kind == 'mt' && menu.icon != null">
-                  <div [ngClass]="menu.label == 'Account' ? 'account' : 'wishlist'" (click)="onMenuClick(menu)">
-                    <a [routerLink]="menu.route" title="My account">
-                        <div class="icon">
-                            <i  [ngClass]="menu.icon"></i>
-                        </div>
-                        <p>{{menu.label}}</p>
-                    </a>
-                </div><!-- End .compare-dropdown -->
+            </ng-template>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </nav>
+</div>
+<!-- Navbar & Hero End -->
 
-                </ng-container>
-              </ng-container>
-          </div><!-- End .header-right -->
-      </div><!-- End .container -->
-  </div><!-- End .header-middle -->
-
-  <div class="header-bottom sticky-header">
-      <div class="container">
-          <div class="header-left">
-            <nav class="main-nav">
-              <ul class="menu sf-arrows">
-                <li *ngFor="let menu of menus">
-                   <ng-container *ngIf="menu.kind != 'mt'" >
-                    <a [routerLink]="menu.route ? [menu.route] : []"  [ngClass]="{'sf-with-ul': menu.items && menu.items.length > 0}" (click)="onMenuClick(menu)">
-                      {{ menu.label }}
-                    </a>
-                    <!-- First level submenu (items) -->
-                    <ul *ngIf="menu.items?.length">
-                      <li *ngFor="let item of menu.items">
-                        <a [routerLink]="item.route"  [ngClass]="{'sf-with-ul': item.items && item.items.length > 0}" (click)="onMenuClick(item)" >
-                          {{ item.label }}
-                        </a>
-
-                        <!-- Second level submenu (items) -->
-                        <ul *ngIf="item.items?.length">
-                          <li *ngFor="let subItem of item.items">
-                            <a [routerLink]="subItem.route" (click)="onMenuClick(subItem)">
-                              {{ subItem.label }}
-                            </a>
-                          </li>
-                        </ul>
-                      </li>
-                    </ul>
-                   </ng-container>
-                </li>
-              </ul>
-            </nav>
-          </div>
-      </div><!-- End .container -->
-  </div><!-- End .header-bottom -->
-</header>
-
-
- <!-- Mobile Menu -->
-<div class="mobile-menu-overlay"></div><!-- End .mobil-menu-overlay -->
+<!-- Mobile Menu -->
+<div class="mobile-menu-overlay"></div><!-- End .mobile-menu-overlay -->
 <div class="mobile-menu-container mobile-menu-light">
-        <div class="mobile-menu-wrapper">
-            <span class="mobile-menu-close"><i class="icon-close"></i></span>
+  <div class="mobile-menu-wrapper">
 
-            <form action="#" method="get" class="mobile-search">
-                <label for="mobile-search" class="sr-only">Search</label>
-                <input type="search" class="form-control" name="mobile-search" id="mobile-search" placeholder="Search product ..." required="">
-                <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
-            </form>
+    <span class="mobile-menu-close" (click)="closeMobileMenu()"><i class="icon-close"></i></span>
+    <!-- Mobile Search -->
+    <form action="#" method="get" class="mobile-search">
+      <label for="mobile-search" class="sr-only">Search</label>
+      <input type="search" class="form-control" name="mobile-search" id="mobile-search"
+        placeholder="Tìm kiếm dịch vụ..." required>
+      <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
+    </form>
 
-            <ul class="nav nav-pills-mobile nav-border-anim" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" id="mobile-menu-link" data-toggle="tab" href="#mobile-menu-tab" role="tab" aria-controls="mobile-menu-tab" aria-selected="true">Menu</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="mobile-cats-link" data-toggle="tab" href="#mobile-cats-tab" role="tab" aria-controls="mobile-cats-tab" aria-selected="false">Categories</a>
-                </li>
-            </ul>
+    <!-- Mobile Menu Tabs -->
+    <ul class="nav nav-pills-mobile nav-border-anim" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="mobile-menu-link" data-toggle="tab" href="#mobile-menu-tab" role="tab"
+          aria-controls="mobile-menu-tab" aria-selected="true">Menu</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="mobile-cats-link" data-toggle="tab" href="#mobile-cats-tab" role="tab"
+          aria-controls="mobile-cats-tab" aria-selected="false">Categories</a>
+      </li>
+    </ul>
 
-            <div class="tab-content">
-              <div class="tab-pane fade show active" id="mobile-menu-tab" role="tabpanel" aria-labelledby="mobile-menu-link">
-                <nav class="mobile-nav">
-                  <ul class="mobile-menu">
-                    <li *ngFor="let menu of menus">
-                      <ng-container *ngIf="menu.kind != 'mt'" >
-                        <a [routerLink]="menu.route ? [menu.route] : []" class="sf-with-ul"  (click)="onMenuClick(menu)">
-                          {{ menu.label }}
-                        </a>
-                        <ul *ngIf="menu.items?.length">
-                          <li *ngFor="let item of menu.items" >
-                            <a [routerLink]="item.route ? [item.route] : []" class="sf-with-ul" (click)="onMenuClick(item)">
-                              {{ item.label }}
-                            </a>
-                            <!-- Handle third-level submenus -->
-                            <ul *ngIf="item.items?.length">
-                              <li *ngFor="let subItem of item.items">
-                                <a [routerLink]="subItem.route ? [subItem.route] : []" class="sf-with-ul"  (click)="onMenuClick(subItem)">
-                                  {{ subItem.label }}
-                                </a>
-                              </li>
-                            </ul>
-                          </li>
-                        </ul>
-                      </ng-container>
+    <!-- Mobile Menu Content -->
+    <div class="tab-content">
+      <div class="tab-pane fade show active" id="mobile-menu-tab" role="tabpanel" aria-labelledby="mobile-menu-link">
+        <nav class="mobile-nav">
+          <ul class="mobile-menu">
+            <ng-container *ngFor="let menu of menus">
+              <ng-container *ngIf="menu.kind != 'mt'">
+                <li>
+                  <a [routerLink]="menu.route ? [menu.route] : []" class="sf-with-ul" (click)="onMenuClick(menu)">
+                    {{ menu.label }}
+                  </a>
+                  <!-- Hiển thị cấp 2 -->
+                  <ul *ngIf="menu.items?.length">
+                    <li *ngFor="let item of menu.items">
+                      <a [routerLink]="item.route ? [item.route] : []" class="sf-with-ul" (click)="onMenuClick(item)">
+                        {{ item.label }}
+                      </a>
+                      <!-- Hiển thị cấp 3 -->
+                      <ul *ngIf="item.items?.length">
+                        <li *ngFor="let subItem of item.items">
+                          <a [routerLink]="subItem.route ? [subItem.route] : []" class="sf-with-ul"
+                            (click)="onMenuClick(subItem)">
+                            {{ subItem.label }}
+                          </a>
+                        </li>
+                      </ul>
                     </li>
                   </ul>
-                </nav><!-- End .mobile-nav -->
-              </div><!-- .End .tab-pane -->
-            </div><!-- End .tab-content -->
+                </li>
+              </ng-container>
+            </ng-container>
+          </ul>
+        </nav>
+      </div>
+    </div><!-- End .tab-content -->
 
-            <div class="social-icons">
-                <a href="#" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>
-                <a href="#" class="social-icon" target="_blank" title="Twitter"><i class="icon-twitter"></i></a>
-                <a href="#" class="social-icon" target="_blank" title="Instagram"><i class="icon-instagram"></i></a>
-                <a href="#" class="social-icon" target="_blank" title="Youtube"><i class="icon-youtube"></i></a>
-            </div><!-- End .social-icons -->
-        </div><!-- End .mobile-menu-wrapper -->
+    <!-- Social Icons -->
+    <div class="social-icons">
+      <a href="#" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>
+      <a href="#" class="social-icon" target="_blank" title="Twitter"><i class="icon-twitter"></i></a>
+      <a href="#" class="social-icon" target="_blank" title="Instagram"><i class="icon-instagram"></i></a>
+      <a href="#" class="social-icon" target="_blank" title="Youtube"><i class="icon-youtube"></i></a>
+    </div><!-- End .social-icons -->
+  </div><!-- End .mobile-menu-wrapper -->
 </div>
+<!-- End Mobile Menu -->
 
-
-
+<!-- Search Modal -->
+<div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="searchModalLabel">Tìm kiếm dịch vụ</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="#" method="get">
+          <div class="input-group">
+            <input type="search" class="form-control" placeholder="Nhập từ khóa..." required>
+            <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
