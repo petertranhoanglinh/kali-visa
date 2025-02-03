@@ -44,8 +44,8 @@ export class HeaderComponent implements OnInit {
     {
       label: 'Giới Thiệu',
       items: [
-        { label: 'Về công ty', route: '/about/about-company' ,
-        },
+        // { label: 'Về công ty', route: '/about/about-company' ,
+        // },
         { label: 'Về câu chuyện kinh doanh', route: '/about/about-story' },
       ]
     },
