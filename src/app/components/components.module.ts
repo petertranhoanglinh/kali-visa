@@ -10,6 +10,7 @@ import { ProductComponent } from './product/product.component';
 import { PipeModule } from '../pipe/pipe.module';
 import { CustomDialogComponent } from './custom-dialog/custom-dialog.component';
 import { SliderComponent } from './slider/slider.component';
+import { MessageButtonComponent } from './message-button/message-button.component';
 @NgModule({
   declarations: [
     TableTemplateComponent,
@@ -19,7 +20,8 @@ import { SliderComponent } from './slider/slider.component';
     PopupComponent,
     ProductComponent,
     CustomDialogComponent,
-    SliderComponent
+    SliderComponent,
+    MessageButtonComponent
 
 
   ],
@@ -36,7 +38,8 @@ import { SliderComponent } from './slider/slider.component';
     PagingComponent,
     PopupComponent,
     ProductComponent,
-    SliderComponent
+    SliderComponent,
+    MessageButtonComponent
   ],
 })
 export class ComponentsModule { }

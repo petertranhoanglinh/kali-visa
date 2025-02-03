@@ -154,3 +154,9 @@ body {
       margin: 1rem;
   }
 }
+.google-text {
+  text-align: center; /* Căn giữa text */
+  margin: 20px 0; /* Khoảng cách trên và dưới */
+  font-size: 14px; /* Kích thước chữ */
+  color: #666; /* Màu chữ */
+}

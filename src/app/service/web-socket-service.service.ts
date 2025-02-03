@@ -26,11 +26,11 @@ export class WebSocketService {
     this.stompClient = Stomp.over(socket);
 
     this.stompClient.connect({}, () => {
-      this.stompClient.subscribe('/price', (message: any) => {
-        if (message.body) {
-          this.priceSubject.next(JSON.parse(message.body)); // Make sure to parse the body
-        }
-      });
+      // this.stompClient.subscribe('/price', (message: any) => {
+      //   if (message.body) {
+      //     this.priceSubject.next(JSON.parse(message.body)); // Make sure to parse the body
+      //   }
+      // });
     });
   }
 

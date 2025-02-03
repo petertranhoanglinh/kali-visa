@@ -112,7 +112,8 @@ export class HeaderComponent implements OnInit {
       {
         label: 'Shop',
         route:"/shopping/product-list"
-      },)
+      },
+    )
     }
 
 

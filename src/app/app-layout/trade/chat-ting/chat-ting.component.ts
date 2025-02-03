@@ -20,7 +20,7 @@ export class ChatTingComponent implements OnInit , OnChanges  {
   @ViewChild('notificationSound') private notificationSound!  : ElementRef;
 
   messageInput: string = '';
-  id: string="";
+  id:string = '';
   messageList: any[] = [];
   romId:string = '';
   isPopupOpen: boolean = true;
@@ -32,7 +32,6 @@ export class ChatTingComponent implements OnInit , OnChanges  {
   apiUrl = environment.apiUrl;
   imageClick:string = '';
   askBot : string = '';
-  ramdomBotId = CommonUtils.generateRandomString(5)
 
   constructor(private chatService: WebSocketService,
     private route: ActivatedRoute , private toadstr : ToastrService ,private http: HttpClient
@@ -41,12 +40,11 @@ export class ChatTingComponent implements OnInit , OnChanges  {
   }
   ngOnChanges(changes: SimpleChanges): void {
   }
-
-
-
-
   ngOnInit(): void {
     this.lisenerMessage();
+    setTimeout(() => {
+      this.initChatting();
+    }, 1000);
   }
 
   ngAfterViewChecked() {
@@ -76,7 +74,7 @@ export class ChatTingComponent implements OnInit , OnChanges  {
 
     let romId = '';
     if(this.romId.toLowerCase().includes('bot')){
-      romId = this.romId + this.ramdomBotId
+      romId = this.romId
     }else{
       romId = this.romId
     }
@@ -110,25 +108,6 @@ export class ChatTingComponent implements OnInit , OnChanges  {
       }
       this.scrollToBottom(); // Cuộn xuống sau khi cập nhật tin nhắn
     });
-  }
-  closePopup():void{
-    this.chatService.leaveRoom(); // Optional: leave previous room if necessary
-
-    let romId = '';
-    if(this.romId.toLowerCase().includes('bot')){
-      romId = this.romId + this.ramdomBotId
-    }else{
-      romId = this.romId
-    }
-    this.chatService.joinRoom(romId); // Join new room
-
-
-    if(ValidationUtil.isNotNullAndNotEmpty(this.id)){
-      this.isPopupOpen = false;
-    }else{
-      this.toadstr.warning("please enter the name")
-    }
-
   }
 
   closePopupImg():void{
@@ -214,6 +193,12 @@ export class ChatTingComponent implements OnInit , OnChanges  {
       this.isPopupOpenImg = true;
     }
 
+  }
+
+  initChatting(){
+    this.romId =String( AuthDetail.getLoginedInfo()?.id)
+    this.id = String( AuthDetail.getLoginedInfo()?.id)
+    this.chatService.joinRoom(this.romId);
   }
 
 

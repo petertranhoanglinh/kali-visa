@@ -1,7 +1,7 @@
  /* Custom CSS */
  .hero-section {
   background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
-              url('https://source.unsplash.com/1600x900/?office,business') center/cover;
+              url('../../../../assets/images/travel/banner.jpg') center/cover;
   height: 80vh;
   display: flex;
   align-items: center;

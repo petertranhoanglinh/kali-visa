@@ -29,6 +29,7 @@ const routes: Routes = [
        { path: 'blog', loadChildren: postModule },
        { path: 'trade',canActivate : [AuthGuardService]  , loadChildren: trade },
        { path: 'about'  , loadChildren: about },
+       { path: 'chat'  ,canActivate : [AuthGuardService] , component: ChatTingComponent },
     ]
   },
   { path: 'wedding', component: WeddingComponent },
