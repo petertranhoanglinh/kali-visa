@@ -1,0 +1,66 @@
+ /* Custom CSS */
+ .hero-section {
+  background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+              url('https://source.unsplash.com/1600x900/?office,business') center/cover;
+  height: 80vh;
+  display: flex;
+  align-items: center;
+  color: white;
+}
+
+.value-card {
+  transition: all 0.3s ease;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.value-card:hover {
+  transform: translateY(-10px);
+}
+
+.team-member {
+  transition: all 0.3s ease;
+}
+
+.team-member:hover {
+  transform: scale(1.05);
+}
+
+.timeline {
+  position: relative;
+  padding: 20px 0;
+}
+
+.timeline-item {
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 10px;
+  background: white;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.custom-shape {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.stats-section {
+  background: #f8f9fa;
+  padding: 80px 0;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 20px;
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #0d6efd;
+}

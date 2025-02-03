@@ -70,3 +70,21 @@ export const saveProductActionFail = createAction(
     "[PRODUCT] saveProductAction fail",
     props<{ msg: any }>()
 );
+
+
+// saveCategory
+
+export const saveCategoryAction = createAction(
+  "[PRODUCT] saveProductAction",
+  props<{ params: any , img:any}>()
+);
+
+export const saveCategoryActionSuscess = createAction(
+    "[PRODUCT] saveCategoryAction suscess",
+    props<{ result: ResultModel}>()
+);
+
+export const saveCategoryActionFail = createAction(
+    "[PRODUCT] saveCategoryAction fail",
+    props<{ msg: any }>()
+);
