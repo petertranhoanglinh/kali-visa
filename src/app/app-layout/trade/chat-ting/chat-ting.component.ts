@@ -1,11 +1,14 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, ElementRef, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { ToastrService } from 'ngx-toastr';
+import { setShowOverlayLoading } from 'src/app/actions/overlay-loading.action';
 import { AuthDetail } from 'src/app/common/util/auth-detail';
 import { CommonUtils } from 'src/app/common/util/common-utils';
 import { ValidationUtil } from 'src/app/common/util/validation.util';
 import { ChatMessage } from 'src/app/model/chatMessage.model';
+import { OverlayLoadingState } from 'src/app/selectors/overlay-loading.selector';
 import { WebSocketService } from 'src/app/service/web-socket-service.service';
 import { environment } from 'src/environments/environment';
 
@@ -34,7 +37,7 @@ export class ChatTingComponent implements OnInit , OnChanges  {
   askBot : string = '';
 
   constructor(private chatService: WebSocketService,
-    private route: ActivatedRoute , private toadstr : ToastrService ,private http: HttpClient
+    private route: ActivatedRoute , private toadstr : ToastrService ,private http: HttpClient ,private overlayLoadingStore: Store<OverlayLoadingState>
     ){
 
   }
@@ -42,9 +45,11 @@ export class ChatTingComponent implements OnInit , OnChanges  {
   }
   ngOnInit(): void {
     this.lisenerMessage();
+    this.overlayLoadingStore.dispatch(setShowOverlayLoading({loading:true}));
     setTimeout(() => {
       this.initChatting();
-    }, 1000);
+      this.overlayLoadingStore.dispatch(setShowOverlayLoading({loading:false}));
+    }, 2000);
   }
 
   ngAfterViewChecked() {
@@ -54,7 +59,6 @@ export class ChatTingComponent implements OnInit , OnChanges  {
 
 
   sendMessage(flag:boolean) {
-
     // Kiểm tra nếu có file ảnh thì upload trước
     if (ValidationUtil.isNotNullAndNotEmpty(this.img) && ValidationUtil.isNotNullAndNotEmpty(this.imgName)) {
       this.uploadFile(this.img);
@@ -112,7 +116,6 @@ export class ChatTingComponent implements OnInit , OnChanges  {
 
   closePopupImg():void{
     this.isPopupOpenImg = false;
-
   }
 
 
