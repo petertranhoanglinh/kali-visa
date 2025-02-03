@@ -28,19 +28,22 @@ export class SliderComponent   implements OnInit  {
       alt: 'Visa Du Lịch Châu Âu',
       title: 'Visa Du Lịch Châu Âu',
       description: 'Trải nghiệm văn hóa, kiến trúc và ẩm thực đa dạng tại các quốc gia Châu Âu.',
-      buttonText: 'Đăng ký ngay'
+      buttonText: 'Đăng ký ngay',
+      linkInfo: '/blog/blog-detail/67a0336015554b66d66bd295'
     },
     {
       img: 'assets/images/travel/carousel-2.jpg',
       alt: 'Visa Du Lịch Mỹ',
       title: 'Visa Du Lịch Mỹ',
+      linkInfo: '/blog/blog-detail/67a044df15554b66d66bd297',
       description: 'Khám phá những thành phố sôi động và cảnh quan thiên nhiên hùng vĩ tại Mỹ.',
       buttonText: 'Tìm hiểu thêm'
     },
     {
-      img: 'assets/images/travel/carousel-3.jpg',
+      img: 'assets/images/travel/country-3.jpg',
       alt: 'Visa Du Lịch Nhật Bản',
       title: 'Visa Du Lịch Nhật Bản',
+      linkInfo: '/blog/blog-detail/67a0443015554b66d66bd296',
       description: 'Trải nghiệm văn hóa truyền thống và hiện đại tại đất nước mặt trời mọc.',
       buttonText: 'Xem chi tiết'
     }

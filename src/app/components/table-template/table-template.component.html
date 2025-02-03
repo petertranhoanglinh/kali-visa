@@ -1,20 +1,35 @@
+<!-- table-template.component.html -->
 <div class="container mt-4">
   <div class="table-responsive">
     <table class="table table-striped table-hover table-bordered">
       <thead class="table-dark">
         <tr>
           <th *ngFor="let column of tableConfig.columns">{{ column.header }}</th>
+          <th *ngIf="showActions">Actions</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let row of data" (click)="clickRowItem(row)">
           <td *ngFor="let column of tableConfig.columns">{{ row[column.field] }}</td>
+          <td *ngIf="showActions" class="text-center">
+            <button class="btn btn-sm btn-primary me-2" (click)="editItem($event, row)">
+              <i class="fas fa-edit"></i> Edit
+            </button>
+            <button class="btn btn-sm btn-danger" (click)="deleteItem($event, row)">
+              <i class="fas fa-trash"></i> Delete
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
   </div>
 
   <ng-container *ngIf="isPaging">
-    <app-paging (handelChangePage)="handlePageEvent($event)" [pageSize]="len" [length]="total" [isChangePageSize]="isChangePageSize"></app-paging>
+    <app-paging
+      (handelChangePage)="handlePageEvent($event)"
+      [pageSize]="len"
+      [length]="total"
+      [isChangePageSize]="isChangePageSize">
+    </app-paging>
   </ng-container>
 </div>

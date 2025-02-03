@@ -1,12 +1,13 @@
 // src/app/store/blog/blog.actions.ts
 import { createAction, props } from '@ngrx/store';
 import { BlogModel } from '../model/blog.model';
+import { BlogResponseModel } from '../model/blog-response.model';
 
 // Các Action cho CRUD blog
-export const loadBlogs = createAction('[Blog] Load Blogs');
+export const loadBlogs = createAction('[Blog] Load Blogs' , props<{ params: any }>());
 export const loadBlogsSuccess = createAction(
   '[Blog] Load Blogs Success',
-  props<{ blogs: BlogModel[] }>()
+  props<{ response: BlogResponseModel }>()
 );
 export const loadBlogsFailure = createAction(
   '[Blog] Load Blogs Failure',

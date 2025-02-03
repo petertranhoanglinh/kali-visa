@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { BlogModel } from '../model/blog.model';
 import { AuthDetail } from '../common/util/auth-detail';
+import { BlogResponseModel } from '../model/blog-response.model';
 
 
 @Injectable({
@@ -14,9 +15,11 @@ export class BlogService {
   constructor(private _http: HttpClient) {}
 
   // Lấy tất cả blog
-  getAllBlogs(): Observable<BlogModel[]> {
-    const header: HttpHeaders = AuthDetail.getHeaderJwt();  // Lấy header với JWT từ AuthDetail
-    return this._http.get<BlogModel[]>(`${environment.apiUrl}/api/blogs/all`);
+  getAllBlogs(params:any): Observable<BlogResponseModel> {
+    const page = params.page;
+    const len = params.len;
+    const queryParams = `?page=${page}&len=${len}`;  // Lấy header với JWT từ AuthDetail
+    return this._http.get<BlogResponseModel>(`${environment.apiUrl}/api/blogs/all${queryParams}`);
   }
 
   // Lấy chi tiết blog theo ID

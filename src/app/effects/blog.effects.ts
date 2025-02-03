@@ -13,9 +13,9 @@ export class BlogEffects {
   loadBlogs$ = createEffect(() =>
     this.actions$.pipe(
       ofType(BlogActions.loadBlogs),
-      mergeMap(() =>
-        this.blogService.getAllBlogs().pipe(
-          map((blogs) => BlogActions.loadBlogsSuccess({ blogs })),
+      mergeMap((action) =>
+        this.blogService.getAllBlogs(action.params).pipe(
+          map((response) => BlogActions.loadBlogsSuccess({ response })),
           catchError((error) => of(BlogActions.loadBlogsFailure({ error })))
         )
       )

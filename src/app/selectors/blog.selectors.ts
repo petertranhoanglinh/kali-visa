@@ -1,18 +1,19 @@
 import { BlogModel } from 'src/app/model/blog.model';
 // src/app/store/blog/blog.selectors.ts
 import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { BlogResponseModel } from '../model/blog-response.model';
 export const selectBlogState = createFeatureSelector<BlogState>('blog');
 
 export interface BlogState {
   saveBlog:  BlogModel,
-  blogs: BlogModel[];
+  response: BlogResponseModel;
   selectedBlog: BlogModel;
 }
 
 
 export const selectAllBlogs = createSelector(
   selectBlogState,
-  (state: BlogState) => state.blogs
+  (state: BlogState) => state.response
 );
 
 export const selectSelectedBlog = createSelector(

@@ -3,11 +3,12 @@ import { createReducer, on } from '@ngrx/store';
 import * as BlogActions from '../actions/blog.actions';
 import { BlogState } from '../selectors/blog.selectors';
 import { BlogModel } from '../model/blog.model';
+import { BlogResponseModel } from '../model/blog-response.model';
 
 
 export const initialState: BlogState = {
   saveBlog:{} as BlogModel ,
-  blogs: [],
+  response: {} as BlogResponseModel,
   selectedBlog: {} as BlogModel,
 };
 
@@ -18,9 +19,9 @@ export const blogReducer = createReducer(
     saveBlog : blog
   })),
 
-  on(BlogActions.loadBlogsSuccess, (state, { blogs }) => ({
+  on(BlogActions.loadBlogsSuccess, (state, { response }) => ({
     ...state,
-    blogs : blogs
+    response : response
   })),
 
   on(BlogActions.loadBlogByIdSuccess, (state, { blog }) => ({

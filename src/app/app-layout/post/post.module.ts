@@ -13,8 +13,9 @@ import { EffectsModule } from '@ngrx/effects';
 import { blogReducer } from 'src/app/reducers/blog.reducer';
 import { BlogEffects } from 'src/app/effects/blog.effects';
 import { PostListComponent } from './post-list/post-list.component';
+import { PostAdminComponent } from './post-admin/post-admin.component';
 @NgModule({
-  declarations: [PostFormComponent, PostDetailComponent, PostListComponent],
+  declarations: [PostFormComponent, PostDetailComponent, PostListComponent, PostAdminComponent],
   imports: [
     CommonModule,
     PostRoutingModule,

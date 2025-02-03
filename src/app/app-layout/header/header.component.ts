@@ -42,21 +42,21 @@ export class HeaderComponent implements OnInit {
   menus: Menu[] = [
 
     {
-      label: 'About',
+      label: 'Giới Thiệu',
       items: [
-        { label: 'About Company', route: '/about/about-company' ,
+        { label: 'Về công ty', route: '/about/about-company' ,
         },
-        { label: 'About Story', route: '/about/about-story' },
+        { label: 'Về câu chuyện kinh doanh', route: '/about/about-story' },
       ]
     },
 
     {
-      label:'Contact',
+      label:'Liên Hệ',
       route:'/about/contact',
     },
 
     {
-      label:'Blog',
+      label:'Bài Viết',
       route:'/blog/blogs',
     }
   ];
@@ -118,15 +118,15 @@ export class HeaderComponent implements OnInit {
 
     if(role == 'admin'){
       this.menus.push({
-        label: 'Administrator',
+        label: 'Trang Điều Hành',
+        isShowPageHeading : true,
         items: [
-          {label : "Edit Product" , route: '/shopping/addProduct' },
-          {label : "New Product" , route: '/shopping/newProduct' },
-          {label : "Edit Cate" , route: '/product/regcate' },
-          {label: 'Order Tracking', route: '/shopping/order-tracking' },
-          {label: 'Order Analysic', route: '/shopping/order-analysic' },
-          {label: 'Order Detail', route: '/shopping/order-detail' },
-          {label: 'New Blog', route: '/blog/blog-edit' },
+          {label : "Quản Lý Dịch Vụ" , route: '/shopping/newProduct' , isShowPageHeading : true },
+          {label : "Đăng Ký Danh Mục Dịch Vụ " , route: '/product/regcate' , isShowPageHeading : true},
+          {label: 'Theo Dõi Đơn Hàng Dịch Vụ', route: '/shopping/order-tracking', isShowPageHeading : true },
+          {label: 'Chi Tiết Dịch Vụ', route: '/shopping/order-detail', isShowPageHeading : true },
+          {label: 'Thêm Mới Bài Viết', route: '/blog/blog-edit' , isShowPageHeading : true},
+          {label: 'Quản Lý Bài Viết', route: '/blog/blog-admin' , isShowPageHeading : true},
         ]
       })
     }
@@ -225,15 +225,14 @@ export class HeaderComponent implements OnInit {
   }
 
   onMenuClick(menu: Menu): void {
-  
-
     if(ValidationUtil.isNotNullAndNotEmpty(menu.route)){
-      
+
       this.currentPath = this.findMenuPath(String(menu.route));
     }
+    let isShow  = menu.isShowPageHeading == undefined || menu.isShowPageHeading == false ? false : true
     const pageHeading : PageHeading = {
       chilren:this.currentPath,
-      isShow: true,
+      isShow: isShow ,
       menu: menu
     }
     this.headerStore.dispatch(setPageHeading({pageHeading:pageHeading}))

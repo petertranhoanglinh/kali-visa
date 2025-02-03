@@ -6,4 +6,5 @@ export interface Menu {
   route?: string;
   kind?:string;
   icon?:string;
+  isShowPageHeading?: boolean
 }

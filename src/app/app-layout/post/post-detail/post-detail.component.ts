@@ -28,6 +28,7 @@ export class PostDetailComponent implements OnInit {
       if(ValidationUtil.isNotNullAndNotEmpty(res.id)){
         this.blog = res;
         this.addLazyLoadingToImages();
+        window.scrollTo(0, 0);
       }
     })
   }
