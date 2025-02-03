@@ -10,6 +10,7 @@ import { OrderAnalysicComponent } from '../order/order-analysic/order-analysic.c
 import { WeddingComponent } from '../wedding/wedding.component';
 import { LoginPageComponent } from './login/login-page/login-page.component';
 import { RegisterMemberComponent } from './login/register-member/register-member.component';
+import { AdminChatComponent } from './trade/admin-chat/admin-chat.component';
 const postModule = () => import ("../../app/app-layout/post/post.module").then(x => x.PostModule);
 const orderModule = () => import ("../../app/order/order.module").then(x => x.OrderModule);
 const productModule = () => import ("../../app/product/product.module").then(x => x.ProductModule);
@@ -30,6 +31,7 @@ const routes: Routes = [
        { path: 'trade',canActivate : [AuthGuardService]  , loadChildren: trade },
        { path: 'about'  , loadChildren: about },
        { path: 'chat'  ,canActivate : [AuthGuardService] , component: ChatTingComponent },
+       { path: 'chat-admin'  ,canActivate : [AuthGuardService] , component: AdminChatComponent },
     ]
   },
   { path: 'wedding', component: WeddingComponent },

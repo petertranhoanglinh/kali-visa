@@ -15,6 +15,7 @@ import { CoinEffect } from 'src/app/effects/coin.effect';
 import { TestPriceComponent } from './test-price/test-price.component';
 import { SettingTradeComponent } from './setting-trade/setting-trade.component';
 import { ComponentsModule } from 'src/app/components/components.module';
+import { AdminChatComponent } from './admin-chat/admin-chat.component';
 @NgModule({
   declarations: [
     TradingComponent,
@@ -22,7 +23,8 @@ import { ComponentsModule } from 'src/app/components/components.module';
     AccountInfoComponent,
     ChatTingComponent,
     TestPriceComponent,
-    SettingTradeComponent
+    SettingTradeComponent,
+    AdminChatComponent
   ],
   imports: [
     CommonModule,

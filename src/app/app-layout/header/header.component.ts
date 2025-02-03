@@ -128,6 +128,7 @@ export class HeaderComponent implements OnInit {
           {label: 'Chi Tiết Dịch Vụ', route: '/shopping/order-detail', isShowPageHeading : true },
           {label: 'Thêm Mới Bài Viết', route: '/blog/blog-edit' , isShowPageHeading : true},
           {label: 'Quản Lý Bài Viết', route: '/blog/blog-admin' , isShowPageHeading : true},
+          {label: 'Quản Lý Tin Nhắn', route: '/chat-admin' , isShowPageHeading : true},
         ]
       })
     }
