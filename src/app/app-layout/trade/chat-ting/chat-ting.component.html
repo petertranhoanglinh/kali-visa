@@ -29,18 +29,23 @@
               </div>
           </li>
       </ul>
-      <div class="bottom_wrapper clearfix">
-          <div class="message_input_wrapper">
-              <input class="message_input" placeholder="Message..." [(ngModel)]="messageInput"
-                  (keyup.enter)="sendMessage(false)" />
-          </div>
-          <div class="send_message" (click)="sendMessage(false)">
-              <div class="icon"></div>
-              <div class="text">Send</div>
-          </div>
-          <app-image-upload class="mb-2 shadow-sm" [isShowImg]="false"
-              (changeFile)="changeFileName($event)" [imageUrl]="imgName"></app-image-upload>
-      </div>
+      <div class="bottom_wrapper clearfix container-fluid">
+        <div class="row align-items-center">
+            <div class="col-8 col-sm-9">
+                <div class="message_input_wrapper">
+                    <input type="text" class="message_input form-control" placeholder="Message..." [(ngModel)]="messageInput"
+                           (keyup.enter)="sendMessage(false)" />
+                </div>
+            </div>
+            <div class="col-4 col-sm-3 text-right">
+                <div class="send_message btn btn-primary" (click)="sendMessage(false)">
+                    <div class="text">Send</div>
+                </div>
+            </div>
+        </div>
+        <app-image-upload class="mb-2 shadow-sm" [isShowImg]="false"
+                          (changeFile)="changeFileName($event)" [imageUrl]="imgName"></app-image-upload>
+    </div>
   </div>
 </div>
 

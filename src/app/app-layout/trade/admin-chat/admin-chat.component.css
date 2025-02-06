@@ -106,7 +106,7 @@
   align-items: center;
   padding: 0 10px;
   cursor: pointer;
-  background-color: #007bff; /* Màu nền cho nút gửi */
+  background-color: #134a86; /* Màu nền cho nút gửi */
   color: white;
   border-radius: 20px; /* Bo tròn cho nút */
   transition: background-color 0.3s;
@@ -154,7 +154,7 @@
 }
 
 .right .text_wrapper {
-  background-color: #007bff; /* Màu nền cho tin nhắn người gửi */
+  background-color: #134a86; /* Màu nền cho tin nhắn người gửi */
   color: white; /* Màu chữ cho người gửi */
   text-align: right; /* Căn phải cho văn bản tin nhắn bên phải */
 }

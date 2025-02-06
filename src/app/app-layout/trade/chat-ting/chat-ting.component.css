@@ -40,7 +40,7 @@
   background: #555;
 }
 .top_menu {
-  background: #007bff;
+  background: #134a86;
   color: white;
   display: flex;
   align-items: center;
@@ -100,26 +100,27 @@
   margin-bottom: 2px; /* Thêm khoảng cách dưới */
 }
 .bottom_wrapper {
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  border-top: 1px solid #ddd;
+  padding: 10px; /* Thêm khoảng cách xung quanh để đảm bảo mọi thứ không chèn lên nhau */
 }
 
 .message_input_wrapper {
-  flex: 1;
+  width: 100%; /* Bảo đảm chiếm 100% chiều rộng của cột */
 }
 
 .message_input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 20px;
+  width: 100%; /* Bảo đảm ô nhập chiếm toàn bộ chiều rộng */
+  padding: 10px; /* Thêm khoảng cách bên trong */
 }
 
 .send_message {
   display: flex;
   align-items: center;
-  padding: 0 10px;
   cursor: pointer;
+  padding: 10px; /* Thêm khoảng cách để dễ nhấn */
+}
+
+@media (max-width: 576px) { /* Đối với các màn hình nhỏ */
+  .bottom_wrapper {
+      margin-bottom: 20px; /* Thêm khoảng cách dưới cùng */
+  }
 }

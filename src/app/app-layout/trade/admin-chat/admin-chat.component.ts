@@ -67,11 +67,14 @@ export class AdminChatComponent implements OnInit, OnChanges  {
   }
   ngOnInit(): void {
 
+    if(AuthDetail.getLoginedInfo()?.role != 'admin'){
+      window.location.href = '/login'
+    }
+
     this.messageStore.dispatch(getMessageBoxAction({page:100}));
 
     this.infoMessages$.subscribe(res=>{
         this.infoMessages = res;
-
     })
 
   }
