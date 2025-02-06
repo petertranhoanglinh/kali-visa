@@ -3,5 +3,6 @@ export interface ChatMessage{
     user:string,
     image:any,
     flag:boolean,
+    message_side:string;
 
 }

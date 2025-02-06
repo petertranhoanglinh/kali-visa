@@ -11,7 +11,7 @@
               Chat with admin
           </div>
       </div>
-      <ul class="messages" #messages>
+      <ul class="messages"  #messages style="height: 400px; overflow-y: auto;" >
           <li class="message" *ngFor="let item of messageList"
               [ngClass]="{'left': item.message_side === 'receiver', 'right': item.message_side === 'sender'}">
               <div class="avatar"></div>

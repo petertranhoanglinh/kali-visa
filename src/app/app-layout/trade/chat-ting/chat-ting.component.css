@@ -5,8 +5,33 @@
   overflow: hidden;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+.messages {
+  height: 400px; /* Fixed height */
+  overflow-y: auto; /* Enable vertical scrolling */
+  border: 1px solid #ccc; /* Optional border */
+  padding: 10px; /* Optional padding */
 }
 
+/* Tùy chọn: Thêm style cho thanh scroll */
+.messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messages::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.messages::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.messages::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
 .top_menu {
   background: #007bff;
   color: white;

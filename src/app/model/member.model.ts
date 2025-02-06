@@ -1,7 +1,7 @@
 export interface MemberModel{
     id:String ;
     password:String ;
-    userName: String ;
+    username: String ;
     address:String;
     menuCd: String ;
     photo:String ;

@@ -16,6 +16,8 @@ import { TestPriceComponent } from './test-price/test-price.component';
 import { SettingTradeComponent } from './setting-trade/setting-trade.component';
 import { ComponentsModule } from 'src/app/components/components.module';
 import { AdminChatComponent } from './admin-chat/admin-chat.component';
+import { messageFeatureKey, messageReducer } from 'src/app/reducers/message.reducer';
+import { MessageEffect } from 'src/app/effects/message.effect';
 @NgModule({
   declarations: [
     TradingComponent,
@@ -33,6 +35,9 @@ import { AdminChatComponent } from './admin-chat/admin-chat.component';
     ComponentsModule,
     StoreModule.forFeature(coinFeatureKey,coinReducer),
     EffectsModule.forFeature([CoinEffect]),
+
+    StoreModule.forFeature(messageFeatureKey,messageReducer),
+    EffectsModule.forFeature([MessageEffect]),
   ]
 })
 export class TradeModule { }

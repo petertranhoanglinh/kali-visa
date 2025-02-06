@@ -77,3 +77,119 @@
 .message-input button:hover {
   background-color: #0056b3;
 }
+/* Chat Window Styles */
+.chat_window {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+.messages {
+  height: 400px; /* Fixed height */
+  overflow-y: auto; /* Enable vertical scrolling */
+  border: 1px solid #ccc; /* Optional border */
+  padding: 10px; /* Optional padding */
+}
+
+/* Tùy chọn: Thêm style cho thanh scroll */
+.messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messages::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.messages::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.messages::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+.top_menu {
+  background: #007bff;
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.buttons {
+  margin-right: auto;
+}
+
+.button {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #fff;
+  margin-right: 5px;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+}
+
+.messages {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+  height: 300px;
+  overflow-y: auto;
+}
+
+.message {
+  display: flex;
+  margin: 10px;
+}
+
+.left {
+  justify-content: flex-start;
+}
+
+.right {
+  justify-content: flex-end;
+}
+
+.text_wrapper {
+  max-width: 70%;
+  padding: 10px;
+  border-radius: 10px;
+  margin: 5px;
+  background: #f1f1f1;
+}
+
+.text_wrapper .name {
+  font-weight: bold;
+}
+
+.bottom_wrapper {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+}
+
+.message_input_wrapper {
+  flex: 1;
+}
+
+.message_input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+}
+
+.send_message {
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  cursor: pointer;
+}

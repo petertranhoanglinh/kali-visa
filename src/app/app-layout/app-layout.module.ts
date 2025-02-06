@@ -24,6 +24,8 @@ import { NgChartsModule } from 'ng2-charts';
 import { QRCodeModule } from 'angularx-qrcode';
 import { WeddingComponent } from '../wedding/wedding.component';
 import { PageHeadingComponent } from './page-heading/page-heading.component';
+import { messageFeatureKey, messageReducer } from '../reducers/message.reducer';
+import { MessageEffect } from '../effects/message.effect';
 @NgModule({
   declarations: [
     HeaderComponent,
@@ -51,7 +53,9 @@ import { PageHeadingComponent } from './page-heading/page-heading.component';
     StoreModule.forFeature(headerFeatureKey, headerReducer),
 
     StoreModule.forFeature(coinFeatureKey,coinReducer),
-    EffectsModule.forFeature([CoinEffect])
+    EffectsModule.forFeature([CoinEffect]),
+     StoreModule.forFeature(messageFeatureKey,messageReducer),
+        EffectsModule.forFeature([MessageEffect]),
   ]
 })
 export class AppLayoutModule { }
