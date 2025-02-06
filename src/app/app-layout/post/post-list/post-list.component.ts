@@ -21,7 +21,7 @@ export class PostListComponent implements OnInit {
   blogs$ = new Observable<BlogResponseModel>();
   role = String(AuthDetail.getLoginedInfo()?.role)
   page = 0;
-  len  = 8;
+  len  = 10;
   total = 0;
 
   constructor(private blogStore : Store<BlogState> , private toastr: ToastrService ) {

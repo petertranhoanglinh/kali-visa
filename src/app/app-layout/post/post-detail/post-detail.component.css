@@ -14,11 +14,7 @@
   color: #777;
 }
 
-.product-description {
-  margin-top: 20px;
-  font-size: 1rem;
-  line-height: 1.5;
-}
+
 
 .comments, .reply {
   margin-top: 40px;
@@ -50,9 +46,7 @@
     font-size: 1.5rem;
   }
 
-  .product-description {
-    font-size: 0.9rem;
-  }
+
 
   .btn-outline-primary {
     width: 100%;

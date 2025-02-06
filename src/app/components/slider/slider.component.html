@@ -1,26 +1,26 @@
 <div class="mainVisual position-relative mb-5">
-  <div class="swiper-container">
-    <div class="swiper reviewSwiper">
-      <div class="swiper-wrapper">
-        <ng-container *ngFor="let item of brands">
-          <div class="swiper-slide">
-            <div class="slider-content">
-              <img [src]="item.img" [alt]="item.alt" class="slide-img">
-              <div class="overlay"></div>
-              <div class="text-content">
-                <h1 class="slide-title">{{item.title}}</h1>
-                <p class="slide-description">{{item.description}}</p>
-                <a class="slide-button"  [href]="item.linkInfo" >Xem chi tiết</a>
-              </div>
+  <div class="swiper reviewSwiper">
+    <div class="swiper-wrapper">
+      <ng-container *ngFor="let item of brands">
+        <div class="swiper-slide">
+          <div class="slider-content position-relative">
+            <img [src]="item.img" [alt]="item.alt" class="slide-img" />
+            <div class="overlay"></div>
+            <div class="text-content">
+              <h1 class="slide-title">{{ item.title }}</h1>
+              <p class="slide-description">{{ item.description }}</p>
+              <a class="slide-button btn btn-primary" [href]="item.linkInfo">{{ item.buttonText }}</a>
             </div>
           </div>
-        </ng-container>
-      </div>
-      <!-- Navigation buttons -->
-      <div class="swiper-button-next"></div>
-      <div class="swiper-button-prev"></div>
-      <!-- Pagination -->
-      <div class="swiper-pagination"></div>
+        </div>
+      </ng-container>
     </div>
+
+    <!-- Navigation buttons -->
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+
+    <!-- Pagination -->
+    <div class="swiper-pagination"></div>
   </div>
 </div>

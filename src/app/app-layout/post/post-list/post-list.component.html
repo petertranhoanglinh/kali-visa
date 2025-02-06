@@ -1,19 +1,19 @@
-<div class="row g-4">
-  <div data-wow-delay="0.1s" class="col-lg-6 col-xl-3 wow fadeInUp" *ngFor="let blog of blogs">
-    <div class="training-item">
-      <div class="training-inner">
-        <a [routerLink]="['/blog/blog-detail', blog.id]">
-          <img src="assets/images/travel/training-1.jpg" alt="Blog Image" class="img-fluid w-100 rounded" style="height: 150px; object-fit: cover;">
-        </a>
-        <div class="training-title-name p-2">
-          <a [routerLink]="['/blog/blog-detail', blog.id]" class="h5 text-white mb-0">{{blog.title}}</a>
-        </div>
-      </div>
-      <div class="training-content bg-secondary rounded-bottom p-3">
-        <p class="text-white-50 mb-2" style="font-size: 0.875rem; line-height: 1.2; height: 3.6em; overflow: hidden;">{{blog.description}}</p>
-      </div>
+<div class="container mt-5">
+  <div class="row g-4">
+    <div class="col-12 mb-5">
+      <ul class="list-unstyled">
+        <li *ngFor="let blog of blogs" class="mb-4 wow fadeInUp" data-wow-delay="0.1s">
+          <div class="training-item d-flex align-items-start border p-3 rounded bg-light">
+            <div class="ms-3">
+              <div class="training-title-name">
+                <a [routerLink]="['/blog/blog-detail', blog.id]" class="h5 text-dark text-decoration-none">{{ blog.title }}</a>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
     </div>
-  </div>
 
-  <app-paging (handelChangePage)="handlePageEvent($event)" [pageSize]="len" [length]="total"></app-paging>
+    <app-paging  class="mb-2" (handelChangePage)="handlePageEvent($event)" [pageSize]="len" [length]="total"></app-paging>
+  </div>
 </div>

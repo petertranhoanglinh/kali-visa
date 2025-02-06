@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { SwiperService } from 'src/app/service/swiper.service';
 
 @Component({
@@ -6,23 +6,8 @@ import { SwiperService } from 'src/app/service/swiper.service';
   templateUrl: './slider.component.html',
   styleUrls: ['./slider.component.css']
 })
-export class SliderComponent   implements OnInit  {
-
-    constructor(
-      private _swiperService: SwiperService ) {
-    }
-  ngOnInit(): void {
-    setTimeout(() => {
-      this._swiperService.createSwiper(
-        'reviewSwiper',
-        this.swiperConfig
-      );
-    }, 1000);
-  }
-
-
-
-  brands = [
+export class SliderComponent implements AfterViewInit {
+  public brands = [
     {
       img: 'assets/images/travel/carousel-1.jpg',
       alt: 'Visa Du Lịch Châu Âu',
@@ -39,45 +24,36 @@ export class SliderComponent   implements OnInit  {
       description: 'Khám phá những thành phố sôi động và cảnh quan thiên nhiên hùng vĩ tại Mỹ.',
       buttonText: 'Tìm hiểu thêm'
     },
-    {
-      img: 'assets/images/travel/country-3.jpg',
-      alt: 'Visa Du Lịch Nhật Bản',
-      title: 'Visa Du Lịch Nhật Bản',
-      linkInfo: '/blog/blog-detail/67a0443015554b66d66bd296',
-      description: 'Trải nghiệm văn hóa truyền thống và hiện đại tại đất nước mặt trời mọc.',
-      buttonText: 'Xem chi tiết'
-    }
   ];
 
-  swiperConfig = {
-    loop: true, // Lặp lại slider
+  public swiperConfig = {
+    loop: true,
     navigation: {
       nextEl: '.swiper-button-next',
       prevEl: '.swiper-button-prev',
     },
     pagination: {
       el: '.swiper-pagination',
-      clickable: true, // Cho phép click vào pagination để chuyển slide
-      type: 'bullets', // Hiển thị dạng chấm
-      dynamicBullets: true, // Chấm pagination co giãn khi hover
+      clickable: true,
+      type: 'bullets',
+      dynamicBullets: true,
     },
-    slidesPerView: 1, // Hiển thị 1 slide tại một thời điểm
-    effect: 'fade', // Hiệu ứng fade giữa các slide
-    speed: 1000, // Tốc độ chuyển slide (1 giây)
+    slidesPerView: 1,
+    effect: 'fade',
+    speed: 1000,
     autoplay: {
-      delay: 5000, // Tự động chuyển slide sau 5 giây
-      disableOnInteraction: false, // Tiếp tục autoplay sau khi tương tác
-      pauseOnMouseEnter: true, // Tạm dừng autoplay khi hover
+      delay: 5000,
+      disableOnInteraction: false,
+      pauseOnMouseEnter: true,
     },
     keyboard: {
-      enabled: true, // Cho phép điều khiển slider bằng bàn phím
+      enabled: true,
     },
-    grabCursor: true, // Hiển thị con trỏ grab khi hover
+    grabCursor: true,
     fadeEffect: {
-      crossFade: true, // Hiệu ứng fade mượt mà
+      crossFade: true,
     },
     breakpoints: {
-      // Tùy chỉnh số slide hiển thị trên các kích thước màn hình khác nhau
       768: {
         slidesPerView: 1,
       },
@@ -87,4 +63,9 @@ export class SliderComponent   implements OnInit  {
     },
   };
 
+  constructor(private _swiperService: SwiperService) { }
+
+  ngAfterViewInit(): void {
+    this._swiperService.createSwiper('reviewSwiper', this.swiperConfig);
+  }
 }
