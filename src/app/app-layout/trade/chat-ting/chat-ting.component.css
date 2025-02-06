@@ -9,11 +9,18 @@
   flex-direction: column;
 }
 .messages {
-  height: 400px; /* Fixed height */
-  overflow-y: auto; /* Enable vertical scrolling */
-  border: 1px solid #ccc; /* Optional border */
-  padding: 10px; /* Optional padding */
+  overflow-y: auto; /* Cho phép cuộn dọc */
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+  border: 1px solid #ccc; /* Biên (nếu cần) */
+  max-height: 600px; /* Giảm chiều cao tối đa để ngăn chặn quá trình tải tin nhắn quá nhiều */
+  overflow-x: hidden; /* Ẩn cuộn ngang */
+  padding-bottom: 10px; /* Thêm padding dưới để ngăn chặn hiện tượng cuộn */
+  margin-top: 20px;
 }
+
+
 
 /* Tùy chọn: Thêm style cho thanh scroll */
 .messages::-webkit-scrollbar {
@@ -87,9 +94,11 @@
 }
 
 .text_wrapper .name {
-  font-weight: bold;
+  font-weight: bold; /* Giữ chữ đậm */
+  font-size: 0.6rem; /* Kích thước chữ nhỏ hơn */
+  color: #333; /* Màu chữ tốt hơn */
+  margin-bottom: 2px; /* Thêm khoảng cách dưới */
 }
-
 .bottom_wrapper {
   display: flex;
   align-items: center;

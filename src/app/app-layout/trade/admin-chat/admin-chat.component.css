@@ -4,12 +4,14 @@
   height: 500px;
   border: 1px solid #ccc;
   font-family: Arial, sans-serif;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1); /* Thêm độ bóng tổng thể */
 }
 
 .user-list {
   width: 30%;
   border-right: 1px solid #ccc;
   overflow-y: auto;
+  background-color: #f7f7f7; /* Nền sáng cho danh sách người dùng */
 }
 
 .user-item {
@@ -17,11 +19,11 @@
   align-items: center;
   padding: 10px;
   cursor: pointer;
-  border-bottom: 1px solid #eee;
+  transition: background-color 0.3s;
 }
 
 .user-item:hover {
-  background-color: #f5f5f5;
+  background-color: #eaeaea; /* Màu nền khi hover */
 }
 
 .user-item img {
@@ -40,7 +42,8 @@
 .message-header {
   padding: 10px;
   border-bottom: 1px solid #ccc;
-  background-color: #f9f9f9;
+  background-color: #007bff; /* Màu nền cho đầu tin nhắn */
+  color: white; /* Màu chữ sáng hơn */
 }
 
 .message-content {
@@ -48,125 +51,33 @@
   padding: 10px;
   overflow-y: auto;
   background-color: #fff;
-}
-
-.message-input {
-  display: flex;
-  padding: 10px;
-  border-top: 1px solid #ccc;
-  background-color: #f9f9f9;
-}
-
-.message-input input {
-  flex-grow: 1;
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-}
-
-.message-input button {
-  margin-left: 10px;
-  padding: 5px 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-}
-
-.message-input button:hover {
-  background-color: #0056b3;
-}
-/* Chat Window Styles */
-.chat_window {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  overflow: hidden;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  background: #fff;
-  display: flex;
-  flex-direction: column;
-}
-.messages {
-  height: 400px; /* Fixed height */
-  overflow-y: auto; /* Enable vertical scrolling */
-  border: 1px solid #ccc; /* Optional border */
-  padding: 10px; /* Optional padding */
-}
-
-/* Tùy chọn: Thêm style cho thanh scroll */
-.messages::-webkit-scrollbar {
-  width: 6px;
-}
-
-.messages::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-.messages::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 3px;
-}
-
-.messages::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
-.top_menu {
-  background: #007bff;
-  color: white;
-  display: flex;
-  align-items: center;
-  padding: 10px;
-}
-
-.buttons {
-  margin-right: auto;
-}
-
-.button {
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  background: #fff;
-  margin-right: 5px;
-}
-
-.title {
-  display: flex;
-  align-items: center;
+  position: relative; /* Để dễ dàng quản lý vị trí của thành phần bên trong */
 }
 
 .messages {
   list-style: none;
   padding: 0;
-  margin: 10px 0;
-  height: 300px;
-  overflow-y: auto;
+  margin: 0; /* Giảm bớt khoảng cách ngoài */
+  height: 100%; /* Đảm bảo chiều cao tối đa cho danh sách */
+  overflow-y: auto; /* Bỏ thuộc tính sau */
 }
 
-.message {
-  display: flex;
-  margin: 10px;
+/* Tùy chỉnh thanh cuộn tốt hơn */
+.messages::-webkit-scrollbar {
+  width: 8px;
 }
 
-.left {
-  justify-content: flex-start;
+.messages::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Nền thanh cuộn */
 }
 
-.right {
-  justify-content: flex-end;
+.messages::-webkit-scrollbar-thumb {
+  background: #888; /* Màu của thanh cuộn */
+  border-radius: 4px;
 }
 
-.text_wrapper {
-  max-width: 70%;
-  padding: 10px;
-  border-radius: 10px;
-  margin: 5px;
-  background: #f1f1f1;
-}
-
-.text_wrapper .name {
-  font-weight: bold;
+.messages::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Màu khi hover */
 }
 
 .bottom_wrapper {
@@ -174,6 +85,7 @@
   align-items: center;
   padding: 10px;
   border-top: 1px solid #ddd;
+  background-color: #f9f9f9; /* Nền sáng */
 }
 
 .message_input_wrapper {
@@ -184,7 +96,9 @@
   width: 100%;
   padding: 10px;
   border: 1px solid #ddd;
-  border-radius: 20px;
+  border-radius: 20px; /* Bo tròn cho input */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Độ bóng cho input */
+  margin-right: 10px; /* Khoảng cách bên phải */
 }
 
 .send_message {
@@ -192,4 +106,55 @@
   align-items: center;
   padding: 0 10px;
   cursor: pointer;
+  background-color: #007bff; /* Màu nền cho nút gửi */
+  color: white;
+  border-radius: 20px; /* Bo tròn cho nút */
+  transition: background-color 0.3s;
+}
+
+.send_message:hover {
+  background-color: #0056b3; /* Màu khi hover */
+}
+
+/* Styles for messages */
+.text_wrapper {
+  max-width: 70%; /* Giới hạn chiều rộng tối đa */
+  padding: 10px;
+  border-radius: 10px;
+  margin: 5px;
+  background: #f1f1f1; /* Nền cho tin nhắn */
+}
+
+.text_wrapper .name {
+  font-weight: bold;
+  font-size: 0.9rem; /* Kích thước chữ cho tên người dùng */
+  color: #333; /* Tông màu tối hơn cho tên */
+}
+
+.message {
+  display: flex;
+  margin: 10px 0; /* Tăng khoảng cách giữa các tin nhắn */
+}
+
+.left {
+  justify-content: flex-start; /* Tin nhắn bên trái */
+}
+
+.right {
+  justify-content: flex-end; /* Tin nhắn bên phải */
+}
+
+.text_wrapper {
+  max-width: 70%; /* Giới hạn chiều rộng tối đa */
+  padding: 10px; /* Khoảng padding cho tin nhắn */
+  border-radius: 10px; /* Bo tròn các góc */
+  margin: 5px; /* Khoảng cách giữa tin nhắn */
+  background: #f1f1f1; /* Màu nền cho tin nhắn */
+  text-align: left; /* Căn trái cho văn bản */
+}
+
+.right .text_wrapper {
+  background-color: #007bff; /* Màu nền cho tin nhắn người gửi */
+  color: white; /* Màu chữ cho người gửi */
+  text-align: right; /* Căn phải cho văn bản tin nhắn bên phải */
 }

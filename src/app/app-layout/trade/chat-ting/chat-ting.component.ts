@@ -72,7 +72,7 @@ export class ChatTingComponent implements OnInit, OnChanges  {
     setTimeout(() => {
       this.initChatting();
       this.overlayLoadingStore.dispatch(setShowOverlayLoading({ loading: false }));
-    }, 2000);
+    }, 2500);
   }
 
 
