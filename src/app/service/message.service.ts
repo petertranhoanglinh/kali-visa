@@ -25,6 +25,13 @@ export class MessageService {
     });
   }
 
+  getMessageBox(page:number) : Observable<MessageModel[]>{
+    const header :  HttpHeaders  = AuthDetail.getHeaderJwt();
+    return this._http.get<MessageModel[]>(environment.apiUrl+`/api/messages/users/lasted`, {
+      headers:header
+    });
+  }
+
 
   saveMessage(params:string) : Observable<MessageModel>{
     const header :  HttpHeaders  = AuthDetail.getHeaderJwt();

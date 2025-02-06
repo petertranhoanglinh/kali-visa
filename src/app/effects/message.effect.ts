@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 import { CoinService } from '../service/coin.service';
 import { getAccountInfoAction, getAccountInfoActionSuscess, getAccountInfoActionFail, getTestConnectAction, getTestConnectActionSuscess, addKeyAction, addKeyActionSuscess, addKeyActionFail, getListCoin, getListCoinSuscess, getListCoinFail } from '../actions/coin.action';
 import { MessageService } from '../service/message.service';
-import { getMessageByUserAction, getMessageByUserActionFail, getMessageByUserActionSuscess, saveMessageAction, saveMessageActionFail, saveMessageActionSuscess } from '../actions/message.action';
+import { getMessageBoxAction, getMessageBoxActionFail, getMessageBoxActionSuscess, getMessageByUserAction, getMessageByUserActionFail, getMessageByUserActionSuscess, saveMessageAction, saveMessageActionFail, saveMessageActionSuscess } from '../actions/message.action';
 
 
 
@@ -31,6 +31,14 @@ export class MessageEffect {
     mergeMap((action) => this.messageService.saveMessage(action.params).pipe(
       map(res => saveMessageActionSuscess({item:res})),
       catchError(msg => of(saveMessageActionFail({ msg: msg })))
+    ))
+  ));
+
+  getMessageBox$ = createEffect(() => this._actions$.pipe(
+    ofType(getMessageBoxAction),
+    mergeMap((action) => this.messageService.getMessageBox(action.page).pipe(
+      map(res => getMessageBoxActionSuscess({items:res})),
+      catchError(msg => of(getMessageBoxActionFail({ msg: msg })))
     ))
   ));
 

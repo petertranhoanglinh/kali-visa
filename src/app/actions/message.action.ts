@@ -35,6 +35,20 @@ export const saveMessageActionFail = createAction(
 );
 
 
+export const getMessageBoxAction = createAction(
+  "[GET API] getMessageBoxAction",
+  props<{ page:number}>()
+);
+
+export const getMessageBoxActionSuscess = createAction(
+    "[GET API]  getMessageBoxAction Suscesss",
+    props<{ items: MessageModel [] }>()
+);
+
+export const getMessageBoxActionFail = createAction(
+    "[GET API] getMessageBoxAction Fail",
+    props<{ msg: any }>()
+);
 
 
 

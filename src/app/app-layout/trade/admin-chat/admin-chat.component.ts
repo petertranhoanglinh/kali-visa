@@ -1,11 +1,11 @@
-import { getMessageByUserid, MessageState } from './../../../selectors/message.selector';
+import { getMessageBox, getMessageByUserid, MessageState } from './../../../selectors/message.selector';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, HostListener, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
-import { getMessageByUserAction, saveMessageAction } from 'src/app/actions/message.action';
+import { getMessageBoxAction, getMessageByUserAction, saveMessageAction } from 'src/app/actions/message.action';
 import { setShowOverlayLoading } from 'src/app/actions/overlay-loading.action';
 import { AuthDetail } from 'src/app/common/util/auth-detail';
 import { CommonUtils } from 'src/app/common/util/common-utils';
@@ -43,11 +43,8 @@ export class AdminChatComponent implements OnInit, OnChanges  {
 
   messageDB$ = new Observable<MessageModel[]>();
   infoMessages : MessageModel[]  = [] ;
-  infoMessage = {
-    id : "",
-    userId : "6710dd73575ff46e2bce8ef0",
-    userName : "Tran Linh"
-  } as MessageModel ;
+  infoMessages$ =  new Observable<MessageModel[]>();
+  infoMessage = {} as MessageModel ;
   page = 0;
 
 
@@ -64,10 +61,18 @@ export class AdminChatComponent implements OnInit, OnChanges  {
     , private messageStore: Store<MessageState>
   ) {
     this.messageDB$ = this.messageStore.select(getMessageByUserid)
-  }
+    this.infoMessages$ = this.messageStore.select(getMessageBox)
+   }
   ngOnChanges(changes: SimpleChanges): void {
   }
   ngOnInit(): void {
+
+    this.messageStore.dispatch(getMessageBoxAction({page:100}));
+
+    this.infoMessages$.subscribe(res=>{
+        this.infoMessages = res;
+
+    })
 
   }
 
@@ -250,7 +255,8 @@ export class AdminChatComponent implements OnInit, OnChanges  {
     }).reverse();;
   }
 
-  clickInfoUser(){
+  clickInfoUser(item:MessageModel){
+    this.infoMessage = item;
     this.lisenerMessage();
     this.overlayLoadingStore.dispatch(setShowOverlayLoading({ loading: true }));
     this.messageStore.dispatch(getMessageByUserAction({ userid: String(this.infoMessage.userId) , page :this.page  }))

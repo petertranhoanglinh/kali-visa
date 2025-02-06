@@ -1,21 +1,19 @@
 <div class="messenger-container mb-4 mt-2">
   <!-- Danh sách người dùng -->
   <div class="user-list">
-      <div class="user-item" data-user-id="1" (click)="clickInfoUser()">
-          <img src="avatar1.jpg" alt="User 1">
-          <span >Người dùng 1</span>
-      </div>
-      <div class="user-item" data-user-id="2">
-          <img src="avatar2.jpg" alt="User 2">
-          <span>Người dùng 2</span>
-      </div>
+    <ng-container *ngFor="let item of infoMessages">
+      <div class="user-item" data-user-id="1" (click)="clickInfoUser(item)">
+        <img src="avatar1.jpg" alt="User 1">
+        <span >{{item.userName}}</span>
+    </div>
+    </ng-container>
       <!-- Thêm nhiều người dùng khác -->
   </div>
 
   <!-- Hộp tin nhắn -->
   <div class="message-box">
       <div class="message-header">
-          <span>Tin nhắn với <span id="current-user">Người dùng 1</span></span>
+          <span>Tin nhắn với <span id="current-user">{{infoMessage.userName}}</span></span>
       </div>
       <ul class="messages"  #messages style="height: 400px; overflow-y: auto;" >
         <li class="message" *ngFor="let item of messageList"

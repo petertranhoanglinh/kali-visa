@@ -6,6 +6,7 @@ import { messageFeatureKey } from '../reducers/message.reducer';
 
 export interface MessageState {
   items: MessageModel[];
+  itemsBox: MessageModel[];
 }
 
 export const getMessageState = createFeatureSelector<MessageState>(messageFeatureKey);
@@ -13,6 +14,11 @@ export const getMessageState = createFeatureSelector<MessageState>(messageFeatur
 export const getMessageByUserid = createSelector(
     getMessageState,
   (state: MessageState) => state.items
+);
+
+export const getMessageBox = createSelector(
+  getMessageState,
+(state: MessageState) => state.itemsBox
 );
 
 
