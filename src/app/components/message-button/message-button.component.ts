@@ -18,4 +18,11 @@ export class MessageButtonComponent {
     }
 
   }
+  openZalo(){
+
+  }
+
+  openFacebook(){
+
+  }
 }

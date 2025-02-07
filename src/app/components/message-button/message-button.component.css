@@ -1,9 +1,8 @@
 .message-button {
   position: fixed; /* Cố định vị trí */
-  bottom: 20px; /* Cách đáy màn hình 20px */
   right: 20px; /* Cách lề phải màn hình 20px */
   z-index: 1000; /* Đảm bảo nút luôn hiển thị trên các phần tử khác */
-  background-color: #007bff; /* Màu nền */
+  background-color: #134a86; /* Màu nền */
   color: white; /* Màu chữ */
   border: none; /* Không viền */
   border-radius: 50%; /* Bo tròn nút */
@@ -15,15 +14,27 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background-color 0.3s ease, transform 0.3s ease; /* Thêm hiệu ứng chuyển đổi */
+}
+
+.chat-button {
+  bottom: 130px; /* Cách đáy màn hình 100px */
+}
+
+.zalo-button {
+  bottom: 70px; /* Cách đáy màn hình 70px */
+}
+
+.facebook-button {
+  bottom: 10px; /* Cách đáy màn hình 20px */
 }
 
 .message-button:hover {
-  background-color: #0056b3; /* Màu nền khi hover */
-}
-.message-button {
-  transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-.message-button:hover {
+  background-color: #008080; /* Màu nền khi hover */
   transform: scale(1.1); /* Phóng to nút khi hover */
+}
+.zalo-button img {
+  width: 30px; /* Kích thước nhỏ hơn */
+  height: 30px; /* Kích thước nhỏ hơn */
+  object-fit: contain; /* Giữ nguyên tỷ lệ kích thước của hình ảnh */
 }

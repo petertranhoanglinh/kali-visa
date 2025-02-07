@@ -7,7 +7,7 @@ import { SwiperService } from 'src/app/service/swiper.service';
   styleUrls: ['./slider.component.css']
 })
 export class SliderComponent implements AfterViewInit {
-  public brands = [
+  public sliders = [
     {
       img: 'assets/images/travel/carousel-1.jpg',
       alt: 'Visa Du Lịch Châu Âu',

@@ -10,7 +10,7 @@ body {
 
 /* Hero Section Styles */
 .hero-section {
-  background: linear-gradient(to right, #007bff, #0056b3);
+  background: linear-gradient(to right, #134a86, #134a86);
   color: #ffffff;
 }
 
@@ -20,7 +20,7 @@ body {
 }
 
 .service-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-15px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 .service-card {
@@ -29,6 +29,27 @@ body {
 .service-card img {
   width: 100%;
   border-radius: 5px;
+}
+
+.service-card {
+  display: grid;
+  grid-template-rows: 1fr;
+  height: 20rem; /* Cỡ chiều cao cố định cho các ô dịch vụ */
+  padding: 2rem;
+}
+
+.icon-box {
+  width: 100%;
+  display: block;
+}
+
+.icon-box i {
+  margin: 0 auto;
+}
+
+/* Điều chỉnh kích thước icon để phù hợp với ô dịch vụ */
+.icon-box i {
+  font-size: 2rem;
 }
 
 .icon-box {
@@ -71,13 +92,13 @@ body {
 
 /* Accordion Styles */
 .accordion-button {
-  background-color: #007bff;
+  background-color: #134a86;
   color: #fff;
   font-weight: 500;
 }
 
 .accordion-button:not(.collapsed) {
-  background-color: #0056b3;
+  background-color: #134a86;
 }
 
 .accordion-body {
@@ -101,4 +122,41 @@ body {
   .hero-section h1 {
       font-size: 2.5rem;
   }
+}
+
+.title{
+  color: white;
+}
+.faq{
+  background-color: #134a86;
+}
+.card {
+  min-height: 400px;  /* Đảm bảo chiều cao tối thiểu cho card */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;      /* Ngăn chặn nội dung tràn ra ngoài */
+  border: 1px solid #ddd; /* Thêm một border để card có vẻ bên ngoài rõ ràng hơn */
+}
+
+.card-body {
+  overflow: hidden;      /* Ngăn chặn nội dung tràn ra ngoài */
+  flex-grow: 1;         /* Để nội dung có thể chiếm không gian tối đa */
+}
+
+.card-text {
+  padding: 10px;        /* Thêm khoảng đệm cho văn bản */
+  margin: 0;            /* Xóa margin mặc định */
+  height: 100px;        /* Tối thiểu chiều cao cho văn bản */
+  overflow: hidden;      /* Ẩn văn bản tràn ra ngoài */
+  text-overflow: ellipsis; /* Thêm dấu hiệu nếu văn bản bị cắt */
+  display: -webkit-box; /* Tạo giới hạn cho chiều cao */
+  -webkit-line-clamp: 4; /* Giới hạn số dòng */
+  -webkit-box-orient: vertical; /* Định hướng theo chiều dọc */
+  line-height: 1.5;     /* Đường kẻ cho các dòng văn bản */
+}
+
+
+.service-card .icon-box{
+  background-color: #134a86 !important;
 }

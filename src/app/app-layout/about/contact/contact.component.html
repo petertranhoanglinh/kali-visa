@@ -1,68 +1,55 @@
-<div class="container">
-  <div class="contact-wrapper">
-      <!-- Contact Information -->
-      <div class="contact-info">
-          <h5 class="section-title">Liên Hệ Nhanh</h5>
-          <h1 class="main-title">Có Câu Hỏi? Đừng Ngần Ngại Liên Hệ Với Chúng Tôi</h1>
+<div class="contact-container mt-5 mb-5">
+  <h1 class="contact-title">Liên Hệ Minh Minh VISA</h1>
+  <div class="contact-content">
+    <h2 class="section-title">Câu Hỏi Của Bạn</h2>
+    <p class="section-description">
+      Chúng tôi luôn sẵn sàng lắng nghe và hỗ trợ bạn. Nếu bạn có bất kỳ câu hỏi nào về dịch vụ visa hoặc cần thêm thông tin, đừng ngần ngại liên hệ với chúng tôi!
+    </p>
 
-          <div class="info-card">
-              <div class="info-content">
-                  <h3>Điện Thoại</h3>
-                  <a href="tel:0938594111">
-                      <i class="fas fa-phone"></i>0938 594 111
-                  </a>
-              </div>
-          </div>
+    <h3 class="section-subtitle">Thông Tin Liên Hệ</h3>
+    <div class="contact-info">
+      <div class="info-card">
+        <i class="fas fa-phone info-icon"></i>
+        <h4 class="info-title">Điện Thoại</h4>
+        <a href="tel:0938594111" class="info-link">0938 594 111</a>
+      </div>
+      <div class="info-card">
+        <i class="fas fa-envelope info-icon"></i>
+        <h4 class="info-title">Email</h4>
+        <a href="mailto:jessie.le@kalivisa.com" class="info-link">jessie.le@kalivisa.com</a>
+      </div>
+      <div class="info-card">
+        <i class="fas fa-comment info-icon"></i>
+        <h4 class="info-title">Nhắn Tin Ngay</h4>
+        <a routerLink="/chat" class="info-link">Ngay tại đây</a>
+      </div>
+    </div>
 
-          <div class="info-card">
-              <div class="info-content">
-                  <h3>Email</h3>
-                  <a href="mailto:jessie.le@kalivisa.com">
-                      <i class="fas fa-envelope"></i>jessie.le@kalivisa.com
-                  </a>
-              </div>
-          </div>
-
-          <div class="info-card">
-            <div class="info-content">
-                <h3>Nhắn tin ngay với admin (Vui lòng đăng nhập)</h3>
-                <a routerLink="/chat">
-                    <i class="fas fa-comment"></i>Ngay tại đây
-                </a>
-            </div>
-          </div>
+    <h3 class="section-subtitle">Gửi Tin Nhắn của Bạn</h3>
+    <form class="contact-form">
+      <div class="form-row">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Tên của bạn" required>
+        </div>
+        <div class="form-group">
+          <input type="email" class="form-control" placeholder="Email của bạn" required>
+        </div>
       </div>
 
-      <!-- Contact Form -->
-      <div class="contact-form">
-          <h5 class="section-title">Hãy Kết Nối</h5>
-          <h2 class="main-title">Gửi Tin Nhắn Của Bạn</h2>
-
-          <form>
-              <div class="form-row">
-                  <div class="form-group">
-                      <input type="text" class="form-control" placeholder="Tên của bạn">
-                  </div>
-                  <div class="form-group">
-                      <input type="email" class="form-control" placeholder="Email của bạn">
-                  </div>
-              </div>
-
-              <div class="form-row">
-                  <div class="form-group">
-                      <input type="tel" class="form-control" placeholder="Số điện thoại">
-                  </div>
-                  <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Chủ đề của bạn">
-                  </div>
-              </div>
-
-              <div class="form-group">
-                  <textarea class="form-control" placeholder="Tin nhắn của bạn"></textarea>
-              </div>
-
-              <button type="submit" class="submit-btn">Gửi Tin Nhắn</button>
-          </form>
+      <div class="form-row">
+        <div class="form-group">
+          <input type="tel" class="form-control" placeholder="Số điện thoại">
+        </div>
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Chủ đề của bạn">
+        </div>
       </div>
+
+      <div class="form-group">
+        <textarea class="form-control" placeholder="Tin nhắn của bạn" rows="5" required></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn mt-2">Gửi Tin Nhắn</button>
+    </form>
   </div>
 </div>

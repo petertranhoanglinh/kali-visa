@@ -1,26 +1,20 @@
 <div class="mainVisual position-relative mb-5">
   <div class="swiper reviewSwiper">
     <div class="swiper-wrapper">
-      <ng-container *ngFor="let item of brands">
+      <ng-container *ngFor="let item of sliders">
         <div class="swiper-slide">
           <div class="slider-content position-relative">
             <img [src]="item.img" [alt]="item.alt" class="slide-img" />
             <div class="overlay"></div>
             <div class="text-content">
-              <h1 class="slide-title">{{ item.title }}</h1>
-              <p class="slide-description">{{ item.description }}</p>
+              <h1 class="display-3 fw-bold mb-4" style="color: white;">{{ item.title }}</h1>
+              <p class="slider-description">{{ item.description }}</p>
               <a class="slide-button btn btn-primary" [href]="item.linkInfo">{{ item.buttonText }}</a>
             </div>
           </div>
         </div>
       </ng-container>
     </div>
-
-    <!-- Navigation buttons -->
-    <div class="swiper-button-next"></div>
-    <div class="swiper-button-prev"></div>
-
-    <!-- Pagination -->
     <div class="swiper-pagination"></div>
   </div>
 </div>
