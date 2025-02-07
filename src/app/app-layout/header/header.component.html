@@ -1,27 +1,12 @@
-<!-- Topbar Start -->
 <div class="container-fluid bg-primary px-5 d-none d-lg-block">
   <div class="row gx-0 align-items-center">
-    <div class="col-lg-5 text-center text-lg-start mb-lg-0">
+    <div class="col-lg-6 text-center text-lg-start mb-lg-0">
       <div class="d-flex">
         <a href="#" class="text-muted me-4"><i class="fas fa-envelope text-secondary me-2"></i>jessie.le@kalivisa.com</a>
         <a href="#" class="text-muted me-0"><i class="fas fa-phone-alt text-secondary me-2"></i>0938594111</a>
       </div>
     </div>
-    <div class="col-lg-3 row-cols-1 text-center mb-2 mb-lg-0">
-      <div class="d-inline-flex align-items-center" style="height: 45px;">
-        <a class="btn btn-sm btn-outline-light btn-square rounded-circle me-2" href=""><i
-            class="fab fa-twitter fw-normal text-secondary"></i></a>
-        <a class="btn btn-sm btn-outline-light btn-square rounded-circle me-2" href="https://www.facebook.com/profile.php?id=61555422686184"><i
-            class="fab fa-facebook-f fw-normal text-secondary"></i></a>
-        <a class="btn btn-sm btn-outline-light btn-square rounded-circle me-2" href=""><i
-            class="fab fa-linkedin-in fw-normal text-secondary"></i></a>
-        <a class="btn btn-sm btn-outline-light btn-square rounded-circle me-2" href=""><i
-            class="fab fa-instagram fw-normal text-secondary"></i></a>
-        <a class="btn btn-sm btn-outline-light btn-square rounded-circle" href=""><i
-            class="fab fa-youtube fw-normal text-secondary"></i></a>
-      </div>
-    </div>
-    <div class="col-lg-4 text-center text-lg-end">
+    <div class="col-lg-6 text-center text-lg-end">
       <div class="d-inline-flex align-items-center" style="height: 45px;">
         <a href="#" class="text-muted me-2"routerLink="/login" *ngIf="!isLogin"> Login</a><small> </small>
         <a href="#" class="text-muted me-2" (click) = "logOut()" *ngIf="isLogin"> Logout</a><small> </small>
@@ -29,45 +14,34 @@
     </div>
   </div>
 </div>
-<!-- Topbar End -->
-
-<!-- Navbar & Hero Start -->
 <div class="container-fluid nav-bar p-0">
   <nav class="navbar navbar-expand-lg navbar-light bg-white px-4 px-lg-5 py-3 py-lg-0">
     <a routerLink="/" class="navbar-brand p-0" style="background-color: #134a86;">
       <h1 class="display-5 text-secondary m-0"><img src="../../../assets/images/logo.png" class="img-fluid" alt="">MINH MINH VISA</h1>
     </a>
-    <!-- Mobile Menu Toggler -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
       (click)="openMobileMenu()">
       <span class="fa fa-bars"></span>
     </button>
-    <!-- Navbar Content -->
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <div class="navbar-nav ms-auto py-0">
         <ng-container *ngFor="let menu of menus">
           <ng-container *ngIf="menu.kind != 'mt'">
-            <!-- Nếu menu không có cấp con -->
             <div *ngIf="!menu.items?.length; else dropdownMenu">
               <a [routerLink]="menu.route ? [menu.route] : []" class="nav-item nav-link" (click)="onMenuClick(menu)">
                 {{ menu.label }}
               </a>
             </div>
-
-            <!-- Nếu menu có cấp con -->
             <ng-template #dropdownMenu>
               <div class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" (click)="preventDefault($event)">
                   {{ menu.label }}
                 </a>
                 <div class="dropdown-menu m-0">
-                  <!-- Lặp qua các mục cấp 2 -->
                   <ng-container *ngFor="let item of menu.items">
                     <a [routerLink]="item.route ? [item.route] : []" class="dropdown-item" (click)="onMenuClick(item)">
                       {{ item.label }}
                     </a>
-
-                    <!-- Nếu mục cấp 2 có cấp con (cấp 3) -->
                     <div *ngIf="item.items?.length" class="dropdown-submenu">
                       <a *ngFor="let subItem of item.items" [routerLink]="subItem.route ? [subItem.route] : []"
                         class="dropdown-item" (click)="onMenuClick(subItem)">
@@ -84,30 +58,23 @@
     </div>
   </nav>
 </div>
-<!-- Navbar & Hero End -->
-
-<!-- Mobile Menu -->
-<div class="mobile-menu-overlay"></div><!-- End .mobile-menu-overlay -->
+<div class="mobile-menu-overlay"></div>
 <div class="mobile-menu-container mobile-menu-light">
   <div class="mobile-menu-wrapper">
 
     <span class="mobile-menu-close" (click)="closeMobileMenu()">
-      <i class="fas fa-times"></i> <!-- Icon Close từ FontAwesome -->
+      <i class="fas fa-times"></i>
     </span>
-
-    <!-- Mobile Menu Tabs -->
     <ul class="nav nav-pills-mobile nav-border-anim" role="tablist">
       <li class="nav-item" *ngIf="!isLogin">
         <a class="nav-link" [routerLink]="['/login']">
-          <i class="fas fa-sign-in-alt"></i> <!-- Icon Login -->
+          <i class="fas fa-sign-in-alt"></i>
           <span>Login</span>
         </a>
       </li>
-
-      <!-- Icon Logout -->
       <li class="nav-item" *ngIf="isLogin">
         <a class="nav-link" (click)="logOut()">
-          <i class="fas fa-sign-out-alt"></i> <!-- Icon Logout -->
+          <i class="fas fa-sign-out-alt"></i>
           <span>Logout</span>
         </a>
       </li>
@@ -124,20 +91,11 @@
                   <a [routerLink]="menu.route ? [menu.route] : []" class="sf-with-ul" (click)="toggleMenu(menuItem ,menu)">
                     {{ menu.label }}
                   </a>
-                  <!-- Hiển thị cấp 2 -->
                   <ul *ngIf="menu.items?.length">
                     <li *ngFor="let item of menu.items" #subMenuItem>
                       <a [routerLink]="item.route ? [item.route] : []" class="sf-with-ul" (click)="onMenuClick(item)">
                         {{ item.label }}
                       </a>
-                      <!-- Hiển thị cấp 3 -->
-                      <!-- <ul *ngIf="item.items?.length">
-                        <li *ngFor="let subItem of item.items">
-                          <a [routerLink]="subItem.route ? [subItem.route] : []"   class="sf-with-ul">
-                            {{ subItem.label }}
-                          </a>
-                        </li>
-                      </ul> -->
                     </li>
                   </ul>
                 </li>
@@ -147,14 +105,5 @@
         </nav>
       </div>
     </div>
-
-    <!-- Social Icons -->
-    <div class="social-icons">
-      <a href="https://www.facebook.com/profile.php?id=61555422686184" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>
-      <a href="#" class="social-icon" target="_blank" title="Twitter"><i class="icon-twitter"></i></a>
-      <a href="#" class="social-icon" target="_blank" title="Instagram"><i class="icon-instagram"></i></a>
-      <a href="#" class="social-icon" target="_blank" title="Youtube"><i class="icon-youtube"></i></a>
-    </div><!-- End .social-icons -->
-  </div><!-- End .mobile-menu-wrapper -->
+  </div>
 </div>
-<!-- End Mobile Menu -->

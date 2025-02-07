@@ -4,11 +4,13 @@ import { Store } from '@ngrx/store';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { deleteBlog, loadBlogs } from 'src/app/actions/blog.actions';
+import { setShowOverlayLoading } from 'src/app/actions/overlay-loading.action';
 import { AuthDetail } from 'src/app/common/util/auth-detail';
 import { ValidationUtil } from 'src/app/common/util/validation.util';
 import { BlogResponseModel } from 'src/app/model/blog-response.model';
 import { BlogModel } from 'src/app/model/blog.model';
 import { BlogState, selectAllBlogs } from 'src/app/selectors/blog.selectors';
+import { OverlayLoadingState } from 'src/app/selectors/overlay-loading.selector';
 
 @Component({
   selector: 'app-post-list',
@@ -24,12 +26,12 @@ export class PostListComponent implements OnInit {
   len  = 10;
   total = 0;
 
-  constructor(private blogStore : Store<BlogState> , private toastr: ToastrService ) {
+  constructor(private blogStore : Store<BlogState> , private toastr: ToastrService , private overlayLoadingStore: Store<OverlayLoadingState>) {
     this.blogs$ = this.blogStore.select(selectAllBlogs)
   }
 
   ngOnInit(): void {
-
+    this.overlayLoadingStore.dispatch(setShowOverlayLoading({loading:true}));
     this.blogStore.dispatch(loadBlogs({
       params : {
          page:this.page,
@@ -44,6 +46,10 @@ export class PostListComponent implements OnInit {
       }else{
         this.blogs = [];
       }
+
+       setTimeout(() => {
+              this.overlayLoadingStore.dispatch(setShowOverlayLoading({loading:false}));
+            }, 600);
     })
 
   }
