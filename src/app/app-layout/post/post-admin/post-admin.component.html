@@ -1,6 +1,9 @@
-<app-table-template [isPaging]="true" [tableConfig]="config" [data]="blogs" [isChangePageSize]="false"
+<div class="container mt-5 mb-5">
+  <app-table-template [isPaging]="true" [tableConfig]="config" [data]="blogs" [isChangePageSize]="false"
 [showActions]="true"
 (onEdit)="handleEdit($event)"
 (onDelete)="handleDelete($event)"
 (handelChangePage)="handlePageEvent($event)" [len]="len" [total]="total" (clickRow)="clickRow($event)">
 </app-table-template>
+
+</div>
