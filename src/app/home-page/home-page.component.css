@@ -180,3 +180,26 @@ body {
     font-size: 1.5rem; /* Giảm kích thước icon */
   }
 }
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .service-card {
+    padding: 1.5rem; /* Tăng padding so với mobile */
+    height: 30rem;
+  }
+  .service-card h3 {
+    font-size: 1.5rem; /* Kích thước font chữ tiêu đề lớn hơn mobile */
+  }
+  .service-card p, .service-card ul {
+    font-size: 1rem; /* Kích thước font chữ nội dung lớn hơn mobile */
+  }
+
+  .col-lg-4, .col-md-6 {
+    flex: 0 0 50%; /* Hiển thị 2 card trên một hàng */
+    max-width: 50%;
+  }
+
+  .icon-box .fa-2x {
+    font-size: 2rem; /* Kích thước icon lớn hơn mobile */
+  }
+}
+
+
