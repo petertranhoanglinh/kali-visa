@@ -2,8 +2,8 @@
   <div class="row g-4">
     <div class="col-12 mb-5">
       <ul class="list-unstyled">
-        <li *ngFor="let blog of blogs" class="mb-4 wow fadeInUp" data-wow-delay="0.1s">
-          <div class="training-item d-flex align-items-start border p-3 rounded bg-light">
+        <li *ngFor="let blog of blogs" class="mb-4 wow fadeInUp" data-wow-delay="0.1s" >
+          <div class="training-item d-flex align-items-start border p-3 rounded bg-light" style=" background-color: #f9f9f9 !important;">
             <div class="ms-3">
               <div class="training-title-name">
                 <a [routerLink]="['/blog/blog-detail', blog.id]" class="h5 text-dark text-decoration-none">{{ blog.title }}</a>
