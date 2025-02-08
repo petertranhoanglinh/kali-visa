@@ -44,7 +44,7 @@ export class HeaderComponent implements OnInit {
 
     {
       label: 'Dịch Vụ Visa',
-      route:"/shopping/product-list"
+      route:"/product-list"
     },
     {
       label:'Bài Viết',
@@ -224,7 +224,9 @@ export class HeaderComponent implements OnInit {
   }
 
   onMenuClick(menu: Menu): void {
+    
     if(ValidationUtil.isNotNullAndNotEmpty(menu.route)){
+      this.closeMobileMenu();
 
       this.currentPath = this.findMenuPath(String(menu.route));
     }
@@ -236,6 +238,7 @@ export class HeaderComponent implements OnInit {
     }
     this.headerStore.dispatch(setPageHeading({pageHeading:pageHeading}))
   }
+
 
   initMenu(url:string){
     const menus = this.menus;

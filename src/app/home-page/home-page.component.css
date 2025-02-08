@@ -17,48 +17,33 @@ body {
 /* Service Cards */
 .service-card {
   transition: transform 0.3s, box-shadow 0.3s;
+  margin-bottom: 20px; /* Khoảng cách giữa các card */
 }
 
 .service-card:hover {
-  transform: translateY(-15px);
+  transform: translateY(-10px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
-.service-card {
-  margin-bottom: 20px;
-}
+
 .service-card img {
   width: 100%;
+  height: auto; /* Đảm bảo hình ảnh co giãn đúng cách */
   border-radius: 5px;
 }
 
-.service-card {
-  display: grid;
-  grid-template-rows: 1fr;
-  height: 20rem; /* Cỡ chiều cao cố định cho các ô dịch vụ */
-  padding: 2rem;
-}
-
 .icon-box {
-  width: 100%;
-  display: block;
-}
-
-.icon-box i {
-  margin: 0 auto;
-}
-
-/* Điều chỉnh kích thước icon để phù hợp với ô dịch vụ */
-.icon-box i {
-  font-size: 2rem;
-}
-
-.icon-box {
-  width: 60px;
+  width: 60px; /* Kích thước cố định cho box icon */
   height: 60px;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 20px;
+  margin: 0 auto 20px; /* Điều chỉnh khoảng cách so với tiêu đề */
+  background-color: #134a86; /* Nền box icon */
+  border-radius: 50%; /* Đường tròn */
+}
+
+.icon-box i {
+  font-size: 2rem; /* Kích thước icon */
 }
 
 /* Testimonials */
@@ -77,129 +62,65 @@ body {
   font-style: italic;
 }
 
-/* Stats Section */
-.stat-item {
-  background: #f8f9fa;
-  border: 1px solid #ddd;
-  padding: 30px;
-  border-radius: 10px;
-  transition: transform 0.3s;
-}
-
-.stat-item:hover {
-  transform: translateY(-5px);
-}
-
-/* Accordion Styles */
-.accordion-button {
-  background-color: #134a86;
-  color: #fff;
-  font-weight: 500;
-}
-
-.accordion-button:not(.collapsed) {
-  background-color: #134a86;
-}
-
-.accordion-body {
-  background-color: #f8f9fa;
-}
-
-/* CTA Section */
-.py-7 {
-  padding: 60px 0 !important;
-}
-
-.btn-custom {
-  border-radius: 50px;
-}
-
 /* Responsive Styles */
-@media (max-width: 768px) {
-  .hero-section {
-      text-align: center;
-  }
-  .hero-section h1 {
-      font-size: 2.5rem;
-  }
-}
-
-.title{
-  color: white;
-}
-.faq{
-  background-color: #134a86;
-}
-.card {
-  min-height: 400px;  /* Đảm bảo chiều cao tối thiểu cho card */
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  overflow: hidden;      /* Ngăn chặn nội dung tràn ra ngoài */
-  border: 1px solid #ddd; /* Thêm một border để card có vẻ bên ngoài rõ ràng hơn */
-}
-
-.card-body {
-  overflow: hidden;      /* Ngăn chặn nội dung tràn ra ngoài */
-  flex-grow: 1;         /* Để nội dung có thể chiếm không gian tối đa */
-}
-
-.card-text {
-  padding: 10px;        /* Thêm khoảng đệm cho văn bản */
-  margin: 0;            /* Xóa margin mặc định */
-  height: 100px;        /* Tối thiểu chiều cao cho văn bản */
-  overflow: hidden;      /* Ẩn văn bản tràn ra ngoài */
-  text-overflow: ellipsis; /* Thêm dấu hiệu nếu văn bản bị cắt */
-  display: -webkit-box; /* Tạo giới hạn cho chiều cao */
-  -webkit-line-clamp: 4; /* Giới hạn số dòng */
-  -webkit-box-orient: vertical; /* Định hướng theo chiều dọc */
-  line-height: 1.5;     /* Đường kẻ cho các dòng văn bản */
-}
-
-
-.service-card .icon-box{
-  background-color: #134a86 !important;
-}
 @media (max-width: 767.98px) {
-  .service-card {
-    padding: 1rem; /* Giảm padding để tiết kiệm không gian */
-  }
-  .service-card h3 {
-    font-size: 1.25rem; /* Giảm kích thước font chữ cho tiêu đề */
-  }
-  .service-card p, .service-card ul {
-    font-size: 0.9rem; /* Giảm kích thước font chữ cho nội dung */
+  .hero-section h2 {
+    font-size: 2rem; /* Giảm kích thước tiêu đề cho màn hình nhỏ */
   }
 
-  .col-lg-4, .col-md-6 {
-    flex: 0 0 100%; /* Hiển thị mỗi dịch vụ trên một hàng riêng biệt */
+  .service-card {
+    padding: 1rem; /* Giảm padding cho card nhỏ */
+  }
+
+  .service-card h3 {
+    font-size: 1.5rem; /* Kích thước tiêu đề nhỏ hơn */
+  }
+
+  .service-card p, .service-card ul {
+    font-size: 0.9rem; /* Kích thước chữ nhỏ hơn */
+  }
+
+  .col-md-4 {
+    flex: 0 0 100%; /* Hiển thị dịch vụ trên 1 hàng */
     max-width: 100%;
   }
-
-  .icon-box .fa-2x {
-    font-size: 1.5rem; /* Giảm kích thước icon */
-  }
 }
+
 @media (min-width: 768px) and (max-width: 991.98px) {
   .service-card {
-    padding: 1.5rem; /* Tăng padding so với mobile */
-    height: 30rem;
+    height: auto; /* Chiều cao tự động hồi phục */
   }
+
   .service-card h3 {
-    font-size: 1.5rem; /* Kích thước font chữ tiêu đề lớn hơn mobile */
+    font-size: 1.5rem; /* Kích thước chữ phù hợp */
   }
+
   .service-card p, .service-card ul {
-    font-size: 1rem; /* Kích thước font chữ nội dung lớn hơn mobile */
+    font-size: 1rem;
   }
 
   .col-lg-4, .col-md-6 {
-    flex: 0 0 50%; /* Hiển thị 2 card trên một hàng */
+    flex: 0 0 50%; /* Hiển thị 2 dịch vụ trên 1 hàng */
     max-width: 50%;
-  }
-
-  .icon-box .fa-2x {
-    font-size: 2rem; /* Kích thước icon lớn hơn mobile */
   }
 }
 
+@media (min-width: 992px) {
+  .service-card {
+    height: auto; /* Chiều cao tự động cho desktop */
+    padding: 2rem; /* Padding mặc định cho card lớn */
+  }
 
+  .service-card h3 {
+    font-size: 1.75rem; /* Kích thước font nặng hơn cho desktop */
+  }
+
+  .service-card p, .service-card ul {
+    font-size: 1rem; /* Kích thước chữ 1rem cho nội dung */
+  }
+
+  .col-lg-4 {
+    flex: 0 0 33.333%; /* Hiển thị 3 dịch vụ trên 1 hàng */
+    max-width: 33.333%;
+  }
+}
