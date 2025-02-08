@@ -1,19 +1,18 @@
-<!-- Page Heading -->
-<div class="container-fluid bg-breadcrumb" *ngIf="pageHeading.isShow && currentUrl != '/'">
-  <div class="container text-center py-5" style="max-width: 900px;">
-      <h3 class="text-white display-3 mb-4 wow fadeInDown" data-wow-delay="0.1s">{{ pageHeading.menu.label }}</h3>
-      <ol class="breadcrumb justify-content-center text-white mb-0 wow fadeInDown" data-wow-delay="0.3s">
-          <li class="breadcrumb-item" *ngIf="parts.length >= 0 && parts[0] != null && parts[0] != ''">
-              <a href="index.html" class="text-white">{{ parts[0] }}</a>
-          </li>
-          <li class="breadcrumb-item" *ngIf="parts.length >= 1 && parts[1] != null && parts[1] != ''">
-              <a href="#" class="text-white">{{ parts[1] }}</a>
-          </li>
-
-          <br>
-          <li class="breadcrumb-item active text-secondary" *ngIf="parts.length >= 2 && parts[2] != null && parts[2] != ''" aria-current="page">
-              {{ parts[2] }}
-          </li>
-      </ol>
-  </div>
+<div class="page-heading" *ngIf="pageHeading.isShow && currentUrl != '/'">
+    <div class="heading-container">
+        <h1 class="heading-title">{{ pageHeading.menu.label }}</h1>
+        <nav class="breadcrumb-nav">
+            <ol class="breadcrumb-list">
+                <li class="breadcrumb-item" *ngIf="parts[0] && parts[1]">
+                    <a href="/">{{ parts[0] }}</a>
+                </li>
+                <li class="breadcrumb-item" *ngIf="parts[1]">
+                    <a href="#">{{ parts[1] }}</a>
+                </li>
+                <li class="breadcrumb-item active" *ngIf="parts[2]">
+                    {{ parts[2] }}
+                </li>
+            </ol>
+        </nav>
+    </div>
 </div>
