@@ -3,52 +3,21 @@
   <div class="row">
     <h2 class="display-5 mt-3 mb-4">Dịch vụ làm visa</h2>
     <!-- Dịch vụ Visa Mỹ -->
-    <div class="col-md-4">
-      <div class="card service-card">
-        <a href="https://kalivisa.com/hoa-ky/" target="_blank" rel="noopener noreferrer">
-          <img src="https://kalivisa.com/wp-content/uploads/2023/04/my-1200x800.webp" alt="Visa Mỹ" class="card-img-top">
-        </a>
-        <div class="card-body">
-          <p class="card-text">
-            Kali Visa cung cấp visa Mỹ ngắn hạn. Trong đó hỗ trợ diện B1/B2: Du
-            lịch – Thăm thân – Công tác. Xin visa Mỹ không quá khó nếu bạn có sự chuẩn bị tỉ mỉ, đáp ứng đầy đủ mọi
-            yêu cầu của đại sứ quán.
-          </p>
+      <ng-container *ngFor="let item of items">
+        <div class="col-md-4">
+          <div class="card service-card">
+            <a  [routerLink]="['/detail', item.id]"  target="_blank" rel="noopener noreferrer">
+              <img  src="{{item.img}}"alt="Visa Mỹ" class="card-img-top">
+            </a>
+            <div class="card-body">
+              <h5 class="card-title">{{item.name}}</h5>
+              <p class="card-text">
+                {{item.description}}
+              </p>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-
-    <!-- Dịch vụ Visa Úc -->
-    <div class="col-md-4">
-      <div class="card service-card">
-        <a href="https://kalivisa.com/australia/" target="_blank" rel="noopener noreferrer">
-          <img src="https://kalivisa.com/wp-content/uploads/2023/04/uc-1200x800.webp" alt="Visa Úc" class="card-img-top">
-        </a>
-        <div class="card-body">
-          <p class="card-text">
-            Visa Úc gồm các loại visa, trong đó Kali Visa đang hỗ trợ diện
-            visa 600, 482 và 462. Việc nhập cảnh Úc vô cùng dễ dàng và nhanh gọn giúp chuyến hành trình của bạn có
-            thêm nhiều trải nghiệm thú vị.
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Dịch vụ Visa Anh -->
-    <div class="col-md-4">
-      <div class="card service-card">
-        <a href="https://kalivisa.com/anh/" target="_blank" rel="noopener noreferrer">
-          <img src="https://kalivisa.com/wp-content/uploads/2023/04/anh-1200x800.webp" alt="Visa Anh" class="card-img-top">
-        </a>
-        <div class="card-body">
-          <p class="card-text">
-            Visa Anh Quốc ngắn hạn cho phép Du lịch – Thăm thân – Công tác. Mỗi loại
-            visa đều có thời gian lưu trú và điều kiện khác nhau vậy nên cần tìm hiểu kỹ lưỡng trước khi xin để hoàn
-            tất thực hiện kế hoạch chuyến đi.
-          </p>
-        </div>
-      </div>
-    </div>
+      </ng-container>
   </div>
 </div>
 

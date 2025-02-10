@@ -36,7 +36,7 @@ export class HomePageComponent implements OnInit ,  AfterViewInit {
     this.loadProduct();
     this.items$.subscribe((res) => {
       if (res && res.products.length) {
-        this.items = [...this.items, ...res.products]; // Gộp sản phẩm mới vào danh sách
+        this.items = [...this.items, ...res.products].slice(0,6); // Gộp sản phẩm mới vào danh sách
         this.loading = false;
       }
     });
