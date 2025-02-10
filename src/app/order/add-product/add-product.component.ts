@@ -14,6 +14,7 @@ import { getProducts, getResultSaveProduct, ProductState } from 'src/app/selecto
 import { ProductService } from 'src/app/service/product.service';
 import { environment } from 'src/environments/environment';
 
+import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 @Component({
   selector: 'app-add-product',
   templateUrl: './add-product.component.html',
@@ -21,18 +22,25 @@ import { environment } from 'src/environments/environment';
 })
 export class AddProductComponent implements OnInit {
 
+    public Editor = DecoupledEditor as any;
+
   apiUrl : string = environment.apiUrl;
 
   product = {
     id: null,
     name: '',
     price: null,
-    stock: null,
+    stock: 100000,
     description: '',
+    content: '',
+    visaType:'',
     sale: false,
     new: false,
     best: false,
     rate: 0,
+    keyword:'',
+    services:'',
+    timeDate:'',
   };
   img: any = '';
   slider1: any = '';
@@ -72,7 +80,89 @@ export class AddProductComponent implements OnInit {
   len = 5;
   total = 0;
 
-  @ViewChild('descriptionContent', { static: false }) descriptionContent!: ElementRef;
+
+  public editorConfig = {
+    toolbar: {
+      items: [
+        'heading',
+        '|',
+        'fontFamily',
+        'fontSize',
+        '|',
+        'fontColor',
+        'fontBackgroundColor',
+        '|',
+        'bold',
+        'italic',
+        'underline',
+        'strikethrough',
+        '|',
+        'alignment', // Đảm bảo rằng tùy chọn căn chỉnh có ở đây
+        'indent',
+        'outdent',
+        '|',
+        'bulletedList',
+        'numberedList',
+        '|',
+        'link',
+        'imageUpload',
+        'blockQuote',
+        'insertTable',
+        '|',
+        'undo',
+        'redo'
+      ]
+    },
+    image: {
+      upload: {
+        types: ['jpeg', 'png', 'gif', 'jpg']
+      },
+      resizeUnit: 'px',  // Đơn vị thay đổi kích thước là pixel
+      resizeOptions: [
+        { name: 'resizeImage:original', value: null, icon: 'original' },
+        { name: 'resizeImage:50', value: '50', icon: 'small' },
+        { name: 'resizeImage:75', value: '75', icon: 'medium' },
+        { name: 'resizeImage:100', value: '100', icon: 'large' }]
+    },
+    ckfinder: {
+      uploadUrl: environment.apiUrl + '/api/products/upload-editor',
+    },
+    fontFamily: {
+      options: [
+        'Arial',
+        'Times New Roman',
+        'Helvetica',
+        'Courier New',
+        'Roboto'
+      ],
+      default: 'Times New Roman'
+    },
+    fontSize: {
+      options: [
+        9,
+        11,
+        13,
+        17,
+        19,
+        21
+      ],
+      default: 13
+    },
+    alignment: {
+      options: ['left', 'right', 'center', 'justify'] // Đảm bảo bạn có các tùy chọn căn chỉnh
+    },
+    table: {
+      contentToolbar: [
+        'tableColumn',
+        'tableRow',
+        'mergeTableCells',
+        'tableCellProperties',
+        'tableProperties'
+      ]
+    }
+  };
+
+  @ViewChild('content', { static: false }) content!: ElementRef;
 
 
 
@@ -188,8 +278,7 @@ export class AddProductComponent implements OnInit {
     let params = {};
 
 
-    const description = this.descriptionContent.nativeElement.innerHTML;
-    this.product.description = description;
+
 
 
     if(ValidationUtil.isNotNullAndNotEmpty(this.product.id)){
@@ -232,7 +321,12 @@ export class AddProductComponent implements OnInit {
         best: this.product.best ,
         img : img,
         sliders : slidersName,
-        rate:this.product.rate/100
+        rate:this.product.rate/100,
+        content:this.product.content,
+        visaType : this.product.visaType,
+        keyword : this.product.keyword,
+        services: this.product.services,
+        timeDate: this.product.timeDate
 
 
       }
@@ -246,7 +340,12 @@ export class AddProductComponent implements OnInit {
         sale: this.product.sale,
         new: this.product.new,
         best: this.product.best,
-        rate:this.product.rate/100
+        rate:this.product.rate/100,
+        content:this.product.content,
+        visaType : this.product.visaType,
+        keyword : this.product.keyword,
+        services: this.product.services,
+        timeDate: this.product.timeDate
       }
     }
 
@@ -263,12 +362,17 @@ export class AddProductComponent implements OnInit {
       id: null,
       name: '',
       price: null,
-      stock: null,
+      stock: 0,
       description: '',
       sale: false,
       new: false,
       best: false,
       rate:0,
+      content:'',
+      visaType: '',
+      keyword:'',
+      services:'',
+      timeDate:'',
     };
 
     // Reset the image and slider fields
@@ -328,7 +432,12 @@ export class AddProductComponent implements OnInit {
       sale: item.sale,
       new: item.new,
       best: item.best,
-      rate:item.rate * 100
+      rate:item.rate * 100,
+      content:item.content,
+      visaType:item.visaType,
+      keyword:item.keyword,
+      services:item.services,
+      timeDate:item.timeDate
     };
 
     if(ValidationUtil.isNotNullAndNotEmpty(item.img)){
@@ -337,7 +446,7 @@ export class AddProductComponent implements OnInit {
 
     if(ValidationUtil.isNotNullAndNotEmpty(item.sliders)){
       for (let i = 0; i < item.sliders.length; i++) {
-        const sliderUrl = this.apiUrl + "/" + item.sliders[i];
+        const sliderUrl = item.sliders[i];
         switch (i) {
           case 0:
             this.sliderName1 = sliderUrl;
@@ -358,10 +467,17 @@ export class AddProductComponent implements OnInit {
 
     }
 
-    if (this.descriptionContent) {
-      this.descriptionContent.nativeElement.innerHTML = item.description || '';
+    if (this.content) {
+      this.content.nativeElement.innerHTML = item.content || '';
     }
   }
 
+  onReady(editor: any): void {
+    const toolbarElement = editor.ui.view.toolbar.element;
+    const editableElement = editor.ui.getEditableElement();
+
+    // Thêm toolbar vào DOM
+    editableElement.parentElement.insertBefore(toolbarElement, editableElement);
+  }
 
 }

@@ -11,7 +11,6 @@ import { ValidationUtil } from 'src/app/common/util/validation.util';
 import { ProductModel } from 'src/app/model/product.model';
 import { getProducts, ProductState } from 'src/app/selectors/product.selector';
 import { CartService } from 'src/app/service/cart-service.service';
-import { ProductService } from 'src/app/service/product.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -50,6 +49,7 @@ export class ProductDetailComponent implements OnInit {
     this.product$.subscribe(res=>{
       if(ValidationUtil.isNotNullAndNotEmpty(res)){
         this.product = res.products[0];
+        window.scrollTo(0, 0);
       }
     })
   }
@@ -69,7 +69,7 @@ export class ProductDetailComponent implements OnInit {
   }
 
   getSanitizedDescription(): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(this.product.description);
+    return this.sanitizer.bypassSecurityTrustHtml(this.product.content);
   }
 
 }

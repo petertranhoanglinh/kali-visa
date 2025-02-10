@@ -28,7 +28,7 @@ import { ProductListComponent } from './product-list/product-list.component';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 
 
-
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 @NgModule({
   declarations: [
     ShoesProductListComponent,
@@ -38,7 +38,8 @@ import { CarouselModule } from 'ngx-owl-carousel-o';
     OrderAnalysicComponent,
     WishListComponent,
     CartComponent,
-    ProductListComponent
+    ProductListComponent,
+
   ],
   imports: [
     CommonModule,
@@ -50,7 +51,7 @@ import { CarouselModule } from 'ngx-owl-carousel-o';
     PipeModule,
     CheckoutModule,
     NgChartsModule,
-    CarouselModule,
+    CarouselModule,CKEditorModule,
     StoreModule.forFeature(productFeatureKey,productReducer),
     EffectsModule.forFeature([ProductEffect]),
 

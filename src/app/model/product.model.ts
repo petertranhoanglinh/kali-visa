@@ -18,4 +18,12 @@ export interface ProductModel
   rating:number;
   rewiewId:string;
   sliders:string[];
+  visaType:string;
+  content:string;
+  keyword:string;
+  timeDate:string;
+  services:string;
+
+
+
 }

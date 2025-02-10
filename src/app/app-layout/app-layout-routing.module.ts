@@ -12,6 +12,7 @@ import { LoginPageComponent } from './login/login-page/login-page.component';
 import { RegisterMemberComponent } from './login/register-member/register-member.component';
 import { AdminChatComponent } from './trade/admin-chat/admin-chat.component';
 import { ProductListComponent } from '../order/product-list/product-list.component';
+import { ProductDetailComponent } from '../order/product-detail/product-detail.component';
 const postModule = () => import ("../../app/app-layout/post/post.module").then(x => x.PostModule);
 const orderModule = () => import ("../../app/order/order.module").then(x => x.OrderModule);
 const productModule = () => import ("../../app/product/product.module").then(x => x.ProductModule);
@@ -28,6 +29,7 @@ const routes: Routes = [
        { path: 'auth', loadChildren: authModule },
        { path: 'shopping',canActivate : [AuthGuardService]  , loadChildren: orderModule },
        { path: 'product-list',component:ProductListComponent},
+       {path:'detail/:product' , component:ProductDetailComponent},
        { path: 'product',canActivate : [AuthGuardService]  , loadChildren: productModule },
        { path: 'blog', loadChildren: postModule },
        { path: 'trade',canActivate : [AuthGuardService]  , loadChildren: trade },
@@ -39,6 +41,7 @@ const routes: Routes = [
   { path: 'wedding', component: WeddingComponent },
   { path: 'login', component: LoginPageComponent },
   { path: 'register', component: RegisterMemberComponent },
+
 ];
 
 @NgModule({

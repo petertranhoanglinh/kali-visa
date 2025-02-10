@@ -29,15 +29,15 @@
        <ng-container *ngFor="let item of items" >
         <div class="col-md-4">
           <div class="card service-card">
-              <a [routerLink]="['/shopping/detail', item.id]"  rel="noopener noreferrer">
+              <a [routerLink]="['/detail', item.id]"  rel="noopener noreferrer">
                   <img src="{{item.img}}"
                        alt="Visa Mỹ" class="card-img-top">
               </a>
               <div class="card-body">
                   <h5 class="card-title">{{item.name}}</h5>
-                  <!-- <p class="card-text">
+                  <p class="card-text">
                     {{item.description}}
-                  </p> -->
+                  </p>
               </div>
           </div>
         </div>

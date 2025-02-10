@@ -1,36 +1,65 @@
-.visa-badge {
-  font-size: 0.9em;
-  padding: 5px 15px;
-  margin-right: 10px;
+.product-slider .carousel-item {
+  transition: transform 0.5s ease, opacity 0.5s ease;
 }
 
-.processing-time {
-  background: #f8f9fa;
-  padding: 10px;
-  border-radius: 5px;
-  margin: 15px 0;
+.product-slider img {
+  border-radius: 10px; /* Rounded corners for images */
 }
 
-.requirements-list {
-  background: #f8f9fa;
-  padding: 20px;
-  border-radius: 5px;
-  margin: 15px 0;
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    font-size: 24px;
+    color: #007bff; /* Change icon color to blue */
+    cursor: pointer;
 }
 
-.requirements-list li {
+.carousel-control-prev-icon:focus,
+.carousel-control-next-icon:focus {
+    outline: none;
+}
+
+.carousel-control-prev-icon::before,
+.carousel-control-next-icon::before {
+    content: "";
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.carousel-control-prev-icon::before {
+    margin-right: 5px;
+}
+
+.carousel-control-next-icon::before {
+    margin-left: 5px;
+}
+
+.btn-primary {
+  background-color: #007bff; /* Button color */
+  border-color: #007bff; /* Button border color */
+}
+
+.btn-primary:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+  border-color: #0056b3;
+}
+
+/* Optional: Add some spacing and styling to the feature list */
+.visa-features ul {
+  list-style: none;
+  padding: 0;
+}
+
+.visa-features ul li {
+  position: relative;
+  padding-left: 25px;
   margin-bottom: 10px;
 }
 
-.visa-features {
-  border-left: 3px solid #0d6efd;
-  padding-left: 15px;
-  margin: 20px 0;
-}
-
-.contact-info {
-  background: #e9ecef;
-  padding: 20px;
-  border-radius: 5px;
-  margin-top: 20px;
+.visa-features ul li:before {
+  content: "✓"; /* Checkmark symbol */
+  position: absolute;
+  left: 0;
+  color: #28a745; /* Green check mark */
 }

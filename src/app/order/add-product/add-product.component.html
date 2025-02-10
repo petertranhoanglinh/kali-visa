@@ -1,18 +1,18 @@
 <div class="container mt-5">
-  <!-- Product Search Section -->
+  <!-- Service Search Section -->
   <div class="card p-3 mb-4 shadow-lg">
     <div class="input-group">
-      <input type="text" class="form-control" placeholder="Enter Product" aria-label="Tên dự án">
+      <input type="text" class="form-control" placeholder="Enter Service" aria-label="Tên dự án">
       <div class="input-group-append">
-        <button type="button" class="btn btn-secondary" (click)="openPopup()">Search Product</button>
+        <button type="button" class="btn btn-secondary" (click)="openPopup()">Search Service</button>
       </div>
     </div>
   </div>
 
-  <!-- Product Form -->
+  <!-- Service Form -->
   <div class="card p-4 shadow-lg mb-5">
     <div class="form-group">
-      <label for="productName" class="font-weight-bold">Name Product</label>
+      <label for="productName" class="font-weight-bold">Name Service</label>
       <input type="text" class="form-control" id="productName" [(ngModel)]="product.name" name="productName" placeholder="Enter product name" required>
     </div>
 
@@ -21,30 +21,62 @@
       <input type="number" class="form-control" id="productPrice" [(ngModel)]="product.price" name="productPrice" placeholder="Enter price" required>
     </div>
 
-    <div class="form-group">
+    <!-- <div class="form-group">
       <label for="productPrice" class="font-weight-bold">Rate</label>
       <input type="number" class="form-control" id="productPrice" [(ngModel)]="product.rate" name="productPrice" placeholder="Enter rate" required>
-    </div>
+    </div> -->
 
 
-    <div class="form-group">
+    <!-- <div class="form-group">
       <label for="stock" class="font-weight-bold">Stock</label>
       <input type="number" class="form-control" id="stock" [(ngModel)]="product.stock" name="stock" placeholder="Enter stock" required>
+    </div> -->
+
+
+    <div class="form-group">
+      <label for="services" class="font-weight-bold">Time Work</label>
+      <input type="text" class="form-control" [(ngModel)]="product.timeDate">
     </div>
 
 
-    <!-- Product Description -->
     <div class="form-group">
-      <label for="productDescription" class="font-weight-bold">Description</label>
-      <div class="form-control" contenteditable="true" #descriptionContent id="productDescription"></div>
+      <label for="services" class="font-weight-bold">Serivices</label>
+      <input type="text" class="form-control" [(ngModel)]="product.services">
+    </div>
+
+    <div class="form-group">
+      <label for="visaType" class="font-weight-bold">Visa Type</label>
+      <input type="text" class="form-control" [(ngModel)]="product.visaType">
+    </div>
+
+    <div class="form-group">
+      <label for="keyword" class="font-weight-bold">key word</label>
+      <input type="text" class="form-control" [(ngModel)]="product.keyword">
+    </div>
+
+
+    <div class="form-group">
+      <label for="description" class="font-weight-bold">Description</label>
+      <input type="text" class="form-control" [(ngModel)]="product.description">
     </div>
 
 
 
-
-    <!-- Product Images Upload -->
     <div class="form-group">
-      <label class="font-weight-bold">Product show detail</label>
+      <label for="content" class="font-weight-bold">Content</label>
+      <ckeditor
+          [(ngModel)]="product.content"
+          name="content"
+          [editor]="Editor"
+          [config]="editorConfig"
+          (ready)="onReady($event)"
+    ></ckeditor>
+    </div>
+
+
+    <!-- Service Images Upload -->
+    <div class="form-group">
+      <label class="font-weight-bold">Service show detail</label>
       <div class="d-flex flex-wrap justify-content-start">
         <app-image-upload class="me-2 mb-2 shadow-sm" [imageUrl]="sliderName1" (changeFile)="changeFileName($event,'slider1')"></app-image-upload>
         <app-image-upload class="me-2 mb-2 shadow-sm" [imageUrl]="sliderName2" (changeFile)="changeFileName($event,'slider2')"></app-image-upload>
@@ -57,7 +89,7 @@
       </div>
     </div>
 
-    <!-- Product Show Cart Image -->
+    <!-- Service Show Cart Image -->
     <div class="form-group">
       <label class="font-weight-bold">Show in list product</label>
       <app-image-upload class="mb-2 shadow-sm" (changeFile)="changeFileName($event,'img')" [imageUrl]="imgName"></app-image-upload>
@@ -67,8 +99,8 @@
     <button type="button" class="btn btn-primary btn-block mt-4 shadow-sm" (click)="onSubmit()">Add/Edit</button>
   </div>
 
-  <!-- Popup for Product Search -->
-  <app-popup [isOpen]="isPopupOpen" (close)="closePopup()" [title]="'Search Product'">
+  <!-- Popup for Service Search -->
+  <app-popup [isOpen]="isPopupOpen" (close)="closePopup()" [title]="'Search Service'">
     <app-table-template [isPaging]="true" [tableConfig]="config" [data]="items" [isChangePageSize]="false"
       (handelChangePage)="handlePageEvent($event)" [len]="len" [total]="total" (clickRow)="clickRow($event)">
     </app-table-template>
