@@ -7,9 +7,9 @@ export const environment = {
   keyBetaIzex : "88956aba576362ca65e2d1fcd3e9295a",
 
   production: true,
-  //apiUrl: "https://spring-mongodb-sample.onrender.com",
+  apiUrl: "https://spring-mongodb-sample.onrender.com",
   comId : 'webixx',
-  apiUrl: 'http://localhost:8888'
+  //apiUrl: 'http://localhost:8888'
 };
 
 /*
