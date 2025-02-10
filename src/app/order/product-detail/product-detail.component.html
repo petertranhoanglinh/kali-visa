@@ -5,7 +5,7 @@
           <div class="carousel-inner">
             <ng-container *ngFor="let item of product.sliders; let i = index">
               <div class="carousel-item" [class.active]="i === 0">
-                <img [src]="'data:image/jpeg;base64,' + item" class="d-block w-100 rounded shadow" alt="Product Image {{ i + 1 }}">
+                <img [src]="item" class="d-block w-100 rounded shadow" alt="Product Image {{ i + 1 }}">
               </div>
             </ng-container>
             <ng-container *ngIf="product.sliders == null">
@@ -57,7 +57,7 @@
       </div>
   </div>
 
-  <div class="row mt-5">
+  <div class="row mt-5" class="overflow-hidden">
       <div class="col-12">
         <div class="description" [innerHTML]="getSanitizedDescription()"></div>
       </div>

@@ -26,11 +26,11 @@
                   <div class="name font-weight-bold">{{ item.user }}</div>
                   <div class="text bg-light p-2 rounded" [innerHTML]="item.message"></div>
 
-                  <img *ngIf="isImage(item.image)" (click)="imgClick(apiUrl + '/' + item.image)"
-                       [src]="apiUrl + '/' + item.image" class="img-fluid rounded chat-image mt-2" alt="Chat image" />
+                  <img *ngIf="isImage(item.image)" (click)="imgClick(item.image)"
+                       [src]="'data:image/jpeg;base64,'  + item.image" class="img-fluid rounded chat-image mt-2" alt="Chat image" />
                   <a *ngIf="!isImage(item.image) && item.image"
                      class="file-attachment d-flex align-items-center mt-2"
-                     [href]="apiUrl + '/' + item.image" download="{{ apiUrl + '/' + item.image }}">
+                     [href]="item.image" download="{{item.image }}">
                     <i class="fas fa-file file-icon mr-2"></i>
                     <span class="file-name">{{ item.image.replace("upload/product/", "") }}</span>
                     <i class="fas fa-download download-icon ml-auto"></i>

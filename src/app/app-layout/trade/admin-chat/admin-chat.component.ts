@@ -215,18 +215,12 @@ export class AdminChatComponent implements OnInit, OnChanges  {
     this.imgName = file.name;
   }
 
-  isImage(fileName: string): boolean {
-    // Kiểm tra nếu fileName không hợp lệ
-    if (typeof fileName !== 'string' || fileName.trim() === '') {
+  isImage(base64String: string): boolean {
+    if (typeof base64String !== 'string' || base64String.trim() === '') {
       return false;
     }
-    const parts = fileName.split('.');
-    if (parts.length < 2) {
-      return false;
-    }
-    const extension = parts[parts.length - 1].toLowerCase();
-    const extensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'];
-    return extensions.includes(extension);
+
+    return base64String.startsWith('data:image/');
   }
 
 

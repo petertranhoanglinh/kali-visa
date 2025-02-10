@@ -6,7 +6,7 @@
         <div class="col-md-4 mb-2">
             <div class="card service-card">
                 <a [routerLink]="['/detail', item.id]" target="_blank" rel="noopener noreferrer">
-                  <img [src]="'data:image/jpeg;base64,' + item.img" alt="Visa Mỹ" class="card-img-top">
+                  <img [src]="item.img" alt="Visa Mỹ" class="card-img-top">
                 </a>
                 <div class="card-body">
                     <h5 class="card-title">{{item.name}}</h5>

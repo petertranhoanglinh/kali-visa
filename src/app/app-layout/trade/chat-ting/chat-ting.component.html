@@ -18,12 +18,12 @@
               <div class="text_wrapper">
                   <div class="name">{{ item.user }}</div>
                   <div class="text" [innerHTML]="item.message"></div>
-                  <img *ngIf="isImage(item.image)" (click)="imgClick(apiUrl + '/' + item.image)"
-                      [src]="apiUrl + '/' + item.image" class="img-fluid rounded chat-image" alt="Chat image" />
+                  <img *ngIf="isImage(item.image)" (click)="imgClick(item.image)"
+                      [src]="+ item.image" class="img-fluid rounded chat-image" alt="Chat image" />
                   <a *ngIf="!isImage(item.image) && item.image" class="file-attachment"
-                      [href]="apiUrl + '/' + item.image" download="{{ apiUrl + '/' + item.image }}">
+                      [href]="'data:application/octet-stream;base64,'  + item.image" download="{{ item.image }}">
                       <i class="fas fa-file file-icon"></i>
-                      <span class="file-name">{{ item.image.replace("upload/product/", "") }}</span>
+                      <span class="file-name">{{ item.image }}</span>
                       <i class="fas fa-download download-icon"></i>
                   </a>
               </div>
