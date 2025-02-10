@@ -44,21 +44,21 @@ export class HeaderComponent implements OnInit {
 
     {
       label: 'Dịch Vụ Visa',
-      route:"/shopping/product-list"
+      route:"/product-list" , isShowPageHeading:true
     },
     {
       label:'Bài Viết',
-      route:'/blog/blogs',
+      route:'/blog/blogs' , isShowPageHeading:true
     }
     ,
     {
-      label: 'Giới Thiệu', route: '/about/about-story'
+      label: 'Giới Thiệu', route: '/about/about-story' , isShowPageHeading:true
 
     },
 
     {
       label:'Liên Hệ',
-      route:'/about/contact',
+      route:'/about/contact' , isShowPageHeading:true
     },
   ];
   currentPath: string = '';
@@ -101,7 +101,7 @@ export class HeaderComponent implements OnInit {
       },
       {
         label:'Checkout',
-        route:'/shopping/checkout',
+        route:'/shopping/checkout'  , isShowPageHeading:true,
         kind:'mt'
       },
       {
@@ -119,13 +119,13 @@ export class HeaderComponent implements OnInit {
       this.menus.push({
         label: 'Administrator',
         items: [
-          {label : "Quản Lý Dịch Vụ" , route: '/shopping/newProduct' },
-          {label : "Đăng Ký Danh Mục Dịch Vụ " , route: '/product/regcate'},
-          {label: 'Theo Dõi Đơn Hàng Dịch Vụ', route: '/shopping/order-tracking' },
-          {label: 'Chi Tiết Dịch Vụ', route: '/shopping/order-detail'},
-          {label: 'Thêm Mới Bài Viết', route: '/blog/blog-edit'},
-          {label: 'Quản Lý Bài Viết', route: '/blog/blog-admin'},
-          {label: 'Quản Lý Tin Nhắn', route: '/chat-admin'},
+          {label : "Quản Lý Dịch Vụ" , route: '/shopping/newProduct' , isShowPageHeading:true },
+          {label : "Đăng Ký Danh Mục Dịch Vụ " , route: '/product/regcate'  , isShowPageHeading:true},
+          {label: 'Theo Dõi Đơn Hàng Dịch Vụ', route: '/shopping/order-tracking'  , isShowPageHeading:true},
+          {label: 'Chi Tiết Dịch Vụ', route: '/shopping/order-detail'  , isShowPageHeading:true},
+          {label: 'Thêm Mới Bài Viết', route: '/blog/blog-edit'  , isShowPageHeading:true},
+          {label: 'Quản Lý Bài Viết', route: '/blog/blog-admin'  , isShowPageHeading:true},
+          {label: 'Quản Lý Tin Nhắn', route: '/chat-admin'  , isShowPageHeading:true},
         ]
       })
     }
@@ -224,7 +224,9 @@ export class HeaderComponent implements OnInit {
   }
 
   onMenuClick(menu: Menu): void {
+    
     if(ValidationUtil.isNotNullAndNotEmpty(menu.route)){
+      this.closeMobileMenu();
 
       this.currentPath = this.findMenuPath(String(menu.route));
     }
@@ -236,6 +238,7 @@ export class HeaderComponent implements OnInit {
     }
     this.headerStore.dispatch(setPageHeading({pageHeading:pageHeading}))
   }
+
 
   initMenu(url:string){
     const menus = this.menus;

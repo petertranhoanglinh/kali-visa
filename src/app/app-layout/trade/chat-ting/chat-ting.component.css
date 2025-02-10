@@ -1,80 +1,44 @@
-/* Chat Window Styles */
+/* Chat Window Container */
 .chat_window {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  overflow: hidden;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  background: #fff;
   display: flex;
   flex-direction: column;
-}
-.messages {
-  overflow-y: auto; /* Cho phép cuộn dọc */
-  list-style: none;
-  padding: 0;
-  margin: 10px 0;
-  border: 1px solid #ccc; /* Biên (nếu cần) */
-  max-height: 600px; /* Giảm chiều cao tối đa để ngăn chặn quá trình tải tin nhắn quá nhiều */
-  overflow-x: hidden; /* Ẩn cuộn ngang */
-  padding-bottom: 10px; /* Thêm padding dưới để ngăn chặn hiện tượng cuộn */
-  margin-top: 20px;
-}
-
-
-
-/* Tùy chọn: Thêm style cho thanh scroll */
-.messages::-webkit-scrollbar {
-  width: 6px;
-}
-
-.messages::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-.messages::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 3px;
-}
-
-.messages::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
-.top_menu {
-  background: #134a86;
-  color: white;
-  display: flex;
-  align-items: center;
-  padding: 10px;
-}
-
-.buttons {
-  margin-right: auto;
-}
-
-.button {
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
+  height: 100%;
+  border: 1px solid #ddd;
+  border-radius: 5px;
   background: #fff;
-  margin-right: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.title {
-  display: flex;
-  align-items: center;
-}
-
+/* Messages Container */
 .messages {
+  flex: 1;
+  height: 400px;
+  min-height: 200px;
+  max-height: 600px;
+  overflow-y: scroll;
+  overflow-x: hidden;
   list-style: none;
-  padding: 0;
-  margin: 10px 0;
-  height: 300px;
-  overflow-y: auto;
+  margin: 0;
+  padding: 10px;
+  -webkit-overflow-scrolling: touch; /* Cho iOS */
+  scroll-behavior: smooth;
+  position: relative;
 }
 
+/* Ensure content is properly spaced */
+.messages::after {
+  content: '';
+  display: block;
+  height: 10px; /* Padding at bottom */
+  width: 100%;
+}
+
+/* Message Items */
 .message {
   display: flex;
-  margin: 10px;
+  margin: 8px 0;
+  clear: both;
+  word-break: break-word;
 }
 
 .left {
@@ -85,42 +49,112 @@
   justify-content: flex-end;
 }
 
+/* Message Content */
 .text_wrapper {
   max-width: 70%;
   padding: 10px;
   border-radius: 10px;
   margin: 5px;
   background: #f1f1f1;
+  position: relative;
 }
 
+/* Username */
 .text_wrapper .name {
-  font-weight: bold; /* Giữ chữ đậm */
-  font-size: 0.6rem; /* Kích thước chữ nhỏ hơn */
-  color: #333; /* Màu chữ tốt hơn */
-  margin-bottom: 2px; /* Thêm khoảng cách dưới */
-}
-.bottom_wrapper {
-  padding: 10px; /* Thêm khoảng cách xung quanh để đảm bảo mọi thứ không chèn lên nhau */
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: #333;
+  margin-bottom: 4px;
 }
 
-.message_input_wrapper {
-  width: 100%; /* Bảo đảm chiếm 100% chiều rộng của cột */
+/* Message Text */
+.text_wrapper .text {
+  font-size: 0.9rem;
+  line-height: 1.4;
 }
 
-.message_input {
-  width: 100%; /* Bảo đảm ô nhập chiếm toàn bộ chiều rộng */
-  padding: 10px; /* Thêm khoảng cách bên trong */
+/* Images in Chat */
+.chat-image {
+  max-width: 100%;
+  height: auto;
+  margin-top: 8px;
+  cursor: pointer;
+  border-radius: 4px;
 }
 
-.send_message {
+/* File Attachments */
+.file-attachment {
   display: flex;
   align-items: center;
-  cursor: pointer;
-  padding: 10px; /* Thêm khoảng cách để dễ nhấn */
+  padding: 8px;
+  margin-top: 8px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  text-decoration: none;
+  color: #333;
 }
 
-@media (max-width: 576px) { /* Đối với các màn hình nhỏ */
-  .bottom_wrapper {
-      margin-bottom: 20px; /* Thêm khoảng cách dưới cùng */
+.file-icon {
+  margin-right: 8px;
+}
+
+.file-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.download-icon {
+  margin-left: 8px;
+}
+
+/* Scrollbar Styling */
+.messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messages::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.messages::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.messages::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Firefox Scrollbar */
+.messages {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  .messages {
+    height: calc(100vh - 200px); /* Adjust based on your header/footer height */
+    padding: 8px;
+  }
+
+  .text_wrapper {
+    max-width: 85%;
+  }
+  
+  /* Larger touch targets for mobile */
+  .file-attachment {
+    padding: 10px;
+  }
+}
+
+/* Handle iOS Safari Bottom Bar */
+@supports (-webkit-touch-callout: none) {
+  .messages {
+    padding-bottom: env(safe-area-inset-bottom);
   }
 }

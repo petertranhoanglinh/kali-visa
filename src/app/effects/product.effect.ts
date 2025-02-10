@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { map, mergeMap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { ProductService } from '../service/product.service';
-import { getRewiewsAction, getRewiewsActionFail, getRewiewsActionSuscess, productAction, productActionFail, productActionSuscess, saveProductAction, saveProductActionFail, saveProductActionSuscess, saveProductRewiewAction, saveProductRewiewActionFail, saveProductRewiewActionSuscess } from '../actions/product.action';
+import { getRewiewsAction, getRewiewsActionFail, getRewiewsActionSuscess, productAction, productActionFail, productActionSuscess, saveCategoryAction, saveCategoryActionFail, saveCategoryActionSuscess, saveProductAction, saveProductActionFail, saveProductActionSuscess, saveProductRewiewAction, saveProductRewiewActionFail, saveProductRewiewActionSuscess } from '../actions/product.action';
 
 
 
@@ -45,6 +45,14 @@ export class ProductEffect {
     mergeMap(({params ,  img , sliders }) => this.productService.saveProduct(params ,  img , sliders).pipe(
       map(res => saveProductActionSuscess({result:res})),
       catchError(msg => of(saveProductActionFail({ msg: msg.message })))
+    ))
+  ));
+
+  saveCate$ = createEffect(() => this._actions$.pipe(
+    ofType(saveCategoryAction),
+    mergeMap(({params ,  img}) => this.productService.saveCategory(params ,  img ).pipe(
+      map(res => saveCategoryActionSuscess({result:res})),
+      catchError(msg => of(saveCategoryActionFail({ msg: msg.message })))
     ))
   ));
 

@@ -75,7 +75,7 @@ export const saveProductActionFail = createAction(
 // saveCategory
 
 export const saveCategoryAction = createAction(
-  "[PRODUCT] saveProductAction",
+  "[PRODUCT] saveCategoryAction",
   props<{ params: any , img:any}>()
 );
 
