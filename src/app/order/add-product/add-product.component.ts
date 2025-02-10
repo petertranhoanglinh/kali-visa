@@ -441,12 +441,13 @@ export class AddProductComponent implements OnInit {
     };
 
     if(ValidationUtil.isNotNullAndNotEmpty(item.img)){
-      this.imgName = this.apiUrl  + "/" + item.img
+      this.imgName = 'data:image/jpeg;base64,' + item.img
+
     }
 
     if(ValidationUtil.isNotNullAndNotEmpty(item.sliders)){
       for (let i = 0; i < item.sliders.length; i++) {
-        const sliderUrl = item.sliders[i];
+        const sliderUrl = 'data:image/jpeg;base64,'  + item.sliders[i];
         switch (i) {
           case 0:
             this.sliderName1 = sliderUrl;

@@ -10,6 +10,7 @@ import { ProductResponseModel } from 'src/app/model/product-response.model';
 import { ProductModel } from 'src/app/model/product.model';
 import { OverlayLoadingState } from 'src/app/selectors/overlay-loading.selector';
 import { getProducts, ProductState } from 'src/app/selectors/product.selector';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-product-list',
@@ -20,7 +21,7 @@ export class ProductListComponent implements OnInit , OnDestroy , AfterViewInit 
 
   items$ = new Observable<ProductResponseModel>();
   items : ProductModel [] = [] ;
-
+ apiUrl:string = environment.apiUrl;
   customOptions: OwlOptions ={
     nav: false,
     dots: true,

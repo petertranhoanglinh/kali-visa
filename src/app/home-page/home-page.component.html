@@ -2,23 +2,22 @@
 <div class="container mt-5">
   <div class="row">
     <h2 class="display-5 mt-3 mb-4">Dịch vụ làm visa</h2>
-    <!-- Dịch vụ Visa Mỹ -->
-      <ng-container *ngFor="let item of items">
-        <div class="col-md-4">
-          <div class="card service-card">
-            <a  [routerLink]="['/detail', item.id]"  target="_blank" rel="noopener noreferrer">
-              <img  src="{{item.img}}"alt="Visa Mỹ" class="card-img-top">
-            </a>
-            <div class="card-body">
-              <h5 class="card-title">{{item.name}}</h5>
-              <p class="card-text">
-                {{item.description}}
-              </p>
+    <ng-container *ngFor="let item of items">
+        <div class="col-md-4 mb-2">
+            <div class="card service-card">
+                <a [routerLink]="['/detail', item.id]" target="_blank" rel="noopener noreferrer">
+                  <img [src]="'data:image/jpeg;base64,' + item.img" alt="Visa Mỹ" class="card-img-top">
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title">{{item.name}}</h5>
+                    <p class="card-text">
+                        {{item.description}}
+                    </p>
+                </div>
             </div>
-          </div>
         </div>
-      </ng-container>
-  </div>
+    </ng-container>
+</div>
 </div>
 
 <section class="hero-section d-flex align-items-center bg-primary text-white py-5">

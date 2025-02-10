@@ -14,22 +14,7 @@ body {
   color: #ffffff;
 }
 
-/* Service Cards */
-.service-card {
-  transition: transform 0.3s, box-shadow 0.3s;
-  margin-bottom: 20px; /* Khoảng cách giữa các card */
-}
 
-.service-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
-
-.service-card img {
-  width: 100%;
-  height: auto; /* Đảm bảo hình ảnh co giãn đúng cách */
-  border-radius: 5px;
-}
 
 .icon-box {
   width: 60px; /* Kích thước cố định cho box icon */
@@ -68,17 +53,6 @@ body {
     font-size: 2rem; /* Giảm kích thước tiêu đề cho màn hình nhỏ */
   }
 
-  .service-card {
-    padding: 1rem; /* Giảm padding cho card nhỏ */
-  }
-
-  .service-card h3 {
-    font-size: 1.5rem; /* Kích thước tiêu đề nhỏ hơn */
-  }
-
-  .service-card p, .service-card ul {
-    font-size: 0.9rem; /* Kích thước chữ nhỏ hơn */
-  }
 
   .col-md-4 {
     flex: 0 0 100%; /* Hiển thị dịch vụ trên 1 hàng */
@@ -87,17 +61,7 @@ body {
 }
 
 @media (min-width: 768px) and (max-width: 991.98px) {
-  .service-card {
-    height: auto; /* Chiều cao tự động hồi phục */
-  }
 
-  .service-card h3 {
-    font-size: 1.5rem; /* Kích thước chữ phù hợp */
-  }
-
-  .service-card p, .service-card ul {
-    font-size: 1rem;
-  }
 
   .col-lg-4, .col-md-6 {
     flex: 0 0 50%; /* Hiển thị 2 dịch vụ trên 1 hàng */
@@ -106,21 +70,26 @@ body {
 }
 
 @media (min-width: 992px) {
-  .service-card {
-    height: auto; /* Chiều cao tự động cho desktop */
-    padding: 2rem; /* Padding mặc định cho card lớn */
-  }
 
-  .service-card h3 {
-    font-size: 1.75rem; /* Kích thước font nặng hơn cho desktop */
-  }
-
-  .service-card p, .service-card ul {
-    font-size: 1rem; /* Kích thước chữ 1rem cho nội dung */
-  }
 
   .col-lg-4 {
     flex: 0 0 33.333%; /* Hiển thị 3 dịch vụ trên 1 hàng */
     max-width: 33.333%;
   }
+}
+
+.service-card {
+  transition: transform 0.3s ease;
+  margin-bottom: 20px;
+  height: 100%;
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.card-img-top {
+  height: 200px;
+  object-fit: cover;
 }
