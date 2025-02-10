@@ -35,7 +35,7 @@ export class ProductDetailComponent implements OnInit {
   apiUrl:string = environment.apiUrl;
 
     description = '<p><strong>This is a product description</strong></p><p>This is another paragraph that should appear on a new line.</p>'
-    // các thuộc tính khác
+
 
 
 

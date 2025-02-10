@@ -1,18 +1,36 @@
-.product-slider .carousel-inner img {
-  width: 100%;
-  height: auto;
+.visa-badge {
+  font-size: 0.9em;
+  padding: 5px 15px;
+  margin-right: 10px;
 }
-.product-name {
-  font-size: 2rem;
-  font-weight: bold;
+
+.processing-time {
+  background: #f8f9fa;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 15px 0;
 }
-.price {
-  font-size: 1.5rem;
-  color: #28a745;
-  font-weight: bold;
+
+.requirements-list {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 5px;
+  margin: 15px 0;
 }
-.related-products .card {
-  border: none;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+
+.requirements-list li {
+  margin-bottom: 10px;
+}
+
+.visa-features {
+  border-left: 3px solid #0d6efd;
+  padding-left: 15px;
+  margin: 20px 0;
+}
+
+.contact-info {
+  background: #e9ecef;
+  padding: 20px;
+  border-radius: 5px;
+  margin-top: 20px;
 }
