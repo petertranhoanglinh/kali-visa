@@ -1,0 +1,46 @@
+<div class="news-page fade-in">
+  <header class="dashboard-header">
+    <div class="header-title">
+      <h1>Dòng Chảy Thị Trường (AI News)</h1>
+      <p class="subtitle">AI đã lọc bỏ 342 tin rác hôm nay. Dưới đây là những tin tức trọng yếu nhất quyết định xu hướng tiền.</p>
+    </div>
+  </header>
+
+  <div class="news-grid">
+    <!-- Cột Trái: Tin Khẩn Cấp -->
+    <div class="news-column">
+      <h2 class="column-title" style="color: #ef4444;"><i class="fas fa-exclamation-triangle"></i> TIN KHẨN CẤP ĐÃ ĐƯỢC AI ĐÁNH GIÁ (Score > 8)</h2>
+      
+      <div class="news-card critical-news" *ngFor="let news of hotNews">
+        <div class="card-header">
+          <span class="source">{{news.source}} • {{news.time}}</span>
+          <span class="ai-score">Tác động: {{news.aiScore}}/10</span>
+        </div>
+        <h3 class="news-title">{{news.title}}</h3>
+        <p class="news-summary">{{news.summary}}</p>
+        <div class="card-footer">
+          <span class="category-badge">{{news.category}}</span>
+          <span class="sentiment-badge" [ngClass]="news.sentiment.toLowerCase()">Tín hiệu: {{news.sentiment}}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cột Phải: Tin Thường Quy -->
+    <div class="news-column">
+      <h2 class="column-title" style="color: #3b82f6;"><i class="fas fa-globe"></i> TIN TỨC VĨ MÔ & THỊ TRƯỜNG</h2>
+      
+      <div class="news-card" *ngFor="let news of dailyNews">
+        <div class="card-header">
+          <span class="source">{{news.source}} • {{news.time}}</span>
+          <span class="ai-score">Tác động: {{news.aiScore}}/10</span>
+        </div>
+        <h3 class="news-title">{{news.title}}</h3>
+        <p class="news-summary">{{news.summary}}</p>
+        <div class="card-footer">
+          <span class="category-badge">{{news.category}}</span>
+          <span class="sentiment-badge" [ngClass]="news.sentiment.toLowerCase()">Tín hiệu: {{news.sentiment}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

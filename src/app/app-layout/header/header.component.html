@@ -1,109 +1,52 @@
-<div class="container-fluid bg-primary px-5 d-none d-lg-block">
-  <div class="row gx-0 align-items-center">
-    <div class="col-lg-6 text-center text-lg-start mb-lg-0">
-      <div class="d-flex">
-        <a href="#" class="text-muted me-4"><i class="fas fa-envelope text-secondary me-2"></i>jessie.le@kalivisa.com</a>
-        <a href="#" class="text-muted me-0"><i class="fas fa-phone-alt text-secondary me-2"></i>0938594111</a>
-      </div>
-    </div>
-    <div class="col-lg-6 text-center text-lg-end">
-      <div class="d-inline-flex align-items-center" style="height: 45px;">
-        <a href="#" class="text-muted me-2"routerLink="/login" *ngIf="!isLogin"> Login</a><small> </small>
-        <a href="#" class="text-muted me-2" (click) = "logOut()" *ngIf="isLogin"> Logout</a><small> </small>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="container-fluid nav-bar p-0">
-  <nav class="navbar navbar-expand-lg navbar-light bg-white px-4 px-lg-5 py-3 py-lg-0">
-    <a routerLink="/" class="navbar-brand p-0" style="background-color: #134a86;">
-      <h1 class="display-5 text-secondary m-0"><img src="../../../assets/images/logo.png" class="img-fluid" alt="">MINH MINH VISA</h1>
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
-      (click)="openMobileMenu()">
-      <span class="fa fa-bars"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarCollapse">
-      <div class="navbar-nav ms-auto py-0">
-        <ng-container *ngFor="let menu of menus">
-          <ng-container *ngIf="menu.kind != 'mt'">
-            <div *ngIf="!menu.items?.length; else dropdownMenu">
-              <a [routerLink]="menu.route ? [menu.route] : []" class="nav-item nav-link" (click)="onMenuClick(menu)">
-                {{ menu.label }}
-              </a>
-            </div>
-            <ng-template #dropdownMenu>
-              <div class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" (click)="preventDefault($event)">
-                  {{ menu.label }}
-                </a>
-                <div class="dropdown-menu m-0">
-                  <ng-container *ngFor="let item of menu.items">
-                    <a [routerLink]="item.route ? [item.route] : []" class="dropdown-item" (click)="onMenuClick(item)">
-                      {{ item.label }}
-                    </a>
-                    <div *ngIf="item.items?.length" class="dropdown-submenu">
-                      <a *ngFor="let subItem of item.items" [routerLink]="subItem.route ? [subItem.route] : []"
-                        class="dropdown-item" (click)="onMenuClick(subItem)">
-                        {{ subItem.label }}
-                      </a>
-                    </div>
-                  </ng-container>
-                </div>
-              </div>
-            </ng-template>
-          </ng-container>
-        </ng-container>
-      </div>
-    </div>
-  </nav>
-</div>
-<div class="mobile-menu-overlay"></div>
-<div class="mobile-menu-container mobile-menu-light">
-  <div class="mobile-menu-wrapper">
-
-    <span class="mobile-menu-close" (click)="closeMobileMenu()">
-      <i class="fas fa-times"></i>
-    </span>
-    <ul class="nav nav-pills-mobile nav-border-anim" role="tablist">
-      <li class="nav-item" *ngIf="!isLogin">
-        <a class="nav-link" [routerLink]="['/login']">
-          <i class="fas fa-sign-in-alt"></i>
-          <span>Login</span>
-        </a>
-      </li>
-      <li class="nav-item" *ngIf="isLogin">
-        <a class="nav-link" (click)="logOut()">
-          <i class="fas fa-sign-out-alt"></i>
-          <span>Logout</span>
-        </a>
-      </li>
-
-    </ul>
-
-    <div class="tab-content">
-      <div class="tab-pane fade show active" id="mobile-menu-tab" role="tabpanel" aria-labelledby="mobile-menu-link">
-        <nav class="mobile-nav">
-          <ul class="mobile-menu">
-            <ng-container *ngFor="let menu of menus">
-              <ng-container *ngIf="menu.kind != 'mt'">
-                <li #menuItem>
-                  <a [routerLink]="menu.route ? [menu.route] : []" class="sf-with-ul" (click)="toggleMenu(menuItem ,menu)">
-                    {{ menu.label }}
-                  </a>
-                  <ul *ngIf="menu.items?.length">
-                    <li *ngFor="let item of menu.items" #subMenuItem>
-                      <a [routerLink]="item.route ? [item.route] : []" class="sf-with-ul" (click)="onMenuClick(item)">
-                        {{ item.label }}
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-              </ng-container>
-            </ng-container>
-          </ul>
+<header class="fintech-header">
+    <div class="header-container">
+        <div class="header-left">
+            <h1 class="brand-logo" style="margin:0; font-size: 1.2rem; color: #4f46e5; display:flex; align-items:center; gap:8px;">
+                <span style="font-size: 1.8rem;">💎</span> T'L WEALTH
+            </h1>
+        </div>
+        
+        <nav class="header-nav">
+            <ul class="nav-menu">
+                <li><a routerLink="/dashboard" routerLinkActive="active">Tổng Quan</a></li>
+                <li><a routerLink="/assets" routerLinkActive="active">Danh Mục</a></li>
+                <li><a routerLink="/news" routerLinkActive="active">Tin Tức AI</a></li>
+                <li><a routerLink="/rules" routerLinkActive="active">Quy Tắc</a></li>
+                <li><a routerLink="/analytics" routerLinkActive="active">Phân Tích AI <span style="font-size: 0.7em; background: #fbbf24; color: black; padding: 2px 6px; border-radius: 4px; margin-left:4px; vertical-align: top;">PRO</span></a></li>
+                <li><a routerLink="/pricing" class="highlight-nav" routerLinkActive="active">Nâng Cấp Gói</a></li>
+            </ul>
         </nav>
-      </div>
+
+        <div class="header-right">
+            <div class="user-action" *ngIf="isLogin">
+                <span class="greeting">{{wellcome}}</span>
+                <button class="btn-logout" (click)="logOut()"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
+            <div class="auth-buttons" *ngIf="!isLogin">
+                <a routerLink="/login" class="btn-login-outline hidden-mobile">Đăng Nhập</a>
+                <a routerLink="/register" class="btn-register-filled hidden-mobile">Tạo Tài Khoản</a>
+            </div>
+            
+            <!-- Mobile Menu Toggle Button -->
+            <button class="hamburger-btn" (click)="isMobileMenuOpen = !isMobileMenuOpen">
+                <i class="fas" [class.fa-bars]="!isMobileMenuOpen" [class.fa-times]="isMobileMenuOpen"></i>
+            </button>
+        </div>
     </div>
-  </div>
-</div>
+    
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" *ngIf="isMobileMenuOpen" (click)="isMobileMenuOpen = false"></div>
+    <div class="mobile-menu-container" [class.open]="isMobileMenuOpen">
+        <nav class="mobile-nav">
+            <a routerLink="/dashboard" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-chart-pie"></i> Tổng Quan</a>
+            <a routerLink="/assets" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-wallet"></i> Danh Mục</a>
+            <a routerLink="/news" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-newspaper"></i> Tin Tức AI</a>
+            <a routerLink="/rules" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-bolt"></i> Quy Tắc</a>
+            <a routerLink="/analytics" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-chart-line"></i> Phân Tích PRO</a>
+            <a routerLink="/pricing" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link highlight"><i class="fas fa-gem"></i> Nâng Cấp Gói</a>
+            <hr class="mobile-divider" *ngIf="!isLogin">
+            <a *ngIf="!isLogin" routerLink="/login" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-sign-in-alt"></i> Đăng Nhập</a>
+            <a *ngIf="!isLogin" routerLink="/register" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-user-plus"></i> Đăng Ký</a>
+        </nav>
+    </div>
+</header>

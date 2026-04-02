@@ -1,0 +1,51 @@
+<div class="portfolio-container animate__animated animate__fadeIn">
+  <div class="header-section">
+    <h2 class="title"><i class="fas fa-cog"></i> Cấu Hình Giá Thị Trường</h2>
+    <p class="subtitle">Dành cho tài khoản <strong>BASIC</strong>. Vui lòng cập nhật giá thủ công để tính toán tổng giá trị tài sản.</p>
+  </div>
+
+  <div class="price-grid glass-morphism shadow-premium">
+    <div class="table-header">
+      <div class="col-symbol">Mã Tài Sản</div>
+      <div class="col-current">Giá Hiện Tại (Đã lưu)</div>
+      <div class="col-new">Giá Cập Nhật Mới</div>
+      <div class="col-action">Thao tác</div>
+    </div>
+
+    <div *ngIf="symbols.length === 0" class="empty-state">
+      <i class="fas fa-info-circle"></i>
+      <p>Bạn chưa có tài sản nào trong danh mục. Hãy thêm tài sản trước khi cấu hình giá.</p>
+    </div>
+
+    <div *ngFor="let s of symbols" class="price-row animate__animated animate__fadeInUp">
+      <div class="col-symbol">
+        <div class="symbol-tag">{{ s }}</div>
+      </div>
+      <div class="col-current">
+        <span class="price-value" *ngIf="marketPrices.has(s)">
+          {{ getCurrencySymbol(s) }}{{ marketPrices.get(s) | number:getCurrencyPipe(s) }}
+        </span>
+        <span class="no-price" *ngIf="!marketPrices.has(s)">Chưa có giá</span>
+      </div>
+      <div class="col-new">
+        <div class="input-wrapper">
+          <span class="currency">{{ getCurrencySymbol(s) }}</span>
+          <input #newPriceInput type="text" 
+                 placeholder="Nhập giá mới..." 
+                 [value]="displayPrices.get(s) || ''"
+                 (input)="onPriceInput(s, $event)">
+        </div>
+      </div>
+      <div class="col-action">
+        <button class="btn-update" (click)="savePrice(s, newPriceInput.value)">
+          <i class="fas fa-save"></i> Cập nhật
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-footer glass-morphism">
+    <i class="fas fa-lightbulb"></i>
+    <span>Mẹo: Giá này sẽ được dùng để tính <strong>Tổng giá trị (Market Value)</strong> và <strong>Lợi nhuận (P/L)</strong> trong Dashboard của bạn.</span>
+  </div>
+</div>

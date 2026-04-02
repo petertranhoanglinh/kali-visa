@@ -1,0 +1,11 @@
+.app-main-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+@media (max-width: 768px) {
+  .app-main-container {
+    padding: 1rem;
+  }
+}

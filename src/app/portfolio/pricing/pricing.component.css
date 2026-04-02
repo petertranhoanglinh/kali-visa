@@ -1,0 +1,145 @@
+.pricing-container {
+  padding: 2rem 0;
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.pricing-card {
+  background: white;
+  border-radius: 1rem;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+  border: 1px solid #f3f4f6;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.pricing-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+}
+
+.pricing-card.popular {
+  border-color: #4f46e5;
+  border-width: 2px;
+  transform: scale(1.05);
+}
+
+.pricing-card.popular:hover {
+  transform: scale(1.05) translateY(-5px);
+}
+
+.badge-popular {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #4f46e5;
+  color: white;
+  padding: 0.25rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.plan-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.plan-header h3 {
+  font-size: 1.5rem;
+  color: #111827;
+  margin: 0 0 1rem 0;
+}
+
+.price {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #111827;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+}
+
+.price span {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #6b7280;
+  margin-left: 0.25rem;
+}
+
+.plan-header p {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin-top: 1rem;
+}
+
+.features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2.5rem 0;
+  flex: 1;
+}
+
+.features li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  color: #4b5563;
+  font-size: 0.95rem;
+}
+
+.features li i {
+  color: #10b981;
+}
+
+.features li.disabled {
+  color: #9ca3af;
+  text-decoration: line-through;
+}
+
+.features li.disabled i {
+  color: #9ca3af;
+}
+
+.btn-plan {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.btn-plan.filled {
+  background: #4f46e5;
+  color: white;
+  border: none;
+}
+
+.btn-plan.filled:hover {
+  background: #4338ca;
+}
+
+.btn-plan.outline {
+  background: transparent;
+  color: #4f46e5;
+  border: 1px solid #4f46e5;
+}
+
+.btn-plan.outline:hover {
+  background: #f5f3ff;
+}

@@ -1,0 +1,53 @@
+<div class="pricing-container">
+  <div class="pricing-grid">
+    <!-- Basic Plan -->
+    <div class="pricing-card">
+      <div class="plan-header">
+        <h3>Khởi Đầu</h3>
+        <div class="price">Miễn phí</div>
+        <p>Bắt đầu thói quen quản lý tài chính.</p>
+      </div>
+      <ul class="features">
+        <li><i class="fas fa-check"></i> Theo dõi 2 tài sản</li>
+        <li><i class="fas fa-check"></i> Biểu đồ cơ bản</li>
+         <li><i class="fas fa-check"></i> Nhập tay danh mục tài sản</li>
+        <li class="disabled"><i class="fas fa-times"></i> AI Trợ lý phân tích vi mô</li>
+        <li class="disabled"><i class="fas fa-times"></i> Rules kỷ luật mua bán</li>
+      </ul>
+      <button class="btn-plan outline" (click)="selectPlan('Free', 0)">Bắt đầu ngay</button>
+    </div>
+
+    <!-- Pro Plan -->
+    <div class="pricing-card popular">
+      <div class="badge-popular">Phổ biến nhất</div>
+      <div class="plan-header">
+        <h3>T'L Pro</h3>
+        <div class="price">199.000₫<span>/tháng</span></div>
+        <p>Phù hợp cho cá nhân bận rộn tích sản.</p>
+      </div>
+      <ul class="features">
+        <li><i class="fas fa-check"></i> Không giới hạn tài sản</li>
+        <li><i class="fas fa-check"></i> Cập nhật Data Real-time</li>
+        <li><i class="fas fa-check"></i> AI Trợ lý phân tích (Cơ bản)</li>
+        <li><i class="fas fa-check"></i> 5 Rules tự động hóa danh mục</li>
+      </ul>
+      <button class="btn-plan filled" (click)="selectPlan('Pro', 199000)">Chọn gói này</button>
+    </div>
+
+    <!-- Premium Plan -->
+    <div class="pricing-card">
+      <div class="plan-header">
+        <h3>Premium Wealth</h3>
+        <div class="price">499.000₫<span>/tháng</span></div>
+        <p>Trải nghiệm đầy đủ hệ sinh thái tối thượng.</p>
+      </div>
+      <ul class="features">
+        <li><i class="fas fa-check"></i> Automation Trading Rules (Vô cực)</li>
+        <li><i class="fas fa-check"></i> AI Trợ lý (Nâng cao + Phán đoán)</li>
+        <li><i class="fas fa-check"></i> Tự động tóm tắt tin tức Live</li>
+        <li><i class="fas fa-check"></i> Hỗ trợ 1-1 từ CSKH</li>
+      </ul>
+      <button class="btn-plan outline" (click)="selectPlan('Premium', 499000)">Chọn gói VIP</button>
+    </div>
+  </div>
+</div>

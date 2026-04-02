@@ -14,6 +14,7 @@ import { AuthState, getCartNumber } from 'src/app/selectors/auth.selector';
 import { CoinState, getTestConnect } from 'src/app/selectors/coin.selector';
 import { HeaderState, getIsHeader } from 'src/app/selectors/header.selector';
 import { CartService } from 'src/app/service/cart-service.service';
+import { AuthService } from 'src/app/service/auth.service';
 
 declare var mobileInit: any;  // Khai báo jQuery
 @Component({
@@ -25,7 +26,11 @@ export class HeaderComponent implements OnInit {
   subMenu: any = [];
   isHeader$ = new Observable<Boolean>();
   isHeader: boolean = true;
-  isLogin: boolean = AuthDetail.isLogin();
+  get isLogin(): boolean {
+    const login = AuthDetail.isLogin();
+    // console.log("Header isLogin check:", login);
+    return login;
+  }
   wellcome: string = ''
   isConnect:boolean = false;
   resultConnect$ =  new Observable<ResultModel>();
@@ -65,10 +70,11 @@ export class HeaderComponent implements OnInit {
 
 
 
-  constructor(private headerStore: Store<HeaderState>,private authStore: Store<AuthState>,
-    private router: Router, private cartService: CartService,private renderer: Renderer2,
-    private el: ElementRef ,
-    private coinStore: Store<CoinState>) {
+  constructor(private headerStore: Store<HeaderState>, private authStore: Store<AuthState>,
+    private router: Router, private cartService: CartService, private renderer: Renderer2,
+    private el: ElementRef,
+    private coinStore: Store<CoinState>,
+    private authService: AuthService) {
     this.isHeader$ = this.headerStore.select(getIsHeader);
     this.resultConnect$ = this.coinStore.select(getTestConnect);
     this.quantityCart$ = this.authStore.select(getCartNumber)
@@ -84,65 +90,40 @@ export class HeaderComponent implements OnInit {
     setTimeout(() => {
       mobileInit()
     }, 500);
-    let role  = String(AuthDetail.getLoginedInfo()?.role);
 
-    if(this.isLogin){
-      this.menus.push(
-      {
-        label:'Wishlist',
-        route:'/shopping/wishlist',
-        kind:'mt',
-        icon:'icon-heart-o'
-      },
-      {
-        label:'View Cart',
-        route:'/shopping/cart',
-        kind:'mt'
-      },
-      {
-        label:'Checkout',
-        route:'/shopping/checkout'  , isShowPageHeading:true,
-        kind:'mt'
-      },
-      {
-        label:'Account',
-        route:'/auth/my-account',
-        kind:'mt',
-        icon:'icon-user'
-      },
-
-    )
-    }
-
-
-    if(role == 'admin'){
-      this.menus.push({
-        label: 'Administrator',
-        items: [
-          {label : "Quản Lý Dịch Vụ" , route: '/shopping/newProduct' , isShowPageHeading:true },
-          {label : "Đăng Ký Danh Mục Dịch Vụ " , route: '/product/regcate'  , isShowPageHeading:true},
-          {label: 'Theo Dõi Đơn Hàng Dịch Vụ', route: '/shopping/order-tracking'  , isShowPageHeading:true},
-          {label: 'Chi Tiết Dịch Vụ', route: '/shopping/order-detail'  , isShowPageHeading:true},
-          {label: 'Thêm Mới Bài Viết', route: '/blog/blog-edit'  , isShowPageHeading:true},
-          {label: 'Quản Lý Bài Viết', route: '/blog/blog-admin'  , isShowPageHeading:true},
-          {label: 'Quản Lý Tin Nhắn', route: '/chat-admin'  , isShowPageHeading:true},
-        ]
-      })
-    }
-
-    this.initMenu(window.location.pathname );
-
-
-    if(Number(AuthDetail.getLoginedInfo()?.logoutDate) <= Number(DateUtils.getCurrFullDateTimeStrBlank(new Date()))){
-      AuthDetail.actionLogOut();
-      window.location.href = '/';
-    }
+    const loginInfo = AuthDetail.getLoginedInfo();
+    let role = String(loginInfo?.role);
 
     if (this.isLogin) {
-     // this.coinStore.dispatch(getTestConnectAction());
-      this.wellcome = "Wellcome to " + String(AuthDetail.getLoginedInfo()?.email)
+      const jwt = loginInfo.jwt;
+      if (jwt) {
+        this.authService.checkJwt(jwt).subscribe({
+          next: (isValid) => {
+            if (!isValid) {
+              AuthDetail.actionLogOut();
+              const currentUrl = window.location.pathname;
+              if (currentUrl !== '/' && currentUrl !== '/home') {
+                this.router.navigate(["/login"]);
+              } else {
+                location.reload(); // Reload to update UI on home page
+              }
+            }
+          },
+          error: () => {
+            AuthDetail.actionLogOut();
+            const currentUrl = window.location.pathname;
+            if (currentUrl !== '/' && currentUrl !== '/home') {
+              this.router.navigate(["/login"]);
+            } else {
+              location.reload();
+            }
+          }
+        });
+      }
+      this.wellcome = "Welcome back, " + (loginInfo.email || "User");
     }
-
+    this.initMenu(window.location.pathname);
+    
     this.isHeader$.subscribe(res => {
       if (ValidationUtil.isNotNullAndNotEmpty(res)) {
         this.isHeader = Boolean(res)
@@ -174,7 +155,7 @@ export class HeaderComponent implements OnInit {
   }
   logOut() {
     AuthDetail.actionLogOut();
-    window.location.href = "/"
+    this.router.navigate(["/login"]);
   }
 
   findMenuPath(route: string): string {

@@ -1,0 +1,71 @@
+<div class="checkout-container">
+  <button class="btn-back" (click)="cancel.emit()"><i class="fas fa-arrow-left"></i> Quay lại</button>
+
+  <div class="checkout-grid">
+    <div class="checkout-form">
+      <h2>Thanh toán định kỳ</h2>
+      <p class="subtitle">Thêm thẻ tín dụng hoặc nạp tiền để gia hạn gói T'L Wealth Management.</p>
+
+      <div class="payment-methods">
+        <label class="method-card active">
+          <input type="radio" name="payment" checked>
+          <div class="method-info">
+            <i class="fab fa-cc-visa" style="color: #1a1f71"></i>
+            <i class="fab fa-cc-mastercard" style="color: #eb001b"></i>
+            <span>Thẻ tín dụng / Ghi nợ</span>
+          </div>
+        </label>
+        <label class="method-card">
+          <input type="radio" name="payment">
+          <div class="method-info">
+            <img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" alt="Momo" width="24">
+            <span>Ví MoMo</span>
+          </div>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>Tên trên thẻ</label>
+        <input type="text" class="input-field" placeholder="NGUYEN VAN A">
+      </div>
+      <div class="form-group">
+        <label>Số thẻ</label>
+        <div class="input-group">
+          <i class="far fa-credit-card"></i>
+          <input type="text" class="input-field with-icon" placeholder="0000 0000 0000 0000">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group half">
+          <label>Ngày hết hạn</label>
+          <input type="text" class="input-field" placeholder="MM/YY">
+        </div>
+        <div class="form-group half">
+          <label>CVC</label>
+          <input type="text" class="input-field" placeholder="123">
+        </div>
+      </div>
+    </div>
+
+    <div class="order-summary">
+      <h2>Hóa đơn của bạn</h2>
+      <div class="summary-card">
+        <div class="summary-item">
+          <span class="label">Gói dịch vụ</span>
+          <span class="value">{{ selectedPlan?.name }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="label">Chu kỳ</span>
+          <span class="value">Hàng tháng</span>
+        </div>
+        <hr>
+        <div class="summary-item total">
+          <span class="label">Tổng thanh toán</span>
+          <span class="value">{{ selectedPlan?.price | currency:'VND' }}</span>
+        </div>
+        <p class="terms-text">Bằng việc xác nhận, bạn đồng ý với Điều khoản thanh toán tự động định kỳ mỗi tháng. Bạn có thể hủy gói bất kỳ lúc nào.</p>
+        <button class="btn-checkout" (click)="processPayment()">Xác nhận Thanh toán</button>
+      </div>
+    </div>
+  </div>
+</div>

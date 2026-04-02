@@ -1,26 +1,27 @@
 <body>
   <div class="login-container">
       <div class="logo">
-          <img src="../../../../assets/images/logo.png" alt="Logo">
+          <!-- Placeholder Icon or New Logo -->
+          <h1 style="font-size: 2rem; color: #4f46e5; margin-bottom: 0;">💎 T'L WEALTH MANAGEMENT</h1>
       </div>
 
-      <h2 class="welcome-text">WELCOME MINHMINH VISA</h2>
+      <h2 class="welcome-text">Sign In to Your Wealth Dashboard</h2>
 
       <form method="POST">
           <div class="form-group">
               <i class="fas fa-envelope form-icon"></i>
-              <input type="email" [(ngModel)]="email" class="form-control" id="email" placeholder="Email" required>
+              <input type="email" [(ngModel)]="email" class="form-control" name="email" id="email" placeholder="Email Address" required>
           </div>
 
           <div class="form-group">
               <i class="fas fa-lock form-icon"></i>
-              <input type="password" [(ngModel)]="password" class="form-control" id="password" placeholder="Password" required>
+              <input type="password" [(ngModel)]="password" class="form-control" name="password" id="password" placeholder="Password" required>
           </div>
 
-          <button type="button" class="btn-login" (click)="loginPage()">Sign In</button>
+          <button type="button" class="btn-login" style="background:#4f46e5" (click)="loginPage()">Access Dashboard</button>
       </form>
       <hr class="divider">
-      <p class="google-text">Đăng nhập hoặc đăng ký mới bằng tài khoản Google</p>
+      <p class="google-text">Or sign in with Google</p>
       <div id="googleID" class="google-login">
           <!-- Google login button will be rendered here -->
       </div>

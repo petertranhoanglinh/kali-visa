@@ -1,11 +1,16 @@
 .containershop {
   width: 100%;
-  padding: 20px;
-  background: linear-gradient(120deg, RGB(19, 74, 134) 0%, #8ec5fc 100%);
+  padding: 2rem;
+  background: #f3f4f6;
+  background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                    radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+                    radial-gradient(at 100% 100%, hsla(339,49%,30%,1) 0, transparent 50%);
+  background-color: #0f172a;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: 'Inter', 'Roboto', sans-serif;
 }
 
 * {
@@ -15,26 +20,32 @@
 }
 
 .card {
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 20px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   overflow: hidden;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  max-width: 1100px;
+  width: 100%;
 }
 
 .card-body {
-  padding: 3rem;
+  padding: 0;
 }
 
 .row {
   display: flex;
   flex-wrap: wrap;
-  gap: 2rem;
+  margin: 0;
 }
 
 .form-section {
   flex: 1;
   min-width: 300px;
+  padding: 4rem;
 }
 
 .brand-section {
@@ -45,23 +56,22 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  background: linear-gradient(120deg, RGB(19, 74, 134) 0%, #8ec5fc 100%);
-  padding: 2rem;
-  border-radius: 15px;
+  padding: 4rem;
   color: white;
 }
 
 .title {
-  color: #333;
-  font-size: 2.5rem;
+  color: white;
+  font-size: 2rem;
   margin-bottom: 0.5rem;
   font-weight: 600;
+  letter-spacing: -0.025em;
 }
 
 .subtitle {
-  color: #666;
-  margin-bottom: 2rem;
-  font-size: 1.1rem;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 3rem;
+  font-size: 1rem;
 }
 
 .form-group {
@@ -71,99 +81,91 @@
 
 .form-control {
   width: 100%;
-  padding: 0.8rem 1rem 0.8rem 3rem;
-  border: 2px solid #e1e1e1;
-  border-radius: 10px;
+  padding: 1rem 1rem 1rem 3rem;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 12px;
   font-size: 1rem;
   transition: all 0.3s ease;
+  background: rgba(255,255,255,0.05);
+  color: white;
+}
+
+.form-control::placeholder {
+  color: rgba(255,255,255,0.5);
 }
 
 .form-control:focus {
-  border-color: #8ec5fc;
+  border-color: #818cf8;
   outline: none;
-  box-shadow: 0 0 0 3px rgba(142, 197, 252, 0.2);
+  background: rgba(255,255,255,0.1);
+  box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.2);
 }
 
 .form-icon {
   position: absolute;
-  left: 1rem;
+  left: 1.2rem;
   top: 50%;
   transform: translateY(-50%);
-  color: #8ec5fc;
+  color: #818cf8;
 }
 
 .form-label {
-  position: absolute;
-  left: 3rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #999;
-  transition: all 0.3s ease;
-  pointer-events: none;
-}
-
-.form-control:focus + .form-label,
-.form-control:not(:placeholder-shown) + .form-label {
-  top: -0.5rem;
-  left: 1rem;
-  font-size: 0.8rem;
-  background: white;
-  padding: 0 0.5rem;
+  display: none; /* Hide floating labels for simpler placeholder design */
 }
 
 .terms {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin: 1.5rem 0;
+  margin: 1.5rem 0 2rem 0;
+  color: rgba(255,255,255,0.8);
+  font-size: 0.9rem;
 }
 
 .terms a {
-  color: #8ec5fc;
+  color: #818cf8;
   text-decoration: none;
+  font-weight: 500;
+}
+
+.terms a:hover {
+  text-decoration: underline;
 }
 
 .btn-register {
   width: 100%;
   padding: 1rem;
   border: none;
-  border-radius: 10px;
-  background: linear-gradient(120deg, RGB(19, 74, 134) 0%, #8ec5fc 100%);
+  border-radius: 12px;
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
   color: white;
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
 }
 
 .btn-register:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(142, 197, 252, 0.4);
-}
-
-.brand-logo {
-  width: 180px;
-  height: 180px;
-  object-fit: contain;
-  margin-bottom: 2rem;
+  box-shadow: 0 20px 25px -5px rgba(79, 70, 229, 0.4);
 }
 
 .brand-description {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   line-height: 1.6;
   margin-top: 1.5rem;
+  font-weight: 300;
 }
 
 @media (max-width: 768px) {
-  .card-body {
+  .form-section, .brand-section {
       padding: 2rem;
   }
-
   .row {
       flex-direction: column-reverse;
   }
-
   .brand-section {
-      margin-bottom: 2rem;
+      border-radius: 24px 24px 0 0;
   }
 }

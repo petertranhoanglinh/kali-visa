@@ -67,6 +67,7 @@ export class LoginPageComponent implements OnInit {
 
     this.clearAuth$ = this.userAuth$.subscribe(
       (res) => {
+        debugger;
         if (ValidationUtil.isNotNullAndNotEmpty(res)) {
           if(ValidationUtil.isNotNullAndNotEmpty(res.id)){
             this.loginProcess(res);
@@ -112,24 +113,17 @@ export class LoginPageComponent implements OnInit {
   }
 
   loginProcess(res: MemberModel) {
-
-    const currentDate = new Date(); // Lấy thời gian hiện tại
-    currentDate.setMinutes(currentDate.getMinutes() + 30); // Cộng thêm 30 phút
-
-    // Sử dụng hàm định dạng đã tạo để chuyển thành chuỗi mong muốn
-    const logOutDate = DateUtils.getCurrFullDateTimeStrBlank(currentDate);
-
-    res.logoutDate = logOutDate;
-
-    localStorage.setItem('member', JSON.stringify(res));
-    sessionStorage.setItem('username', JSON.stringify(res.email));
-
-    if(ValidationUtil.isNotNullAndNotEmpty(res.email)){
-      this.overlayLoadingStore.dispatch(setShowOverlayLoading({loading:false}));
+    console.log("loginProcess received res:", res);
+    if (res.jwt) {
+      console.log("Setting JWT cookie...");
+      AuthDetail.setCookie('jwt', res.jwt, 1);
+      localStorage.removeItem('member');
+      this.overlayLoadingStore.dispatch(setShowOverlayLoading({ loading: false }));
       this.clearAuth$.unsubscribe();
       this.clearErr$.unsubscribe();
-      location.href ="/";
-    }else{
+      location.href = "/";
+    } else {
+      this.toastr.error("Login failed: No token received");
       this._router.navigate(["/login"]);
     }
   }

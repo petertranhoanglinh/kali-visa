@@ -1,0 +1,65 @@
+<div class="analytics-page fade-in">
+  <!-- Page Header -->
+  <header class="dashboard-header">
+    <div class="header-title">
+      <h1>Phân Tích Chuyên Sâu (AI Analytics)</h1>
+      <p class="subtitle">Khám phá các quyết định đầu tư thông minh từ dòng tiền lớn và dự phóng rủi ro.</p>
+    </div>
+    <div class="pro-badge">🔥 T'L WEALTH PREMIUM</div>
+  </header>
+
+  <!-- Premium Wrap -->
+  <div class="premium-wrapper" [class.locked]="!isPremium">
+    
+    <!-- Lock Overlay (Paywall) -->
+    <div class="lock-overlay" *ngIf="!isPremium">
+      <div class="lock-content">
+        <i class="fas fa-lock lock-icon"></i>
+        <h2>Tính Năng Premium Đã Khóa</h2>
+        <p>Gói miễn phí không thể truy cập Dữ liệu Dòng Tiền Cá Mập (Whale Tracker) và Hệ thống Giả lập Khủng hoảng (Stress Test).</p>
+        <button class="upgrade-btn" routerLink="/pricing">Mở Khóa Premium - Chống Cháy Tài Khoản</button>
+      </div>
+    </div>
+
+    <!-- Features Content (Blurred if not premium) -->
+    <div class="features-content">
+      
+      <!-- Feature 1: Whale Tracker -->
+      <section class="feature-card">
+        <div class="feature-header">
+          <div>
+            <h3>🐋 Whale Tracker (Dòng Tiền Cá Mập)</h3>
+            <p>Phân tích mua/bán ròng của Khối ngoại và Tự doanh (Real-time)</p>
+          </div>
+          <span class="live-pulse">🔴 LIVE</span>
+        </div>
+        <div class="chart-container">
+          <canvas baseChart 
+            [data]="whaleChartData" 
+            [options]="whaleChartOptions" 
+            [type]="whaleChartType">
+          </canvas>
+        </div>
+      </section>
+
+      <!-- Feature 2: Stress Test -->
+      <section class="feature-card">
+        <div class="feature-header">
+          <div>
+            <h3>🌩️ Giả Lập Khủng Hoảng (Portfolio Stress Test)</h3>
+            <p>Dự phóng bốc hơi tài sản nếu VN-Index sập giống T3/2020 (Covid-19)</p>
+          </div>
+          <button class="action-btn">Chạy Mô Phỏng</button>
+        </div>
+        <div class="chart-container">
+          <canvas baseChart 
+            [data]="stressChartData" 
+            [options]="stressChartOptions" 
+            [type]="stressChartType">
+          </canvas>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
