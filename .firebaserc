@@ -1,8 +1,8 @@
 {
   "projects": {
-    "default": "minhminh-kalivisa",
-    "staging": "auth-webixx",
-    "webixx": "auth-webixx"
+    "default": "quanlydautucanhan",
+    "staging": "quanlydautucanhan",
+    "webixx": "quanlydautucanhan"
   },
   "targets": {},
   "etags": {}
