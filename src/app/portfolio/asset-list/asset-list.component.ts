@@ -158,6 +158,9 @@ export class AssetListComponent implements OnInit {
 
   toggleAddForm() {
     this.showAddForm = !this.showAddForm;
+    if (this.showAddForm) {
+      this.newAsset.purchaseDate = this.formatDateForInput(new Date());
+    }
   }
 
   addAsset() {
@@ -171,7 +174,7 @@ export class AssetListComponent implements OnInit {
     // Parse the display price back to number
     this.newAsset.averagePrice = this.parseNumber(this.displayPrice);
 
-    // If user didn't pick a date, default to now
+    // If user didn't pick a date, default to now (though the input should have it)
     if (!this.newAsset.purchaseDate) {
       this.newAsset.purchaseDate = new Date().toISOString();
     }
@@ -202,7 +205,8 @@ export class AssetListComponent implements OnInit {
         quantity: group.totalQuantity, // Default to selling all
         averagePrice: group.marketPrice || 0,
         currency: group.history[0].currency,
-        isSell: true
+        isSell: true,
+        purchaseDate: this.formatDateForInput(new Date())
       };
       this.displaySellPrice = this.formatNumber(this.newSellAsset.averagePrice);
     }
@@ -213,7 +217,10 @@ export class AssetListComponent implements OnInit {
     if (!userId) return;
 
     this.newSellAsset.averagePrice = this.parseNumber(this.displaySellPrice);
-    this.newSellAsset.purchaseDate = new Date().toISOString();
+    // Use the date from the input, or default to now if missing
+    if (!this.newSellAsset.purchaseDate) {
+      this.newSellAsset.purchaseDate = new Date().toISOString();
+    }
 
     // 1. Record the SELL transaction
     this.assetService.addAsset(this.newSellAsset).subscribe({
@@ -296,9 +303,19 @@ export class AssetListComponent implements OnInit {
       symbol: '',
       quantity: 0,
       averagePrice: 0,
-      currency: 'USD'
+      currency: 'USD',
+      purchaseDate: this.formatDateForInput(new Date())
     };
     this.displayPrice = '';
+  }
+
+  private formatDateForInput(date: Date): string {
+    const pad = (n: number) => n < 10 ? '0' + n : n;
+    return date.getFullYear() + '-' +
+      pad(date.getMonth() + 1) + '-' +
+      pad(date.getDate()) + 'T' +
+      pad(date.getHours()) + ':' +
+      pad(date.getMinutes());
   }
 
   calculateTotal(asset: AssetModel): number {

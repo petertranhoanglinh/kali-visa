@@ -60,6 +60,10 @@
             </div>
             <small class="hint" *ngIf="displayPrice">Giá trị: {{ parseNumber(displayPrice) | number }} {{ newAsset.currency }}</small>
           </div>
+          <div class="form-group">
+            <label>Thời gian (Ngày/Giờ)</label>
+            <input type="datetime-local" [(ngModel)]="newAsset.purchaseDate">
+          </div>
         </div>
       </div>
       <div class="modal-footer">
@@ -193,6 +197,10 @@
               <span class="currency-label">{{ newSellAsset.currency }}</span>
             </div>
             <small class="hint" *ngIf="displaySellPrice">Thanh khoản dự kiến: {{ parseNumber(displaySellPrice) * newSellAsset.quantity | number }} {{ newSellAsset.currency }}</small>
+          </div>
+          <div class="form-group">
+            <label>Thời gian Bán</label>
+            <input type="datetime-local" [(ngModel)]="newSellAsset.purchaseDate">
           </div>
         </div>
       </div>
