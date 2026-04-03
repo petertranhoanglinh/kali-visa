@@ -14,7 +14,14 @@
     <div class="card-body">
       <div class="composer-header">
         <div class="avatar">{{ currentUserName.charAt(0).toUpperCase() }}</div>
-        <textarea [(ngModel)]="newPostContent" placeholder="Bạn đang nghĩ gì về thị trường hôm nay, {{ currentUserName.split('@')[0] }}?" rows="2" class="post-input"></textarea>
+        <div class="ck-editor-container">
+          <ckeditor 
+            [editor]="Editor" 
+            [(ngModel)]="newPostContent" 
+            (ready)="onReady($event)"
+            [config]="{ placeholder: 'Bạn đang nghĩ gì về thị trường hôm nay?' }">
+          </ckeditor>
+        </div>
       </div>
 
       <!-- Preview Area -->
@@ -54,14 +61,36 @@
           <h4 class="author-name">{{ post.authorName }}</h4>
           <span class="post-time"><i class="fas fa-globe-americas"></i> {{ post.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
         </div>
-        <!-- Delete Button for Author -->
-        <button *ngIf="post.authorId === currentUserId" class="btn-delete-post" (click)="deletePost(post)" title="Xóa bài viết">
-          <i class="fas fa-trash-alt"></i>
-        </button>
+        <!-- Actions for Author -->
+        <div class="header-actions" *ngIf="post.authorId === currentUserId">
+          <button class="btn-icon-action" (click)="startEdit(post)" title="Chỉnh sửa bài viết">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button class="btn-icon-action delete" (click)="deletePost(post)" title="Xóa bài viết">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </div>
       </div>
 
       <div class="post-content">
-        <p class="text-content" *ngIf="post.content">{{ post.content }}</p>
+        <!-- Display Mode -->
+        <div class="text-content" *ngIf="editingPostId !== post.id && post.content" [innerHTML]="post.content"></div>
+        
+        <!-- Edit Mode -->
+        <div class="edit-mode-container" *ngIf="editingPostId === post.id">
+          <div class="ck-editor-container mini">
+            <ckeditor 
+              [editor]="Editor" 
+              [(ngModel)]="editingPostContent" 
+              (ready)="onReady($event)"
+              [config]="{ placeholder: 'Bạn đang nghĩ gì...' }">
+            </ckeditor>
+          </div>
+          <div class="edit-actions">
+            <button class="btn-cancel-edit" (click)="cancelEdit()">Hủy</button>
+            <button class="btn-save-edit" (click)="saveEdit(post)">Lưu thay đổi</button>
+          </div>
+        </div>
       </div>
 
       <div class="media-content" *ngIf="post.mediaUrl && post.mediaType !== 'NONE'">

@@ -30,8 +30,12 @@ export class SocialService {
     return this.http.post<PostModel>(`${this.apiUrl}/posts`, post, this.getOptions());
   }
 
-  deletePost(postId: string, userId: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/posts/${postId}?userId=${userId}`, this.getOptions());
+  deletePost(id: string, userId: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/posts/${id}?userId=${userId}`, this.getOptions());
+  }
+
+  updatePost(id: string, post: PostModel, userId: string): Observable<PostModel> {
+    return this.http.put<PostModel>(`${this.apiUrl}/posts/${id}?userId=${userId}`, post, this.getOptions());
   }
 
   toggleLike(postId: string, userId: string): Observable<PostModel> {

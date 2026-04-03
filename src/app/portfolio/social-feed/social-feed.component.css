@@ -87,26 +87,55 @@
 .composer-header {
   display: flex;
   gap: 15px;
-  align-items: center;
-  border-bottom: 1px solid #e2e8f0;
-  padding-bottom: 15px;
+  align-items: flex-start;
+  padding-bottom: 5px;
 }
 
-.post-input {
-  width: 100%;
-  background: #f1f5f9;
-  border: none;
-  color: #0f172a;
-  font-size: 1.15rem;
-  resize: none;
-  outline: none;
-  font-family: inherit;
-  padding: 12px 20px;
-  border-radius: 30px;
-  transition: background 0.2s;
+.ck-editor-container {
+  flex: 1;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.2s;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
 }
-.post-input:hover, .post-input:focus { background: #e2e8f0; }
-.post-input::placeholder { color: #64748b; }
+
+.ck-editor-container:focus-within {
+  border-color: #3b82f6;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+:host ::v-deep .ck-editor__editable {
+  min-height: 80px;
+  background: transparent !important;
+  border: none !important;
+  color: #1e293b !important;
+  font-size: 1.05rem;
+  padding: 12px 15px !important;
+  line-height: 1.6;
+}
+
+:host ::v-deep .ck-toolbar {
+  background: #f1f5f9 !important;
+  border: none !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  padding: 4px 8px !important;
+}
+
+:host ::v-deep .ck.ck-editor__main>.ck-editor__editable:not(.ck-focused) {
+  border-color: transparent !important;
+}
+
+:host ::v-deep .ck.ck-toolbar .ck.ck-toolbar__items {
+  flex-wrap: nowrap !important;
+  overflow-x: auto;
+}
+
+:host ::v-deep .ck.ck-button {
+  cursor: pointer !important;
+}
 
 .preview-area {
   margin-top: 1rem;
@@ -200,7 +229,12 @@
   color: #0f172a;
 }
 
-.btn-delete-post {
+.header-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.btn-icon-action {
   background: transparent;
   color: #94a3b8;
   border: none;
@@ -209,9 +243,17 @@
   border-radius: 50%;
   font-size: 1.1rem;
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.btn-delete-post:hover {
+.btn-icon-action:hover {
+  background: #f1f5f9;
+  color: #2563eb;
+}
+
+.btn-icon-action.delete:hover {
   background: #fee2e2;
   color: #ef4444;
 }
@@ -358,6 +400,25 @@
 
 .comment-input::placeholder { color: #64748b; }
 
+/* CKEditor Customizations - Simplified */
+:host ::v-deep .ck.ck-editor {
+  border: none !important;
+}
+
+:host ::v-deep .ck.ck-toolbar {
+  border: none !important;
+}
+
+/* Post Content Formatting */
+.text-content ::ng-deep p {
+  margin-bottom: 0.5rem;
+}
+
+.text-content ::ng-deep ul, .text-content ::ng-deep ol {
+  margin-left: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
 .btn-send {
   background: transparent;
   color: #2563eb;
@@ -377,6 +438,41 @@
 .loader-container i {
   font-size: 2.5rem;
 }
+
+/* Edit Mode Styles */
+.edit-mode-container {
+  margin-top: 10px;
+}
+
+.edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn-cancel-edit {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  padding: 6px 15px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-save-edit {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 6px 20px;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-save-edit:hover { background: #1d4ed8; }
+.btn-cancel-edit:hover { background: #e2e8f0; }
 
 @media (max-width: 768px) {
   .post-card { border-radius: 0; border: none; border-top: 8px solid #cbd5e1; border-bottom: 8px solid #cbd5e1; margin-bottom: 0px; }

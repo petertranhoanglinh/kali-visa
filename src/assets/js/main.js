@@ -1,20 +1,18 @@
 // Main Js File
 
 function mobileInit(){
-  // Trong component của bạn
-    toggleMobileMenu() {
-      const mobileMenu = document.querySelector('.mobile-menu-container');
-      const overlay = document.querySelector('.mobile-menu-overlay');
-      mobileMenu.classList.toggle('open');
-      overlay.style.display = mobileMenu.classList.contains('open') ? 'block' : 'none';
-    }
+    // Setup mobile menu listeners
+    $('.mobile-menu-toggler').on('click', function (e) {
+        $('.mobile-menu-container').addClass('open');
+        $('.mobile-menu-overlay').fadeIn();
+        e.preventDefault();
+    });
 
-    closeMobileMenu() {
-      const mobileMenu = document.querySelector('.mobile-menu-container');
-      const overlay = document.querySelector('.mobile-menu-overlay');
-      mobileMenu.classList.remove('open');
-      overlay.style.display = 'none';
-    }
+    $('.mobile-menu-close, .mobile-menu-overlay').on('click', function (e) {
+        $('.mobile-menu-container').removeClass('open');
+        $('.mobile-menu-overlay').fadeOut();
+        e.preventDefault();
+    });
 }
 $(document).ready(function () {
 

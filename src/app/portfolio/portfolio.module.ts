@@ -15,6 +15,7 @@ import { HomeComponent } from './home/home.component';
 import { PriceSettingsComponent } from './price-settings/price-settings.component';
 import { NotesComponent } from './notes/notes.component';
 import { SocialFeedComponent } from './social-feed/social-feed.component';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 
 import { FormsModule } from '@angular/forms';
@@ -39,7 +40,8 @@ import { FormsModule } from '@angular/forms';
     CommonModule,
     PortfolioRoutingModule,
     NgChartsModule,
-    FormsModule
+    FormsModule,
+    CKEditorModule
   ]
 })
 export class PortfolioModule { }

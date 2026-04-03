@@ -3,6 +3,7 @@ import { SocialService } from 'src/app/service/social.service';
 import { PostModel, CommentModel } from 'src/app/model/social.model';
 import { AuthDetail } from 'src/app/common/util/auth-detail';
 import { ToastrService } from 'ngx-toastr';
+import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
 @Component({
   selector: 'app-social-feed',
@@ -11,7 +12,16 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class SocialFeedComponent implements OnInit {
 
+  public Editor: any = (DecoupledEditor as any).default || DecoupledEditor;
   posts: PostModel[] = [];
+
+  onReady(editor: any): void {
+    const toolbarElement = editor.ui.view.toolbar.element;
+    const editableElement = editor.ui.getEditableElement();
+
+    // Thêm toolbar vào DOM (Decoupled layout)
+    editableElement.parentElement.insertBefore(toolbarElement, editableElement);
+  }
   
   // Pagination
   currentPage: number = 0;
@@ -29,6 +39,10 @@ export class SocialFeedComponent implements OnInit {
 
   currentUserId: string = '';
   currentUserName: string = 'Nhà Đầu Tư ẩn danh';
+
+  // Edit Mode
+  editingPostId: string | null = null;
+  editingPostContent: string = '';
 
   // Comments
   newCommentContent: { [postId: string]: string } = {};
@@ -196,6 +210,33 @@ export class SocialFeedComponent implements OnInit {
         error: () => this.toastr.error("Lỗi khi xóa bài viết.")
       });
     }
+  }
+
+  startEdit(post: PostModel) {
+    this.editingPostId = post.id!;
+    this.editingPostContent = post.content || '';
+  }
+
+  cancelEdit() {
+    this.editingPostId = null;
+    this.editingPostContent = '';
+  }
+
+  saveEdit(post: PostModel) {
+    if (!this.editingPostContent.trim()) {
+      this.toastr.warning("Nội dung không được để trống.");
+      return;
+    }
+
+    const updatedPost = { ...post, content: this.editingPostContent };
+    this.socialService.updatePost(post.id!, updatedPost, this.currentUserId).subscribe({
+      next: (res) => {
+        post.content = res.content; // Cập nhật nội dung tại chỗ
+        this.toastr.success("Đã cập nhật bài viết.");
+        this.cancelEdit();
+      },
+      error: () => this.toastr.error("Lỗi khi cập nhật bài viết.")
+    });
   }
 
   toggleLike(post: PostModel) {

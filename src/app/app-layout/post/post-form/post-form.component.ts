@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic'; // Sử dụng ClassicEditor
-import '@ckeditor/ckeditor5-alignment/build/translations/vi';
 import { BlogModel } from 'src/app/model/blog.model';
 import { environment } from 'src/environments/environment';
 
