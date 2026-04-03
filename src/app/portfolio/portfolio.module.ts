@@ -13,6 +13,8 @@ import { AnalyticsComponent } from './analytics/analytics.component';
 import { PrivacyComponent } from './privacy/privacy.component';
 import { HomeComponent } from './home/home.component';
 import { PriceSettingsComponent } from './price-settings/price-settings.component';
+import { NotesComponent } from './notes/notes.component';
+import { SocialFeedComponent } from './social-feed/social-feed.component';
 
 
 import { FormsModule } from '@angular/forms';
@@ -29,7 +31,9 @@ import { FormsModule } from '@angular/forms';
     AnalyticsComponent,
     PrivacyComponent,
     HomeComponent,
-    PriceSettingsComponent
+    PriceSettingsComponent,
+    NotesComponent,
+    SocialFeedComponent
   ],
   imports: [
     CommonModule,

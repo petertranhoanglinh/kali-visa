@@ -12,6 +12,8 @@
                 <li><a routerLink="/assets" routerLinkActive="active">Danh Mục</a></li>
                 <li><a routerLink="/news" routerLinkActive="active">Tin Tức AI</a></li>
                 <li><a routerLink="/rules" routerLinkActive="active">Quy Tắc</a></li>
+                <li><a routerLink="/notes" routerLinkActive="active">Ghi Chú</a></li>
+                <li><a routerLink="/social" routerLinkActive="active">Cộng Đồng</a></li>
                 <li><a routerLink="/analytics" routerLinkActive="active">Phân Tích AI <span style="font-size: 0.7em; background: #fbbf24; color: black; padding: 2px 6px; border-radius: 4px; margin-left:4px; vertical-align: top;">PRO</span></a></li>
                 <li><a routerLink="/pricing" class="highlight-nav" routerLinkActive="active">Nâng Cấp Gói</a></li>
             </ul>
@@ -19,7 +21,6 @@
 
         <div class="header-right">
             <div class="user-action" *ngIf="isLogin">
-                <span class="greeting">{{wellcome}}</span>
                 <button class="btn-logout" (click)="logOut()"><i class="fas fa-sign-out-alt"></i></button>
             </div>
             <div class="auth-buttons" *ngIf="!isLogin">
@@ -42,6 +43,8 @@
             <a routerLink="/assets" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-wallet"></i> Danh Mục</a>
             <a routerLink="/news" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-newspaper"></i> Tin Tức AI</a>
             <a routerLink="/rules" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-bolt"></i> Quy Tắc</a>
+            <a routerLink="/notes" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-sticky-note"></i> Ghi Chú</a>
+            <a routerLink="/social" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-globe-asia"></i> Cộng Đồng</a>
             <a routerLink="/analytics" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-chart-line"></i> Phân Tích PRO</a>
             <a routerLink="/pricing" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link highlight"><i class="fas fa-gem"></i> Nâng Cấp Gói</a>
             <hr class="mobile-divider" *ngIf="!isLogin">

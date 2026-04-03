@@ -1,0 +1,122 @@
+<div class="portfolio-container animate__animated animate__fadeIn">
+  <div class="header-section">
+    <h2 class="title">T'L Community</h2>
+    <p class="subtitle">Nơi giao lưu, chia sẻ nhận định và thảo luận chiến lược đầu tư</p>
+    
+    <div class="filter-tabs">
+      <button class="filter-btn" [class.active]="filterMode === 'ALL'" (click)="setFilterMode('ALL')">Tất cả bảng tin</button>
+      <button class="filter-btn" [class.active]="filterMode === 'MINE'" (click)="setFilterMode('MINE')">Bài viết của tôi</button>
+    </div>
+  </div>
+
+  <!-- Create Post Area -->
+  <div class="create-post-card flat-surface">
+    <div class="card-body">
+      <div class="composer-header">
+        <div class="avatar">{{ currentUserName.charAt(0).toUpperCase() }}</div>
+        <textarea [(ngModel)]="newPostContent" placeholder="Bạn đang nghĩ gì về thị trường hôm nay, {{ currentUserName.split('@')[0] }}?" rows="2" class="post-input"></textarea>
+      </div>
+
+      <!-- Preview Area -->
+      <div class="preview-area" *ngIf="previewUrl">
+        <button class="btn-clear-media" (click)="clearFile()"><i class="fas fa-times"></i></button>
+        <img *ngIf="previewType === 'IMAGE'" [src]="previewUrl" class="media-preview" alt="Preview" />
+        <video *ngIf="previewType === 'VIDEO'" [src]="previewUrl" controls class="media-preview"></video>
+      </div>
+
+      <div class="composer-footer">
+        <label class="btn-attach" [class.disabled]="isUploading">
+          <i class="fas fa-images"></i> Ảnh/Video
+          <input type="file" (change)="onFileSelected($event)" accept="image/*,video/*" hidden [disabled]="isUploading" />
+        </label>
+        
+        <button class="btn-post" (click)="submitPost()" [disabled]="isUploading || (!newPostContent.trim() && !selectedFile)">
+          <span *ngIf="!isUploading">Đăng</span>
+          <span *ngIf="isUploading"><i class="fas fa-spinner fa-spin"></i></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Social Feed Timeline -->
+  <div class="feed-timeline">
+    <div *ngIf="posts.length === 0 && !isLoadingPosts" class="empty-state" style="text-align: center; color: #64748b; padding: 2rem;">
+      <i class="fas fa-newspaper" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+      <p>Chưa có bài đăng nào.</p>
+    </div>
+
+    <!-- Posts list -->
+    <div *ngFor="let post of posts" class="post-card flat-surface animate__animated animate__fadeInUp">
+      
+      <div class="post-header">
+        <div class="avatar">{{ post.authorName.charAt(0).toUpperCase() }}</div>
+        <div style="flex: 1;">
+          <h4 class="author-name">{{ post.authorName }}</h4>
+          <span class="post-time"><i class="fas fa-globe-americas"></i> {{ post.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+        <!-- Delete Button for Author -->
+        <button *ngIf="post.authorId === currentUserId" class="btn-delete-post" (click)="deletePost(post)" title="Xóa bài viết">
+          <i class="fas fa-trash-alt"></i>
+        </button>
+      </div>
+
+      <div class="post-content">
+        <p class="text-content" *ngIf="post.content">{{ post.content }}</p>
+      </div>
+
+      <div class="media-content" *ngIf="post.mediaUrl && post.mediaType !== 'NONE'">
+        <img *ngIf="post.mediaType === 'IMAGE'" [src]="post.mediaUrl" class="post-media" alt="Post Image" loading="lazy">
+        <video *ngIf="post.mediaType === 'VIDEO'" [src]="post.mediaUrl" controls class="post-media" preload="metadata"></video>
+      </div>
+
+      <!-- Stats -->
+      <div class="post-stats" *ngIf="post.likes?.length || post.comments?.length">
+        <span *ngIf="post.likes?.length"><i class="fas fa-heart" style="color: #f43f5e"></i> {{ post.likes?.length }}</span>
+        <span *ngIf="post.comments?.length" style="margin-left: auto;">{{ post.comments?.length }} bình luận</span>
+      </div>
+
+      <!-- Actions -->
+      <div class="post-actions">
+        <button class="btn-action" [class.liked]="hasLiked(post)" (click)="toggleLike(post)">
+          <i class="fa-heart" [class.fas]="hasLiked(post)" [class.far]="!hasLiked(post)"></i> 
+          Thích
+        </button>
+        <button class="btn-action" (click)="toggleComments(post)">
+          <i class="far fa-comment-alt"></i> Bình luận
+        </button>
+      </div>
+
+      <!-- Comments Section -->
+      <div class="comments-section" *ngIf="post.showComments">
+        
+        <div class="comment-list" *ngIf="post.comments && post.comments.length > 0">
+          <div *ngFor="let c of post.comments" class="comment-item">
+            <div class="avatar small">{{ c.authorName.charAt(0).toUpperCase() }}</div>
+            <div>
+              <div class="comment-bubble">
+                <span class="comment-author">{{ c.authorName }}</span>
+                <p class="comment-text">{{ c.content }}</p>
+              </div>
+              <span class="comment-time">{{ c.createdAt | date:'HH:mm' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="comment-composer">
+          <div class="avatar small">{{ currentUserName.charAt(0).toUpperCase() }}</div>
+          <div class="comment-input-wrap">
+            <input type="text" [(ngModel)]="newCommentContent[post.id!]" placeholder="Viết bình luận công khai..." (keyup.enter)="submitComment(post)" class="comment-input">
+            <button class="btn-send" (click)="submitComment(post)"><i class="fas fa-paper-plane"></i></button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Infinite Scroll Loader -->
+    <div *ngIf="isLoadingPosts" class="loader-container">
+      <i class="fas fa-circle-notch fa-spin"></i>
+    </div>
+    
+  </div>
+</div>

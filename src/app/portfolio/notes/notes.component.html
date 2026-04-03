@@ -1,0 +1,59 @@
+<div class="portfolio-container animate__animated animate__fadeIn">
+  <div class="header-section">
+    <h2 class="title"><i class="fas fa-sticky-note"></i> Ghi Chú Nhà Đầu Tư</h2>
+    <p class="subtitle">Lưu lại những sự kiện, nhận định thị trường và các việc cần làm.</p>
+    
+    <button *ngIf="!showCreateForm" class="btn-premium add-btn mt-3" (click)="toggleCreateForm()">
+      <i class="fas fa-plus"></i> Tạo ghi chú mới
+    </button>
+  </div>
+
+  <!-- Note Create/Edit Form -->
+  <div *ngIf="showCreateForm" class="note-form-container glass-morphism animate__animated animate__zoomIn" [ngStyle]="{'background-color': newNote.color}">
+    <div class="form-header">
+      <input type="text" [(ngModel)]="newNote.title" placeholder="Tiêu đề ghi chú..." class="note-title-input">
+      <button class="close-btn" (click)="toggleCreateForm()"><i class="fas fa-times"></i></button>
+    </div>
+    
+    <div class="form-body">
+      <textarea [(ngModel)]="newNote.content" placeholder="Nội dung ghi chú..." rows="4" class="note-content-input"></textarea>
+    </div>
+    
+    <div class="form-footer">
+      <div class="left-actions">
+        <div class="color-palette">
+          <div *ngFor="let c of availableColors" class="color-circle" [style.background]="c" [class.active]="newNote.color === c" (click)="selectColor(c)"></div>
+        </div>
+        <div class="date-picker-wrap">
+          <i class="far fa-calendar-alt"></i>
+          <input type="datetime-local" [(ngModel)]="newNote.noteDate" class="note-date-input">
+        </div>
+      </div>
+      <div class="right-actions">
+        <button class="btn-save-note" (click)="saveNote()">{{ isEditing ? 'Cập Nhật' : 'Lưu' }}</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notes Masonry Grid -->
+  <div *ngIf="notes.length === 0 && !showCreateForm" class="empty-state">
+    <i class="far fa-clipboard"></i>
+    <p>Bạn chưa có ghi chú nào. Hãy thêm ghi chú đầu tiên!</p>
+  </div>
+
+  <div class="notes-masonry">
+    <div *ngFor="let note of notes" class="note-card animate__animated animate__fadeInUp" [ngStyle]="{'background-color': note.color}">
+      <div class="note-card-inner">
+        <h3 class="note-title" *ngIf="note.title">{{ note.title }}</h3>
+        <p class="note-content">{{ note.content }}</p>
+        <div class="note-meta">
+          <span class="note-date"><i class="far fa-clock"></i> {{ note.noteDate | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+        <div class="note-actions">
+          <button class="btn-action edit" (click)="editNote(note)"><i class="fas fa-pen"></i></button>
+          <button class="btn-action delete" (click)="deleteNote(note.id)"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

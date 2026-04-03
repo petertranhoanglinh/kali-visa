@@ -83,7 +83,7 @@ export class RegisterMemberComponent implements OnInit {
       username : this.userForm.get('username')?.value,
       password : this.userForm.get('password')?.value,
       email : this.userForm.get('email')?.value,
-      token:this.googleUser.sub,
+      googleID:this.googleUser.sub,
       role:'guess'
     }
 

@@ -50,15 +50,15 @@
             <input type="number" [(ngModel)]="newAsset.quantity" placeholder="0.00">
           </div>
           <div class="form-group">
-            <label>Giá Mua (Mỗi tài sản)</label>
-            <div class="input-with-currency">
+            <label>Giá Mua & Loại Tiền</label>
+            <div class="price-currency-grid">
               <input type="text" [(ngModel)]="displayPrice" (input)="onPriceChange($event)" placeholder="Ví dụ: 1,000,000">
-              <select class="currency-select" [(ngModel)]="newAsset.currency">
+              <select [(ngModel)]="newAsset.currency">
                 <option value="USD">USD ($)</option>
                 <option value="VND">VND (₫)</option>
               </select>
             </div>
-            <small class="hint" *ngIf="displayPrice">Giá trị: {{ parseNumber(displayPrice) | number }} {{ newAsset.currency }}</small>
+            <small class="hint" *ngIf="displayPrice">Nhập giá mua / 1 tài sản: {{ parseNumber(displayPrice) | number }} {{ newAsset.currency }}</small>
           </div>
           <div class="form-group">
             <label>Thời gian (Ngày/Giờ)</label>

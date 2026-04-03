@@ -11,6 +11,8 @@ import { NewsSummaryComponent } from './news-summary/news-summary.component';
 import { PrivacyComponent } from './privacy/privacy.component';
 import { HomeComponent } from './home/home.component';
 import { PriceSettingsComponent } from './price-settings/price-settings.component';
+import { NotesComponent } from './notes/notes.component';
+import { SocialFeedComponent } from './social-feed/social-feed.component';
 import { AuthGuardService } from '../service/auth-guard.service';
 
 const routes: Routes = [
@@ -23,6 +25,8 @@ const routes: Routes = [
   { path: 'pricing', component: PricingComponent, canActivate: [AuthGuardService] },
   { path: 'checkout', component: CheckoutComponent, canActivate: [AuthGuardService] },
   { path: 'price-settings', component: PriceSettingsComponent, canActivate: [AuthGuardService] },
+  { path: 'notes', component: NotesComponent, canActivate: [AuthGuardService] },
+  { path: 'social', component: SocialFeedComponent, canActivate: [AuthGuardService] },
   { path: 'privacy', component: PrivacyComponent }
 ];
 
