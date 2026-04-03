@@ -1,15 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-
-export interface NewsItem {
-  id: string;
-  source: string;
-  title: string;
-  summary: string;
-  time: string;
-  aiScore: number;
-  sentiment: 'Bullish' | 'Bearish' | 'Neutral';
-  category: 'Macro' | 'Crypto' | 'Stock';
-}
+import { Component, OnInit, HostListener } from '@angular/core';
+import { NewsService } from 'src/app/service/news.service';
+import { MarketNews } from 'src/app/model/market-news.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-news-summary',
@@ -18,67 +10,68 @@ export interface NewsItem {
 })
 export class NewsSummaryComponent implements OnInit {
 
-  // Tin khẩn cấp (Hot News - Score >= 8)
-  hotNews: NewsItem[] = [
-    {
-      id: 'n1',
-      source: 'Bloomberg (Crawl)',
-      title: 'FED bất ngờ đánh tiếng giữ nguyên lãi suất trong tháng tới',
-      summary: 'Các quan chức Fed báo hiệu lạm phát cốt lõi vẫn còn dai dẳng. Xác suất giảm lãi suất tháng 11 rơi xuống mức 15%.',
-      time: '15 phút trước',
-      aiScore: 9,
-      sentiment: 'Bearish',
-      category: 'Macro'
-    },
-    {
-      id: 'n2',
-      source: 'CafeF',
-      title: 'Khối ngoại bán ròng kỷ lục 2.000 tỷ trên HOSE phiên cuối tuần',
-      summary: 'Quỹ ETF ngoại xả hàng mạnh ở các nhóm trụ VN30. Tiêu điểm là VHM và MSN bị bán tháo không thương tiếc.',
-      time: '1 giờ trước',
-      aiScore: 8.5,
-      sentiment: 'Bearish',
-      category: 'Stock'
-    }
-  ];
+  newsItems: MarketNews[] = [];
+  currentPage: number = 0;
+  pageSize: number = 10;
+  isLastPage: boolean = false;
+  isLoading: boolean = false;
+  selectedCategory: string = '';
 
-  // Tin Vĩ Mô / Thường quy
-  dailyNews: NewsItem[] = [
-    {
-      id: 'n3',
-      source: 'CryptoPanic',
-      title: 'Cá voi thức giấc: 15,000 BTC vừa được chuyển lên sàn Binance',
-      summary: 'Biến động lớn on-chain ngụ ý một áp lực bán tiềm tàng trên thị trường Crypto trong 24h tới.',
-      time: '4 giờ trước',
-      aiScore: 7,
-      sentiment: 'Bearish',
-      category: 'Crypto'
-    },
-    {
-      id: 'n4',
-      source: 'VnEconomy',
-      title: 'Giá vàng miếng SJC bất ngờ quay đầu giảm nửa triệu đồng',
-      summary: 'Ảnh hưởng từ nhịp điều chỉnh của vàng thế giới, vàng SJC trong nước sáng nay lùi về mốc 89 triệu đồng/lượng.',
-      time: '5 giờ trước',
-      aiScore: 6,
-      sentiment: 'Neutral',
-      category: 'Macro'
-    },
-    {
-      id: 'n5',
-      source: 'Reuters',
-      title: 'Apple báo cáo doanh thu vượt kỳ vọng, cổ phiếu công nghệ bay cao',
-      summary: 'Cú huých lớn cho Nasdaq khi gã khổng lồ Apple đưa ra kỳ vọng doanh số bùng nổ cuối năm. Lực cầu lan tỏa thị trường chứng khoán toàn cầu.',
-      time: '12 giờ trước',
-      aiScore: 8,
-      sentiment: 'Bullish',
-      category: 'Stock'
-    }
-  ];
-
-  constructor() { }
+  constructor(
+    private newsService: NewsService,
+    private toastr: ToastrService
+  ) { }
 
   ngOnInit(): void {
+    this.loadNews();
   }
 
+  loadNews(isNextPage: boolean = false) {
+    if (this.isLoading || (isNextPage && this.isLastPage)) return;
+
+    this.isLoading = true;
+    if (isNextPage) {
+      this.currentPage++;
+    } else {
+      this.currentPage = 0;
+      this.newsItems = [];
+    }
+
+    this.newsService.getNews(this.currentPage, this.pageSize, this.selectedCategory).subscribe({
+      next: (res) => {
+        this.newsItems = [...this.newsItems, ...res.content];
+        this.isLastPage = res.last;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.toastr.error("Không thể tải tin tức.");
+        this.isLoading = false;
+      }
+    });
+  }
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
+      if (!this.isLastPage && !this.isLoading) {
+        this.loadNews(true);
+      }
+    }
+  }
+
+  filterByCategory(category: string) {
+    this.selectedCategory = category;
+    this.loadNews();
+  }
+
+  forceRefresh() {
+    this.toastr.info("Đang yêu cầu AI tổng hợp tin mới...");
+    this.newsService.forceGenerate().subscribe({
+      next: () => {
+        this.toastr.success("Đang biên tập tin mới. Vui lòng chờ giây lát rồi tải lại.");
+        setTimeout(() => this.loadNews(), 5000);
+      },
+      error: () => this.toastr.error("Có lỗi xảy ra khi gọi AI.")
+    });
+  }
 }

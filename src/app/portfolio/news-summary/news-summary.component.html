@@ -1,46 +1,58 @@
-<div class="news-page fade-in">
-  <header class="dashboard-header">
-    <div class="header-title">
-      <h1>Dòng Chảy Thị Trường (AI News)</h1>
-      <p class="subtitle">AI đã lọc bỏ 342 tin rác hôm nay. Dưới đây là những tin tức trọng yếu nhất quyết định xu hướng tiền.</p>
+<div class="portfolio-container animate__animated animate__fadeIn">
+  <div class="header-section">
+    <div class="ai-badge">
+      <i class="fas fa-robot"></i> AI Powered
     </div>
-  </header>
+    <h2 class="title">AI Market Insights</h2>
+    <p class="subtitle">Tự động tổng hợp và phân tích tin tức quan trọng nhất từ thị trường tài chính</p>
+  </div>
 
-  <div class="news-grid">
-    <!-- Cột Trái: Tin Khẩn Cấp -->
-    <div class="news-column">
-      <h2 class="column-title" style="color: #ef4444;"><i class="fas fa-exclamation-triangle"></i> TIN KHẨN CẤP ĐÃ ĐƯỢC AI ĐÁNH GIÁ (Score > 8)</h2>
+  <div class="news-timeline">
+    <!-- Loading State -->
+    <div *ngIf="newsItems.length === 0 && isLoading" class="news-skeleton">
+      <div class="skeleton-card" *ngFor="let i of [1,2,3]"></div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="newsItems.length === 0 && !isLoading" class="empty-state">
+      <i class="fas fa-newspaper"></i>
+      <p>Chưa có bản tin nào được tạo. Nhấn làm mới để AI bắt đầu làm việc!</p>
+      <button class="btn-primary" (click)="forceRefresh()">Tạo bản tin ngay</button>
+    </div>
+
+    <!-- News List -->
+    <div *ngFor="let news of newsItems" class="news-card flat-surface animate__animated animate__fadeInUp">
+      <div class="news-badge" [attr.data-sentiment]="news.sentiment">
+        {{ news.sentiment === 'BULLISH' ? 'Lạc quan' : news.sentiment === 'BEARISH' ? 'Tiêu cực' : 'Trung lập' }}
+      </div>
       
-      <div class="news-card critical-news" *ngFor="let news of hotNews">
-        <div class="card-header">
-          <span class="source">{{news.source}} • {{news.time}}</span>
-          <span class="ai-score">Tác động: {{news.aiScore}}/10</span>
+      <div class="news-header">
+        <div class="category">{{ news.category }}</div>
+        <div class="time">{{ news.createdAt | date:'HH:mm dd/MM' }}</div>
+      </div>
+
+      <h3 class="news-title">{{ news.title }}</h3>
+      
+      <p class="news-summary">{{ news.summary }}</p>
+
+      <div class="news-content-preview" [innerHTML]="news.content"></div>
+
+      <div class="news-footer">
+        <div class="ai-impact">
+          <span class="label">Mức độ ảnh hưởng:</span>
+          <div class="score-bar">
+            <div class="score-fill" [style.width.%]="news.aiScore * 10"></div>
+          </div>
+          <span class="score-val">{{ news.aiScore }}/10</span>
         </div>
-        <h3 class="news-title">{{news.title}}</h3>
-        <p class="news-summary">{{news.summary}}</p>
-        <div class="card-footer">
-          <span class="category-badge">{{news.category}}</span>
-          <span class="sentiment-badge" [ngClass]="news.sentiment.toLowerCase()">Tín hiệu: {{news.sentiment}}</span>
-        </div>
+        <button class="btn-read-more">Chia sẻ <i class="fas fa-share-alt"></i></button>
       </div>
     </div>
 
-    <!-- Cột Phải: Tin Thường Quy -->
-    <div class="news-column">
-      <h2 class="column-title" style="color: #3b82f6;"><i class="fas fa-globe"></i> TIN TỨC VĨ MÔ & THỊ TRƯỜNG</h2>
-      
-      <div class="news-card" *ngFor="let news of dailyNews">
-        <div class="card-header">
-          <span class="source">{{news.source}} • {{news.time}}</span>
-          <span class="ai-score">Tác động: {{news.aiScore}}/10</span>
-        </div>
-        <h3 class="news-title">{{news.title}}</h3>
-        <p class="news-summary">{{news.summary}}</p>
-        <div class="card-footer">
-          <span class="category-badge">{{news.category}}</span>
-          <span class="sentiment-badge" [ngClass]="news.sentiment.toLowerCase()">Tín hiệu: {{news.sentiment}}</span>
-        </div>
-      </div>
+    <!-- Infinite Scroll Loader -->
+    <div *ngIf="isLoading && newsItems.length > 0" class="loader-container">
+      <i class="fas fa-circle-notch fa-spin"></i>
     </div>
+    
   </div>
 </div>
