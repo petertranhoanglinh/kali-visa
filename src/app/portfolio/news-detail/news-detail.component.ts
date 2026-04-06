@@ -5,6 +5,7 @@ import { MarketNews } from 'src/app/model/market-news.model';
 import { CommentModel } from 'src/app/model/social.model';
 import { AuthDetail } from 'src/app/common/util/auth-detail';
 import { ToastrService } from 'ngx-toastr';
+import { Title, Meta } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-news-detail',
@@ -24,7 +25,9 @@ export class NewsDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private newsService: NewsService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private titleService: Title,
+    private metaService: Meta
   ) { }
 
   ngOnInit(): void {
@@ -40,6 +43,7 @@ export class NewsDetailComponent implements OnInit {
         next: (data) => {
           this.news = data;
           this.isLoading = false;
+          this.updateSeoTags(data);
           this.loadComments(id);
         },
         error: () => {
@@ -77,6 +81,24 @@ export class NewsDetailComponent implements OnInit {
       },
       error: () => this.toastr.error("Không thể gửi bình luận.")
     });
+  }
+
+  updateSeoTags(news: MarketNews) {
+    const title = `${news.title} | T'L Wealth`;
+    const description = news.summary || (news.content ? news.content.substring(0, 160) + '...' : 'Tin tức thị trường mới nhất từ T\'L Wealth Management');
+    const imageUrl = news.imageUrl || 'https://quanlydautucanhan.web.app/assets/images/logo.png';
+    const url = `https://quanlydautucanhan.web.app/news/${news.id}`;
+
+    this.titleService.setTitle(title);
+
+    // Standard SEO
+    this.metaService.updateTag({ name: 'description', content: description });
+
+    // Open Graph / Facebook / Zalo
+    this.metaService.updateTag({ property: 'og:title', content: title });
+    this.metaService.updateTag({ property: 'og:description', content: description });
+    this.metaService.updateTag({ property: 'og:image', content: imageUrl });
+    this.metaService.updateTag({ property: 'og:url', content: url });
   }
 
 }
