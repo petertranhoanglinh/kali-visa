@@ -41,4 +41,16 @@ export class NewsService {
   forceGenerate(): Observable<string> {
     return this.http.post(`${this.apiUrl}/generate`, {}, { responseType: 'text' });
   }
+
+  createNews(news: MarketNews): Observable<MarketNews> {
+    return this.http.post<MarketNews>(this.apiUrl, news, this.getOptions());
+  }
+
+  updateNews(id: string, news: MarketNews): Observable<MarketNews> {
+    return this.http.put<MarketNews>(`${this.apiUrl}/${id}`, news, this.getOptions());
+  }
+
+  deleteNews(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, this.getOptions());
+  }
 }

@@ -5,6 +5,7 @@ import { AuthDetail } from 'src/app/common/util/auth-detail';
 import { ToastrService } from 'ngx-toastr';
 import { MarketPriceService } from 'src/app/service/market-price.service';
 import { MarketPriceModel } from 'src/app/model/market-price.model';
+import { SystemConfigService } from 'src/app/service/system-config.service';
 
 export interface GroupedAsset {
   symbol: string;
@@ -30,7 +31,7 @@ export class AssetListComponent implements OnInit {
   userTier: string = 'BASIC';
   assetTypes = Object.values(AssetType);
   
-  private EXCHANGE_RATE = 25000; // 1 USD = 25,000 VND
+  private EXCHANGE_RATE = 25000; // Default fallback
   
   // New Asset Form
   newAsset: AssetModel = {
@@ -62,13 +63,26 @@ export class AssetListComponent implements OnInit {
   constructor(
     private assetService: AssetService,
     private marketPriceService: MarketPriceService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private configService: SystemConfigService
   ) { }
 
   ngOnInit(): void {
     const loginInfo = AuthDetail.getLoginedInfo();
     this.userTier = loginInfo?.tier || 'BASIC';
+    this.loadExchangeRate();
     this.loadAssets();
+  }
+
+  loadExchangeRate() {
+    this.configService.getConfig('USD_VND_RATE').subscribe({
+      next: (res) => {
+        if (res && res.configValue) {
+          this.EXCHANGE_RATE = Number(res.configValue);
+        }
+      },
+      error: () => console.warn('Could not load exchange rate, using default 25,000')
+    });
   }
 
   loadAssets() {

@@ -18,6 +18,8 @@ import { SocialFeedComponent } from './social-feed/social-feed.component';
 import { NewsDetailComponent } from './news-detail/news-detail.component';
 import { AdminUpgradeComponent } from './admin-upgrade/admin-upgrade.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { AdminSettingComponent } from './admin-setting/admin-setting.component';
+import { AdminNewsComponent } from './admin-news/admin-news.component';
 
 
 import { FormsModule } from '@angular/forms';
@@ -38,7 +40,9 @@ import { FormsModule } from '@angular/forms';
     NotesComponent,
     SocialFeedComponent,
     NewsDetailComponent,
-    AdminUpgradeComponent
+    AdminUpgradeComponent,
+    AdminSettingComponent,
+    AdminNewsComponent
   ],
   imports: [
     CommonModule,

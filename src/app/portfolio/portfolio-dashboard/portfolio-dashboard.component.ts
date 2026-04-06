@@ -7,6 +7,7 @@ import { AssetModel, AssetType } from 'src/app/model/asset.model';
 import { forkJoin } from 'rxjs';
 import { AuthService } from 'src/app/service/auth.service';
 import { MemberModel } from 'src/app/model/member.model';
+import { SystemConfigService } from 'src/app/service/system-config.service';
 
 @Component({
   selector: 'app-portfolio-dashboard',
@@ -25,7 +26,7 @@ export class PortfolioDashboardComponent implements OnInit {
   totalGainVND = 0;
   gainPercent = 0;
 
-  private EXCHANGE_RATE = 25000; // 1 USD = 25,000 VND
+  private EXCHANGE_RATE = 25000; // Default fallback
 
   // Chart Properties
   public chartLabels: string[] = ['Crypto', 'Chứng Khoán', 'Vàng', 'Tiền Mặt' , 'Trái Phiếu'];
@@ -56,12 +57,13 @@ export class PortfolioDashboardComponent implements OnInit {
   constructor(
     private assetService: AssetService,
     private marketPriceService: MarketPriceService,
-    private authService: AuthService
+    private authService: AuthService,
+    private configService: SystemConfigService
   ) { }
 
   ngOnInit(): void {
     this.refreshUserProfile();
-    this.loadData();
+    this.loadExchangeRate();
   }
 
   refreshUserProfile() {
@@ -76,6 +78,21 @@ export class PortfolioDashboardComponent implements OnInit {
         }
       });
     }
+  }
+
+  loadExchangeRate() {
+    this.configService.getConfig('USD_VND_RATE').subscribe({
+      next: (res) => {
+        if (res && res.configValue) {
+          this.EXCHANGE_RATE = Number(res.configValue);
+        }
+        this.loadData();
+      },
+      error: () => {
+        console.warn('Could not load exchange rate, using default 25,000');
+        this.loadData();
+      }
+    });
   }
 
   loadData() {

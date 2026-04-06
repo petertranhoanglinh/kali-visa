@@ -17,6 +17,8 @@
                 <li><a routerLink="/analytics" routerLinkActive="active">Phân Tích AI <span style="font-size: 0.7em; background: #fbbf24; color: black; padding: 2px 6px; border-radius: 4px; margin-left:4px; vertical-align: top;">PRO</span></a></li>
                 <li><a routerLink="/pricing" class="highlight-nav" routerLinkActive="active">Nâng Cấp Gói</a></li>
                 <li *ngIf="isAdmin"><a routerLink="/admin-upgrade" class="admin-nav" routerLinkActive="active">Duyệt Nâng Cấp</a></li>
+                <li *ngIf="isAdmin"><a routerLink="/admin-setting" class="admin-nav" routerLinkActive="active">Cài Đặt Tỷ Giá</a></li>
+                <li *ngIf="isAdmin"><a routerLink="/admin-news" class="admin-nav" routerLinkActive="active">Quản Lý News</a></li>
             </ul>
         </nav>
 
@@ -47,6 +49,8 @@
             <a routerLink="/social" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-globe-asia"></i> Cộng Đồng</a>
             <a routerLink="/pricing" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link highlight"><i class="fas fa-gem"></i> Nâng Cấp Gói</a>
             <a *ngIf="isAdmin" routerLink="/admin-upgrade" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link admin"><i class="fas fa-user-shield"></i> Duyệt Nâng Cấp</a>
+            <a *ngIf="isAdmin" routerLink="/admin-setting" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link admin"><i class="fas fa-cogs"></i> Cài Đặt Tỷ Giá</a>
+            <a *ngIf="isAdmin" routerLink="/admin-news" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link admin"><i class="fas fa-edit"></i> Quản Lý News</a>
             <hr class="mobile-divider" *ngIf="!isLogin">
             <a *ngIf="!isLogin" routerLink="/login" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-sign-in-alt"></i> Đăng Nhập</a>
         </nav>

@@ -15,6 +15,8 @@ import { PriceSettingsComponent } from './price-settings/price-settings.componen
 import { NotesComponent } from './notes/notes.component';
 import { SocialFeedComponent } from './social-feed/social-feed.component';
 import { AdminUpgradeComponent } from './admin-upgrade/admin-upgrade.component';
+import { AdminSettingComponent } from './admin-setting/admin-setting.component';
+import { AdminNewsComponent } from './admin-news/admin-news.component';
 import { AuthGuardService } from '../service/auth-guard.service';
 
 const routes: Routes = [
@@ -31,7 +33,9 @@ const routes: Routes = [
   { path: 'notes', component: NotesComponent, canActivate: [AuthGuardService] },
   { path: 'social', component: SocialFeedComponent, canActivate: [AuthGuardService] },
   { path: 'privacy', component: PrivacyComponent },
-  { path: 'admin-upgrade', component: AdminUpgradeComponent, canActivate: [AuthGuardService] }
+  { path: 'admin-upgrade', component: AdminUpgradeComponent, canActivate: [AuthGuardService] },
+  { path: 'admin-setting', component: AdminSettingComponent, canActivate: [AuthGuardService] },
+  { path: 'admin-news', component: AdminNewsComponent, canActivate: [AuthGuardService] }
 ];
 
 @NgModule({
