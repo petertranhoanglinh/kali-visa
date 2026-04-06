@@ -2,6 +2,14 @@
   <header class="dashboard-header">
     <div class="header-title">
       <h1>Tổng Quan Tài Sản</h1>
+      <div class="user-status-card" *ngIf="currentUser">
+        <span class="badge" [class.PRO]="currentUser.tier === 'PRO' || currentUser.tier === 'PREMIUM'">
+          {{ currentUser.tier || 'BASIC' }} MEMBER
+        </span>
+        <span class="expiry" *ngIf="currentUser.expiryDate">
+          Hết hạn: {{ currentUser.expiryDate | date:'dd/MM/yyyy' }}
+        </span>
+      </div>
       <p class="subtitle">Chào bạn! Dưới đây là báo cáo tự động của bạn ngày hôm nay.</p>
     </div>
     <div class="header-actions">

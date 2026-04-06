@@ -16,6 +16,7 @@ export class NewsSummaryComponent implements OnInit {
   isLastPage: boolean = false;
   isLoading: boolean = false;
   selectedCategory: string = '';
+  today: Date = new Date();
 
   constructor(
     private newsService: NewsService,

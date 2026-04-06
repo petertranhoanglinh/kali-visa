@@ -7,6 +7,8 @@ export interface MarketNews {
     aiScore: number;
     category: string;
     sourceUrl?: string;
+    imageUrl?: string;
+    thumbUrl?: string;
     createdAt: Date;
 }
 

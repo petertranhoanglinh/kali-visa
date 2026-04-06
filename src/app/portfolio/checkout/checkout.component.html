@@ -1,70 +1,96 @@
-<div class="checkout-container">
+<div class="checkout-container fade-in">
   <button class="btn-back" (click)="cancel.emit()"><i class="fas fa-arrow-left"></i> Quay lại</button>
 
   <div class="checkout-grid">
     <div class="checkout-form">
-      <h2>Thanh toán định kỳ</h2>
-      <p class="subtitle">Thêm thẻ tín dụng hoặc nạp tiền để gia hạn gói T'L Wealth Management.</p>
+      <h2>Nâng cấp hạng thành viên <span class="badge pro">{{ selectedPlan?.name }}</span></h2>
+      <p class="subtitle">Vui lòng chọn thời gian và thực hiện thanh toán chuyển khoản.</p>
 
-      <div class="payment-methods">
-        <label class="method-card active">
-          <input type="radio" name="payment" checked>
-          <div class="method-info">
-            <i class="fab fa-cc-visa" style="color: #1a1f71"></i>
-            <i class="fab fa-cc-mastercard" style="color: #eb001b"></i>
-            <span>Thẻ tín dụng / Ghi nợ</span>
+      <!-- Month Selection -->
+      <div class="selection-section card">
+        <label class="section-title"><i class="fas fa-calendar-alt"></i> Chọn thời hạn nâng cấp:</label>
+        <div class="month-selector">
+          <div class="month-option" 
+               *ngFor="let m of monthOptions" 
+               [class.active]="selectedMonths === m"
+               (click)="selectedMonths = m">
+            <span class="months">{{ m }} tháng</span>
+            <span class="discount" *ngIf="m >= 6">Tiết kiệm {{ m >= 12 ? '20%' : '10%' }}</span>
           </div>
-        </label>
-        <label class="method-card">
-          <input type="radio" name="payment">
-          <div class="method-info">
-            <img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" alt="Momo" width="24">
-            <span>Ví MoMo</span>
-          </div>
-        </label>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label>Tên trên thẻ</label>
-        <input type="text" class="input-field" placeholder="NGUYEN VAN A">
-      </div>
-      <div class="form-group">
-        <label>Số thẻ</label>
-        <div class="input-group">
-          <i class="far fa-credit-card"></i>
-          <input type="text" class="input-field with-icon" placeholder="0000 0000 0000 0000">
+      <div class="qr-payment-section card">
+        <div class="payment-info">
+          <div class="bank-details">
+            <div class="bank-item">
+              <label>Ngân hàng:</label>
+              <strong>VIETINBANK (ICB)</strong>
+            </div>
+            <div class="bank-item">
+              <label>Chủ tài khoản:</label>
+              <strong>TRAN HOANG LINH</strong>
+            </div>
+            <div class="bank-item">
+              <label>Số tài khoản:</label>
+              <strong class="account-no">0914527284</strong>
+            </div>
+          </div>
+
+          <div class="qr-container">
+            <!-- Tích hợp VietQR chuyên nghiệp -->
+            <img [src]="'https://img.vietqr.io/image/ICB-0914527284-compact2.png?amount=' + (selectedPlan?.price * selectedMonths) + '&addInfo=UPGRADE ' + selectedPlan?.name + ' ' + (currentUser?.username || '') + ' ' + selectedMonths + ' thang&accountName=TRAN HOANG LINH'" 
+                 alt="VietQR Payment">
+            <div class="qr-hint">Mở App Ngân hàng quét mã để nhận đầy đủ thông tin</div>
+            <div class="qr-overlay" *ngIf="loading">
+              <div class="spinner"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="payment-instructions">
+          <p><i class="fas fa-info-circle"></i> Nội dung chuyển khoản:</p>
+          <div class="transfer-content">
+            UPGRADE {{ selectedPlan?.name }} {{ currentUser?.username }} {{ selectedMonths }} thang
+          </div>
         </div>
       </div>
-      <div class="form-row">
-        <div class="form-group half">
-          <label>Ngày hết hạn</label>
-          <input type="text" class="input-field" placeholder="MM/YY">
-        </div>
-        <div class="form-group half">
-          <label>CVC</label>
-          <input type="text" class="input-field" placeholder="123">
-        </div>
+
+      <div class="upload-section card">
+        <label class="upload-label">
+          <i class="fas fa-camera"></i>
+          <span>{{ selectedFile ? selectedFile.name : 'Tải lên ảnh chụp màn hình thanh toán tại đây' }}</span>
+          <input type="file" (change)="onFileSelected($event)" accept="image/*" hidden>
+        </label>
+        <p class="help-text">Chụp màn hình sau khi chuyển khoản thành công và tải lên.</p>
       </div>
     </div>
 
     <div class="order-summary">
-      <h2>Hóa đơn của bạn</h2>
-      <div class="summary-card">
+      <h2>Hóa đơn nâng cấp</h2>
+      <div class="summary-card shadow">
         <div class="summary-item">
-          <span class="label">Gói dịch vụ</span>
+          <span class="label">Gói nâng cấp</span>
           <span class="value">{{ selectedPlan?.name }}</span>
         </div>
         <div class="summary-item">
-          <span class="label">Chu kỳ</span>
-          <span class="value">Hàng tháng</span>
+          <span class="label">Thời gian</span>
+          <span class="value">{{ selectedMonths }} tháng</span>
+        </div>
+        <div class="summary-item">
+          <span class="label">Giá đơn vị</span>
+          <span class="value">{{ selectedPlan?.price | currency:'VND':'symbol':'1.0-0' }}/tháng</span>
         </div>
         <hr>
         <div class="summary-item total">
-          <span class="label">Tổng thanh toán</span>
-          <span class="value">{{ selectedPlan?.price | currency:'VND' }}</span>
+          <span class="label">Tổng cộng</span>
+          <span class="value">{{ (selectedPlan?.price * selectedMonths) | currency:'VND':'symbol':'1.0-0' }}</span>
         </div>
-        <p class="terms-text">Bằng việc xác nhận, bạn đồng ý với Điều khoản thanh toán tự động định kỳ mỗi tháng. Bạn có thể hủy gói bất kỳ lúc nào.</p>
-        <button class="btn-checkout" (click)="processPayment()">Xác nhận Thanh toán</button>
+        
+        <button class="btn-checkout" [disabled]="loading || !selectedFile" (click)="processPayment()">
+          <span *ngIf="!loading"><i class="fas fa-check-circle"></i> Tôi đã chuyển khoản</span>
+          <span *ngIf="loading"><i class="fas fa-spinner fa-spin"></i> Đang xử lý...</span>
+        </button>
       </div>
     </div>
   </div>

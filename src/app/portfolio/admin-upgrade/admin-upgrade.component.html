@@ -1,0 +1,50 @@
+<div class="admin-container animate-fade">
+  <header class="admin-header">
+    <h1>Quản lý nâng cấp hạng Tier</h1>
+    <p>Duyệt các yêu cầu thanh toán chuyển khoản từ người dùng.</p>
+  </header>
+
+  <div class="loading-overlay" *ngIf="loading">
+    <div class="spinner"></div>
+  </div>
+
+  <div class="request-grid" *ngIf="pendingRequests.length > 0; else noRequests">
+    <div class="request-card" *ngFor="let req of pendingRequests">
+      <div class="card-header">
+        <span class="user-info">
+          <strong>{{ req.username }}</strong>
+          <small>ID: {{ req.userId }}</small>
+        </span>
+        <span class="target-badge" [class]="req.targetTier">{{ req.targetTier }}</span>
+      </div>
+
+      <div class="screenshot-preview">
+        <label>Ảnh xác nhận:</label>
+        <a [href]="apiBase + req.screenshotUrl" target="_blank" class="img-link">
+          <img [src]="apiBase + req.screenshotUrl" alt="Screenshot">
+          <div class="zoom-overlay"><i class="fas fa-search-plus"></i> Xem ảnh lớn</div>
+        </a>
+      </div>
+
+      <div class="card-footer">
+        <span class="date">
+          {{ req.createdAt | date:'dd/MM/yyyy HH:mm' }}
+          <br>
+          <span class="duration-info"><i class="fas fa-clock"></i> Thời hạn: <strong>{{ req.durationMonths || 1 }} tháng</strong></span>
+        </span>
+        <div class="actions">
+          <button class="btn-reject" (click)="reject(req.id)">Từ chối</button>
+          <button class="btn-approve" (click)="approve(req)">Phê duyệt</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #noRequests>
+    <div class="empty-state" *ngIf="!loading">
+      <i class="fas fa-check-circle"></i>
+      <h3>Đã xử lý hết yêu cầu!</h3>
+      <p>Hiện không có yêu cầu nâng cấp nào đang chờ duyệt.</p>
+    </div>
+  </ng-template>
+</div>

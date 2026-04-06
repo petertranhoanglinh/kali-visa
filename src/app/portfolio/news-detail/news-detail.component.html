@@ -1,0 +1,82 @@
+<div class="news-detail-container animate__animated animate__fadeIn">
+  
+  <div class="back-nav">
+    <a routerLink="/news" class="btn-back">
+      <i class="fas fa-arrow-left"></i> Quay lại trang tin tức
+    </a>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-state">
+    <i class="fas fa-spinner fa-spin"></i> Đang tải bài viết...
+  </div>
+
+  <div *ngIf="!isLoading && news" class="article-content">
+    <div class="article-header">
+      <div class="cat">{{ news.category }}</div>
+      <h1>{{ news.title }}</h1>
+      <div class="meta">
+        Đăng lúc {{ news.createdAt | date:'HH:mm dd/MM/yyyy' }}
+        <span class="sep">|</span>
+        Mức độ ảnh hưởng: {{ news.aiScore }}/10
+      </div>
+    </div>
+
+    <div class="article-image" *ngIf="news.imageUrl">
+      <img [src]="news.imageUrl" [alt]="news.title">
+    </div>
+
+    <div class="article-summary">
+      {{ news.summary }}
+    </div>
+
+    <div class="article-body" [innerHTML]="news.content"></div>
+
+    <div class="article-footer">
+      <div class="sentiment-badge" [attr.data-sentiment]="news.sentiment">
+        {{ news.sentiment }}
+      </div>
+      <a [href]="news.sourceUrl" target="_blank" class="source-link" *ngIf="news.sourceUrl">
+        Xem bài viết gốc <i class="fas fa-external-link-alt"></i>
+      </a>
+    </div>
+
+    <!-- COMMENTS SECTION -->
+    <div class="comments-container">
+      <h3 class="comments-title">Thảo luận ({{ comments.length }})</h3>
+      
+      <div class="comment-list" *ngIf="comments.length > 0">
+        <div *ngFor="let c of comments" class="comment-item animate__animated animate__fadeIn">
+          <div class="avatar small">{{ c.authorName.charAt(0).toUpperCase() }}</div>
+          <div class="comment-content">
+            <div class="comment-bubble">
+              <span class="comment-author">{{ c.authorName }}</span>
+              <p class="comment-text">{{ c.content }}</p>
+            </div>
+            <span class="comment-time">{{ c.createdAt | date:'HH:mm dd/MM' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="comment-composer">
+        <div class="avatar">{{ currentUserName.charAt(0).toUpperCase() }}</div>
+        <div class="input-wrapper">
+          <input type="text" 
+                 [(ngModel)]="newCommentContent" 
+                 placeholder="Viết bình luận của bạn..." 
+                 (keyup.enter)="submitComment()"
+                 class="comment-input">
+          <button class="btn-send" (click)="submitComment()">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && !news" class="error-state">
+    <i class="fas fa-exclamation-triangle"></i>
+    <p>Không tìm thấy bài viết này.</p>
+    <a routerLink="/news" class="btn-primary">Quay lại trang chủ</a>
+  </div>
+
+</div>

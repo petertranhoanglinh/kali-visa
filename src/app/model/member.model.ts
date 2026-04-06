@@ -10,8 +10,9 @@ export interface MemberModel {
     phone: string;
     description: string;
     imgOldName: string;
-    role: string;
+    role?: string;
     tier?: string;
+    expiryDate?: string;
     jwt: string;
     loginDate: string;
     logoutDate: string;

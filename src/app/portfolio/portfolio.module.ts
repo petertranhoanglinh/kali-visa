@@ -15,6 +15,8 @@ import { HomeComponent } from './home/home.component';
 import { PriceSettingsComponent } from './price-settings/price-settings.component';
 import { NotesComponent } from './notes/notes.component';
 import { SocialFeedComponent } from './social-feed/social-feed.component';
+import { NewsDetailComponent } from './news-detail/news-detail.component';
+import { AdminUpgradeComponent } from './admin-upgrade/admin-upgrade.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 
@@ -34,7 +36,9 @@ import { FormsModule } from '@angular/forms';
     HomeComponent,
     PriceSettingsComponent,
     NotesComponent,
-    SocialFeedComponent
+    SocialFeedComponent,
+    NewsDetailComponent,
+    AdminUpgradeComponent
   ],
   imports: [
     CommonModule,

@@ -1,58 +1,114 @@
-<div class="portfolio-container animate__animated animate__fadeIn">
-  <div class="header-section">
-    <div class="ai-badge">
-      <i class="fas fa-robot"></i> AI Powered
+<div class="news-container animate__animated animate__fadeIn">
+  <!-- Header with high-end typography -->
+  <div class="magazine-header">
+    <div class="brand-line">
+      <span class="date">{{ today | date:'EEEE, dd MMMM yyyy' }}</span>
+      <div class="ai-status">
+        <i class="fas fa-robot"></i> AI Engine Active
+      </div>
     </div>
-    <h2 class="title">AI Market Insights</h2>
-    <p class="subtitle">Tự động tổng hợp và phân tích tin tức quan trọng nhất từ thị trường tài chính</p>
   </div>
 
-  <div class="news-timeline">
-    <!-- Loading State -->
-    <div *ngIf="newsItems.length === 0 && isLoading" class="news-skeleton">
-      <div class="skeleton-card" *ngFor="let i of [1,2,3]"></div>
-    </div>
-
-    <!-- Empty State -->
-    <div *ngIf="newsItems.length === 0 && !isLoading" class="empty-state">
-      <i class="fas fa-newspaper"></i>
-      <p>Chưa có bản tin nào được tạo. Nhấn làm mới để AI bắt đầu làm việc!</p>
-      <button class="btn-primary" (click)="forceRefresh()">Tạo bản tin ngay</button>
-    </div>
-
-    <!-- News List -->
-    <div *ngFor="let news of newsItems" class="news-card flat-surface animate__animated animate__fadeInUp">
-      <div class="news-badge" [attr.data-sentiment]="news.sentiment">
-        {{ news.sentiment === 'BULLISH' ? 'Lạc quan' : news.sentiment === 'BEARISH' ? 'Tiêu cực' : 'Trung lập' }}
-      </div>
-      
-      <div class="news-header">
-        <div class="category">{{ news.category }}</div>
-        <div class="time">{{ news.createdAt | date:'HH:mm dd/MM' }}</div>
-      </div>
-
-      <h3 class="news-title">{{ news.title }}</h3>
-      
-      <p class="news-summary">{{ news.summary }}</p>
-
-      <div class="news-content-preview" [innerHTML]="news.content"></div>
-
-      <div class="news-footer">
-        <div class="ai-impact">
-          <span class="label">Mức độ ảnh hưởng:</span>
-          <div class="score-bar">
-            <div class="score-fill" [style.width.%]="news.aiScore * 10"></div>
-          </div>
-          <span class="score-val">{{ news.aiScore }}/10</span>
+  <div class="magazine-grid" *ngIf="newsItems.length > 0">
+    <!-- LEFT: Sidebar Widgets -->
+    <div class="left-sidebar">
+      <div class="sidebar-widget trending-widget">
+        <h4 class="widget-title-line">TRENDING TOPICS</h4>
+        <div class="topic-list">
+          <span class="topic-tag" (click)="filterByCategory('STOCKS')">#ChungKhoan</span>
+          <span class="topic-tag" (click)="filterByCategory('GOLD')">#GiaVang</span>
+          <span class="topic-tag" (click)="filterByCategory('MACRO')">#ViMo</span>
+          <span class="topic-tag" (click)="filterByCategory('CRYPTO')">#Crypto</span>
         </div>
-        <button class="btn-read-more">Chia sẻ <i class="fas fa-share-alt"></i></button>
+      </div>
+
+      <!-- Small secondary news widgets -->
+      <div *ngFor="let news of newsItems.slice(6, 9)" class="mini-news-card" [routerLink]="['/news', news.id]">
+        <div class="mini-thumb">
+          <img [src]="news.thumbUrl || news.imageUrl || 'assets/img/news-placeholder.jpg'" alt="Mini">
+        </div>
+        <div class="mini-content">
+          <h5 class="mini-title">{{ news.title }}</h5>
+          <span class="mini-time">{{ news.createdAt | date:'HH:mm' }}</span>
+        </div>
       </div>
     </div>
 
-    <!-- Infinite Scroll Loader -->
-    <div *ngIf="isLoading && newsItems.length > 0" class="loader-container">
-      <i class="fas fa-circle-notch fa-spin"></i>
+    <!-- MIDDLE: Main Content Area -->
+    <div class="main-content-section">
+      <!-- Featured Story -->
+      <div class="featured-section" [routerLink]="['/news', newsItems[0].id]">
+        <div class="featured-card">
+          <div class="image-wrapper">
+            <img [src]="newsItems[0].imageUrl || 'assets/img/news-placeholder.jpg'" alt="Featured">
+            <div class="category-badge">{{ newsItems[0].category }}</div>
+          </div>
+          <div class="content">
+            <h2 class="title">{{ newsItems[0].title }}</h2>
+            <p class="summary">{{ newsItems[0].summary }}</p>
+            <div class="meta">
+              <span class="time">{{ newsItems[0].createdAt | date:'HH:mm' }}</span>
+              <span class="impact" [attr.data-score]="newsItems[0].aiScore">
+                Impact: {{ newsItems[0].aiScore }}/10
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feed: Latest Insights (Limit to 5) -->
+      <div class="feed-section">
+        <div class="section-title">LATEST INSIGHTS</div>
+        <div *ngFor="let news of newsItems.slice(1, 6)" class="news-widget" [routerLink]="['/news', news.id]">
+          <div class="widget-thumb">
+            <img [src]="news.thumbUrl || news.imageUrl || 'assets/img/news-placeholder.jpg'" alt="Thumb">
+          </div>
+          <div class="widget-content">
+            <h3 class="widget-title">{{ news.title }}</h3>
+            <div class="widget-meta">
+              <span class="cat">{{ news.category }}</span>
+              <span class="dot">·</span>
+              <span class="time">{{ news.createdAt | date:'HH:mm' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="isLoading" class="loader">
+          <i class="fas fa-spinner fa-spin"></i> Loading more...
+        </div>
+      </div>
     </div>
-    
+
+    <!-- RIGHT: Sidebar (Hot Topics & Tools) -->
+    <div class="sidebar-section">
+      <div class="sidebar-card">
+        <h4 class="sidebar-title">MARKET SENTIMENT</h4>
+        <div class="sentiment-summary">
+           <div class="bar-container">
+             <div class="bar bull" style="width: 65%"></div>
+             <div class="bar bear" style="width: 35%"></div>
+           </div>
+           <div class="labels">
+             <span>Bullish 65%</span>
+             <span>Bearish 35%</span>
+           </div>
+        </div>
+      </div>
+
+      <button class="btn-refresh" (click)="forceRefresh()">
+        <i class="fas fa-sync-alt"></i> REGENERATE NEWS
+      </button>
+
+      <div class="ad-widget-mock">
+        <span>T'L WEALTH MANAGEMENT</span>
+        <p>Premium Financial Analysis Powered by AI</p>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="newsItems.length === 0 && !isLoading" class="empty-state">
+    <i class="fas fa-newspaper"></i>
+    <p>Chưa có bản tin nào được tạo.</p>
+    <button class="btn-primary" (click)="forceRefresh()">Tạo bản tin ngay</button>
   </div>
 </div>

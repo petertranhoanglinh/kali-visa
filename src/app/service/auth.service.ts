@@ -35,6 +35,14 @@ export class AuthService {
     let url = `${environment.apiUrl}/api/user/save`;
     return this._http.post<ResultModel>(url, params);
   }
+
+  getProfile(jwt: string): Observable<ResultModel> {
+    let url = `${environment.apiUrl}/api/user/profile`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${jwt}`
+    });
+    return this._http.get<ResultModel>(url, { headers: headers });
+  }
 }
 
 

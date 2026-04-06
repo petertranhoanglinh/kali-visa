@@ -203,6 +203,33 @@
   color: #4338ca;
 }
 
+.admin-nav {
+  background: #fff1f2;
+  color: #e11d48 !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: 9999px;
+  border-bottom: none !important;
+  font-weight: 600 !important;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.admin-nav::before {
+  content: '\f3ed';
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+}
+
+.mobile-link.admin {
+  background: #fff1f2;
+  color: #e11d48 !important;
+}
+
+.mobile-link.admin i {
+  color: #e11d48;
+}
+
 .mobile-divider {
   border: none;
   border-top: 1px solid #e5e7eb;

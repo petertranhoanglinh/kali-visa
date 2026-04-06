@@ -28,8 +28,12 @@ export class HeaderComponent implements OnInit {
   isHeader: boolean = true;
   get isLogin(): boolean {
     const login = AuthDetail.isLogin();
-    // console.log("Header isLogin check:", login);
     return login;
+  }
+  
+  get isAdmin(): boolean {
+    const info = AuthDetail.getLoginedInfo();
+    return info && info.role === 'ADMIN';
   }
   wellcome: string = ''
   isConnect:boolean = false;

@@ -9,57 +9,193 @@
   </header>
 
   <!-- Premium Wrap -->
-  <div class="premium-wrapper" [class.locked]="!isPremium">
-    
-    <!-- Lock Overlay (Paywall) -->
-    <div class="lock-overlay" *ngIf="!isPremium">
-      <div class="lock-content">
-        <i class="fas fa-lock lock-icon"></i>
-        <h2>Tính Năng Premium Đã Khóa</h2>
-        <p>Gói miễn phí không thể truy cập Dữ liệu Dòng Tiền Cá Mập (Whale Tracker) và Hệ thống Giả lập Khủng hoảng (Stress Test).</p>
-        <button class="upgrade-btn" routerLink="/pricing">Mở Khóa Premium - Chống Cháy Tài Khoản</button>
-      </div>
+  <div class="analytics-container">
+    <!-- Header -->
+    <div class="analytics-header">
+        <div class="header-content">
+            <h1>AI PRO <span class="badge-pro">ANALYSIS 2.0</span></h1>
+            <p>Hệ thống phân tích Cá mập & Dòng tiền thông minh.</p>
+        </div>
+        
+        <div class="search-box">
+            <input type="text" [(ngModel)]="tickerInput" 
+                   placeholder="Nhập mã CP hoặc Crypto (Vd: FPT, BTCUSDT...)" 
+                   (keyup.enter)="performAnalysis()">
+            <button (click)="performAnalysis()" [disabled]="isAnalyzing">
+                <span *ngIf="!isAnalyzing"><i class="fas fa-bolt"></i> QUÉT DỮ LIỆU</span>
+                <span *ngIf="isAnalyzing" class="loader"></span>
+            </button>
+        </div>
     </div>
 
-    <!-- Features Content (Blurred if not premium) -->
-    <div class="features-content">
-      
-      <!-- Feature 1: Whale Tracker -->
-      <section class="feature-card">
-        <div class="feature-header">
-          <div>
-            <h3>🐋 Whale Tracker (Dòng Tiền Cá Mập)</h3>
-            <p>Phân tích mua/bán ròng của Khối ngoại và Tự doanh (Real-time)</p>
-          </div>
-          <span class="live-pulse">🔴 LIVE</span>
-        </div>
-        <div class="chart-container">
-          <canvas baseChart 
-            [data]="whaleChartData" 
-            [options]="whaleChartOptions" 
-            [type]="whaleChartType">
-          </canvas>
-        </div>
-      </section>
+    <!-- Main Content -->
+    <div class="dashboard-grid" [class.locked]="!isPremium">
+        
+        <!-- Result Panel (If Analyzed) -->
+        <div class="analysis-results" *ngIf="analysisResult">
+            
+            <!-- Quick Summary Bar -->
+            <div class="result-header">
+                <div class="ticker-info">
+                    <div class="ticker-pill">
+                        <h2>{{analysisResult.ticker}}</h2>
+                        <span class="asset-type">{{analysisResult.assetType}}</span>
+                    </div>
+                    <span class="price">Giá hiện tại: <strong>{{analysisResult.currentPrice}}</strong></span>
+                </div>
+                <div class="ai-score-card">
+                    <div class="score-value">{{analysisResult.aiScore}}</div>
+                    <div class="score-label">AI PRO Score</div>
+                </div>
+            </div>
 
-      <!-- Feature 2: Stress Test -->
-      <section class="feature-card">
-        <div class="feature-header">
-          <div>
-            <h3>🌩️ Giả Lập Khủng Hoảng (Portfolio Stress Test)</h3>
-            <p>Dự phóng bốc hơi tài sản nếu VN-Index sập giống T3/2020 (Covid-19)</p>
-          </div>
-          <button class="action-btn">Chạy Mô Phỏng</button>
+            <!-- Tabs Navigation -->
+            <div class="tabs-nav">
+                <button (click)="setTab('DASHBOARD')" [class.active]="activeTab === 'DASHBOARD'">
+                    <i class="fas fa-th-large"></i> Tổng Quan
+                </button>
+                <button (click)="setTab('TECHNICAL')" [class.active]="activeTab === 'TECHNICAL'">
+                    <i class="fas fa-chart-line"></i> Kỹ Thuật
+                </button>
+                <button (click)="setTab('FUNDAMENTAL')" [class.active]="activeTab === 'FUNDAMENTAL'">
+                    <i class="fas fa-newspaper"></i> Cơ Bản & Vĩ Mô
+                </button>
+                <button (click)="setTab('SHAREHOLDERS')" [class.active]="activeTab === 'SHAREHOLDERS'">
+                    <i class="fas fa-users"></i> Cổ Đông & Nội Bộ
+                </button>
+            </div>
+
+            <div class="tab-content">
+                <!-- Dashboard Tab -->
+                <div class="dashboard-view animate-fade" *ngIf="activeTab === 'DASHBOARD'">
+                    <div class="metrics-row">
+                        <div class="metric-card">
+                            <label>Dự báo Xu hướng</label>
+                            <div class="value" [style.color]="getSentimentColor(analysisResult.sentiment)">
+                                {{analysisResult.sentiment}}
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <label>Khuyến nghị AI</label>
+                            <div class="value highlight-purple">{{analysisResult.recommendation}}</div>
+                        </div>
+                        <div class="metric-card">
+                            <label>Rủi ro Stress Test</label>
+                            <div class="value" [style.color]="getRiskColor(analysisResult.riskLevel)">
+                                {{analysisResult.riskLevel}}
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <label>Mục tiêu kỳ vọng</label>
+                            <div class="value">{{analysisResult.targetPrice}}</div>
+                        </div>
+                    </div>
+
+                    <div class="charts-row">
+                        <div class="chart-card">
+                            <h3><i class="fas fa-whale"></i> Dòng Tiền Cá Mập (Whale Tracker)</h3>
+                            <div class="whale-stats" *ngIf="analysisResult.whaleFlow">
+                                <span class="stat">Khối ngoại: <b [style.color]="analysisResult.whaleFlow.foreignNetBuy.startsWith('+') ? '#10b981' : '#ef4444'">{{analysisResult.whaleFlow.foreignNetBuy}}</b></span>
+                                <span class="stat">Tự doanh: <b [style.color]="analysisResult.whaleFlow.proprietaryNetBuy.startsWith('+') ? '#10b981' : '#ef4444'">{{analysisResult.whaleFlow.proprietaryNetBuy}}</b></span>
+                            </div>
+                            <div class="chart-container">
+                                <canvas baseChart [data]="whaleChartData" [options]="whaleChartOptions" [type]="whaleChartType"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-card">
+                            <h3><i class="fas fa-shield-alt"></i> Dự báo Rủi ro (Risk Stress Test)</h3>
+                            <div class="chart-container">
+                                <canvas baseChart [data]="stressChartData" [options]="stressChartOptions" [type]="stressChartType"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technical Tab -->
+                <div class="technical-view animate-fade" *ngIf="activeTab === 'TECHNICAL'">
+                    <div class="technical-dashboard animate-fade">
+                        <div class="stats-grid">
+                            <div class="stat-card" *ngFor="let ind of analysisResult.technicalIndicators | keyvalue">
+                                <span class="label">{{ind.key}}</span>
+                                <span class="value" [class.highlight]="ind.key === 'Trend'">{{ind.value}}</span>
+                            </div>
+                        </div>
+                        <div class="analysis-section">
+                            <div class="section-badge">Phân tích chuyên sâu</div>
+                            <div class="html-content" [innerHTML]="analysisResult.technicalAnalysis"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fundamental Tab -->
+                <div class="fundamental-view animate-fade" *ngIf="activeTab === 'FUNDAMENTAL'">
+                    <div class="narrative-card full-width">
+                        <h3>Phân tích Cơ bản & Hệ sinh thái Tin tức</h3>
+                        <div class="html-content" [innerHTML]="analysisResult.fundamentalAnalysis"></div>
+                    </div>
+                </div>
+
+                <!-- Shareholders Tab -->
+                <div class="shareholders-view animate-fade" *ngIf="activeTab === 'SHAREHOLDERS'">
+                    <div class="shareholder-table-container">
+                        <table class="pro-table">
+                            <thead>
+                                <tr>
+                                    <th>Cổ đông / Ban lãnh đạo</th>
+                                    <th>Chức vụ</th>
+                                    <th>Sở hữu</th>
+                                    <th>Tỷ lệ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let s of analysisResult.shareholders">
+                                    <td>{{s.name}}</td>
+                                    <td>{{s.position}}</td>
+                                    <td>{{s.shareCount}}</td>
+                                    <td><span class="pct-badge">{{s.percentage}}</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="narrative-card full-width mt-3">
+                        <h3>Đánh giá Uy tín & Giao dịch nội bộ</h3>
+                        <div class="html-content" [innerHTML]="analysisResult.shareholderAnalysis"></div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="chart-container">
-          <canvas baseChart 
-            [data]="stressChartData" 
-            [options]="stressChartOptions" 
-            [type]="stressChartType">
-          </canvas>
+
+        <!-- Default Charts (Initial state) -->
+        <div class="charts-row" *ngIf="!analysisResult">
+            <div class="chart-card">
+                <h3>Thống kê Dòng tiền Thị trường</h3>
+                <div class="chart-container">
+                    <canvas baseChart [data]="whaleChartData" [options]="whaleChartOptions" [type]="whaleChartType"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h3>Stress Test Model</h3>
+                <div class="chart-container">
+                    <canvas baseChart [data]="stressChartData" [options]="stressChartOptions" [type]="stressChartType"></canvas>
+                </div>
+            </div>
         </div>
-      </section>
+
+        <!-- Paywall Overlay -->
+        <div class="paywall-overlay" *ngIf="!isPremium && !analysisResult">
+            <div class="paywall-content">
+                <i class="fas fa-lock"></i>
+                <h2>AI PRO ANALYTICS 2.0</h2>
+                <p>Khám phá bí mật dòng tiền Cá mập và Phân tích Cổ đông chuyên sâu.</p>
+                <div class="pro-perks">
+                    <span><i class="fas fa-check"></i> Whale Flow (Khối ngoại/Tự doanh)</span>
+                    <span><i class="fas fa-check"></i> Stress Test (Risk Simulation)</span>
+                    <span><i class="fas fa-check"></i> Shareholders Deep-dive</span>
+                </div>
+                <button class="btn-upgrade">NÂNG CẤP PRO NGAY</button>
+            </div>
+        </div>
 
     </div>
-  </div>
+</div>
 </div>

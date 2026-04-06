@@ -5,6 +5,8 @@ import { MarketPriceService } from 'src/app/service/market-price.service';
 import { AuthDetail } from 'src/app/common/util/auth-detail';
 import { AssetModel, AssetType } from 'src/app/model/asset.model';
 import { forkJoin } from 'rxjs';
+import { AuthService } from 'src/app/service/auth.service';
+import { MemberModel } from 'src/app/model/member.model';
 
 @Component({
   selector: 'app-portfolio-dashboard',
@@ -15,6 +17,7 @@ export class PortfolioDashboardComponent implements OnInit {
 
   isIncognito = false;
   isLoading = false;
+  currentUser: any;
   
   // Financial Metrics (VND)
   totalValueVND = 0;
@@ -52,11 +55,27 @@ export class PortfolioDashboardComponent implements OnInit {
 
   constructor(
     private assetService: AssetService,
-    private marketPriceService: MarketPriceService
+    private marketPriceService: MarketPriceService,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
+    this.refreshUserProfile();
     this.loadData();
+  }
+
+  refreshUserProfile() {
+    const jwt = AuthDetail.getCookie('jwt');
+    if (jwt) {
+      this.authService.getProfile(jwt).subscribe({
+        next: (res) => {
+          if (res.code === 200) {
+            this.currentUser = res.data;
+            // Optionally update local storage info if needed
+          }
+        }
+      });
+    }
   }
 
   loadData() {

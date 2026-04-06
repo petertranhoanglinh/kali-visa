@@ -1,0 +1,262 @@
+.news-detail-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+  font-family: 'Inter', -apple-system, sans-serif;
+  min-height: 100vh;
+}
+
+.back-nav {
+  margin-bottom: 3rem;
+}
+
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #666;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: color 0.2s;
+}
+
+.btn-back:hover {
+  color: #2563eb;
+}
+
+.article-header .cat {
+  color: #2563eb;
+  font-weight: 800;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+
+.article-header h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 2rem;
+  color: #111;
+}
+
+.article-header .meta {
+  color: #999;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 3rem;
+  font-weight: 600;
+}
+
+.article-image {
+  margin-bottom: 3.5rem;
+}
+
+.article-image img {
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+
+.article-summary {
+  font-size: 1.4rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #333;
+  margin-bottom: 3rem;
+  padding-left: 2rem;
+  border-left: 5px solid #2563eb;
+}
+
+.article-body {
+  font-size: 1.25rem;
+  line-height: 1.9;
+  color: #444;
+}
+
+.article-footer {
+  margin-top: 5rem;
+  padding-top: 3rem;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sentiment-badge {
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+
+.sentiment-badge[data-sentiment="BULLISH"] { background: #dcfce7; color: #15803d; }
+.sentiment-badge[data-sentiment="BEARISH"] { background: #fee2e2; color: #b91c1c; }
+
+.source-link {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.source-link:hover {
+  text-decoration: underline;
+}
+
+.loading-state, .error-state {
+  text-align: center;
+  padding: 5rem 0;
+  color: #999;
+  font-size: 1.2rem;
+}
+
+.error-state i {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+  color: #dc2626;
+}
+
+@media (max-width: 768px) {
+  .news-detail-container { padding: 2rem 1.5rem; }
+  .article-header h1 { font-size: 2.2rem; }
+  .article-summary { font-size: 1.2rem; }
+  .article-body { font-size: 1.15rem; }
+}
+
+/* Comments Section */
+.comments-container {
+  margin-top: 4rem;
+  padding: 3rem;
+  background: #fdfdfd;
+  border-radius: 12px;
+  border: 1px solid #f0f0f0;
+}
+
+.comments-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 2.5rem;
+  color: #111;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.comment-list {
+  margin-bottom: 3rem;
+}
+
+.comment-item {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.avatar {
+  background: #2563eb;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.avatar.small {
+  width: 32px;
+  height: 32px;
+  font-size: 0.8rem;
+}
+
+.comment-content {
+  flex: 1;
+}
+
+.comment-bubble {
+  background: #f1f5f9;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.comment-author {
+  display: block;
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: #111;
+  margin-bottom: 0.25rem;
+}
+
+.comment-text {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: #334155;
+}
+
+.comment-time {
+  display: block;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin-top: 0.25rem;
+  padding-left: 0.5rem;
+}
+
+.comment-composer {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding-top: 2rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.input-wrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.comment-input {
+  width: 100%;
+  padding: 0.75rem 3rem 0.75rem 1.25rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 25px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+  background: white;
+}
+
+.comment-input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.btn-send {
+  position: absolute;
+  right: 1.25rem;
+  background: none;
+  border: none;
+  color: #2563eb;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: transform 0.2s;
+}
+
+.btn-send:hover {
+  transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+  .comments-container {
+    padding: 1.5rem;
+  }
+}
