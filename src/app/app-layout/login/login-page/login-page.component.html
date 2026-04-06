@@ -5,25 +5,13 @@
           <h1 style="font-size: 2rem; color: #4f46e5; margin-bottom: 0;">💎 T'L WEALTH MANAGEMENT</h1>
       </div>
 
-      <h2 class="welcome-text">Sign In to Your Wealth Dashboard</h2>
-
-      <form method="POST">
-          <div class="form-group">
-              <i class="fas fa-envelope form-icon"></i>
-              <input type="email" [(ngModel)]="email" class="form-control" name="email" id="email" placeholder="Email Address" required>
+      <h2 class="welcome-text">Access Your Wealth Dashboard</h2>
+      
+      <div class="google-section" style="margin-top: 2rem; display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+          <p class="google-text" style="color: #6b7280; font-size: 0.9rem;">Sign in quickly and securely with your Google account</p>
+          <div id="googleID" class="google-login">
+              <!-- Google login button will be rendered here -->
           </div>
-
-          <div class="form-group">
-              <i class="fas fa-lock form-icon"></i>
-              <input type="password" [(ngModel)]="password" class="form-control" name="password" id="password" placeholder="Password" required>
-          </div>
-
-          <button type="button" class="btn-login" style="background:#4f46e5" (click)="loginPage()">Access Dashboard</button>
-      </form>
-      <hr class="divider">
-      <p class="google-text">Or sign in with Google</p>
-      <div id="googleID" class="google-login">
-          <!-- Google login button will be rendered here -->
       </div>
   </div>
 </body>

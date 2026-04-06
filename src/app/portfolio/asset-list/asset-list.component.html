@@ -17,10 +17,10 @@
     <div class="summary-card actions">
       <div class="action-buttons">
         <button class="btn-premium add-btn" (click)="toggleAddForm()">
-          <i class="fas fa-plus"></i> Thêm Tài Sản
+          <i class="fas fa-plus"></i> THÊM TÀI SẢN
         </button>
-        <button *ngIf="userTier === 'BASIC'" class="btn-settings" routerLink="/price-settings">
-          <i class="fas fa-cog"></i> Cấu hình giá
+        <button class="btn-settings" routerLink="/price-settings">
+          <i class="fas fa-cog"></i> CÀI ĐẶT GIÁ
         </button>
       </div>
     </div>
@@ -67,8 +67,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn-cancel" (click)="toggleAddForm()">Hủy Bỏ</button>
-        <button class="btn-save" (click)="addAsset()">Lưu Tài Sản</button>
+        <button class="btn-cancel" (click)="toggleAddForm()">HỦY BỎ</button>
+        <button class="btn-save" (click)="addAsset()">LƯU TÀI SẢN</button>
       </div>
     </div>
   </div>
@@ -119,10 +119,10 @@
             <td class="text-right">
               <div class="action-cell">
                 <button class="btn-detail" (click)="toggleDetail(group)">
-                  {{ group.isExpanded ? 'Đóng' : 'Chi tiết' }} 
+                  {{ group.isExpanded ? 'ĐÓNG' : 'CHI TIẾT' }} 
                 </button>
                 <button *ngIf="group.type !== 'CASH'" class="btn-sell" (click)="toggleSellForm(group)">
-                  Bán
+                  BÁN
                 </button>
               </div>
             </td>
@@ -207,7 +207,7 @@
       <div class="modal-footer">
         <button class="btn-cancel" (click)="toggleSellForm()">Hủy</button>
         <button class="btn-save sell-btn" (click)="submitSell()" [disabled]="!newSellAsset.quantity || newSellAsset.quantity <= 0">
-          Xác nhận Bán
+          XÁC NHẬN BÁN
         </button>
       </div>
     </div>

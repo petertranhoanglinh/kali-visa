@@ -26,7 +26,6 @@
             </div>
             <div class="auth-buttons" *ngIf="!isLogin">
                 <a routerLink="/login" class="btn-login-outline hidden-mobile">Đăng Nhập</a>
-                <a routerLink="/register" class="btn-register-filled hidden-mobile">Tạo Tài Khoản</a>
             </div>
             
             <!-- Mobile Menu Toggle Button -->
@@ -50,7 +49,6 @@
             <a *ngIf="isAdmin" routerLink="/admin-upgrade" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link admin"><i class="fas fa-user-shield"></i> Duyệt Nâng Cấp</a>
             <hr class="mobile-divider" *ngIf="!isLogin">
             <a *ngIf="!isLogin" routerLink="/login" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-sign-in-alt"></i> Đăng Nhập</a>
-            <a *ngIf="!isLogin" routerLink="/register" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-user-plus"></i> Đăng Ký</a>
         </nav>
     </div>
 </header>

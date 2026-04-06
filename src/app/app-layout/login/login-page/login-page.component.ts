@@ -83,11 +83,11 @@ export class LoginPageComponent implements OnInit {
 
     this.clearErr$ = this.err$.subscribe(res =>{
       if(ValidationUtil.isNotNullAndNotEmpty(this.googleUser)){
+        // Bỏ redirect sang /register vì Backend đã tự tạo account
         localStorage.setItem(
           Common.GOOGLE_USER,
           JSON.stringify(this.googleUser)
         );
-       location.href = "/register"
       }else{
 
         if(this.countSub != 0){
@@ -164,26 +164,25 @@ export class LoginPageComponent implements OnInit {
 		);
 	}
 
-  handleCredentialResponse(response: any) {
-		this.overlayLoadingStore.dispatch(
-			setShowOverlayLoading({ loading: true })
-		);
-		const responsePayload = JSON.parse(
-			JSON.stringify(jwt_decode(response.credential))
-		);
+    handleCredentialResponse(response: any) {
+        this.overlayLoadingStore.dispatch(
+            setShowOverlayLoading({ loading: true })
+        );
+        const responsePayload = JSON.parse(
+            JSON.stringify(jwt_decode(response.credential))
+        );
 
-		if (ValidationUtil.isNotNullAndNotEmpty(responsePayload)) {
-			this.googleUser = JSON.parse(JSON.stringify(responsePayload));
-      console.log(this.googleUser);
-      if(ValidationUtil.isNotNullAndNotEmpty(this.googleUser)){
-        let param = {
-          googleID: this.googleUser.sub
+        if (ValidationUtil.isNotNullAndNotEmpty(responsePayload)) {
+            this.googleUser = JSON.parse(JSON.stringify(responsePayload));
+            console.log(this.googleUser);
+            let param = {
+                googleID: this.googleUser.sub,
+                email: this.googleUser.email,
+                name: this.googleUser.name
+            }
+            this._auth_state.dispatch(authAction({params:param}))
         }
-        this._auth_state.dispatch(authAction({params:param}))
-      }else{
-      }
-		}
-	}
+    }
 
   onSignGoogle() {
 
