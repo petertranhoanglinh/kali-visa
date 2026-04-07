@@ -2,6 +2,7 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { NewsService } from 'src/app/service/news.service';
 import { MarketNews } from 'src/app/model/market-news.model';
 import { ToastrService } from 'ngx-toastr';
+import { AuthDetail } from 'src/app/common/util/auth-detail';
 
 @Component({
   selector: 'app-news-summary',
@@ -15,6 +16,7 @@ export class NewsSummaryComponent implements OnInit {
   pageSize: number = 10;
   isLastPage: boolean = false;
   isLoading: boolean = false;
+  isAdmin: boolean = false;
   selectedCategory: string = '';
   today: Date = new Date();
 
@@ -24,6 +26,8 @@ export class NewsSummaryComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    const user = AuthDetail.getLoginedInfo();
+    this.isAdmin = user && user.role === 'ADMIN';
     this.loadNews();
   }
 
@@ -53,7 +57,11 @@ export class NewsSummaryComponent implements OnInit {
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
+    const scrollPosition = window.innerHeight + window.scrollY;
+    const documentHeight = document.documentElement.scrollHeight;
+    
+    // Trigger when 200px from the bottom
+    if (scrollPosition >= documentHeight - 200) {
       if (!this.isLastPage && !this.isLoading) {
         this.loadNews(true);
       }

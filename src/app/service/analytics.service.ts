@@ -15,7 +15,7 @@ export class AnalyticsService {
 
   analyzeTicker(ticker: string): Observable<StockAnalysisResult> {
     
-    return this.http.get<StockAnalysisResult>(`${this.apiUrl}/stock/analyze?ticker= ` + ticker, { 
+    return this.http.get<StockAnalysisResult>(`${this.apiUrl}/stock/analyze?ticker=` + ticker, { 
       headers: AuthDetail.getHeaderJwt()
     });
   }

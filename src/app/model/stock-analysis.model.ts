@@ -1,30 +1,30 @@
-export interface WhaleFlowData {
-    foreignNetBuy: string;
-    proprietaryNetBuy: string;
-    largeTransactions: string[];
-}
-
-export interface ShareholderInfo {
-    name: string;
-    position: string;
-    shareCount: string;
-    percentage: string;
-    recentTrades?: string[];
-}
-
 export interface StockAnalysisResult {
     ticker: string;
-    assetType: 'STOCK' | 'CRYPTO';
+    assetType: string;
     currentPrice: string;
+    
+    // AI Content
     technicalAnalysis: string;
     fundamentalAnalysis: string;
     shareholderAnalysis: string;
-    sentiment: 'BULLISH' | 'BEARISH' | 'NEUTRAL';
+    overviewAnalysis?: string;
+    masterAnalysis?: string;
+    
+    // Metrics
+    sentiment: string;
     aiScore: number;
-    recommendation: 'BUY' | 'HOLD' | 'SELL';
+    recommendation: string;
     targetPrice: string;
-    riskLevel: 'LOW' | 'MEDIUM' | 'HIGH';
-    whaleFlow?: WhaleFlowData;
-    shareholders?: ShareholderInfo[];
-    technicalIndicators?: { [key: string]: string };
+    riskLevel: string;
+    
+    // Raw Data (vnstock)
+    overview?: any;
+    finance?: any;
+    shareholders?: any[];
+    insiderDeals?: any[];
+    technicals?: any[];
+    companyNews?: any[];
+    
+    whaleFlow?: any;
+    latestIndicators?: any;
 }

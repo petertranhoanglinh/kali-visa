@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ChartData, ChartType, ChartOptions } from 'chart.js';
+import { ActivatedRoute } from '@angular/router';
 import { AnalyticsService } from 'src/app/service/analytics.service';
+import { StockAnalysisResult } from '../../model/stock-analysis.model';
+import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
+
 import { AuthDetail } from 'src/app/common/util/auth-detail';
-import { StockAnalysisResult } from 'src/app/model/stock-analysis.model';
-import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-analytics',
@@ -11,134 +12,155 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./analytics.component.css']
 })
 export class AnalyticsComponent implements OnInit {
-
-  // Premium State
-  isPremium = false;
-  userTier = 'BASIC';
-  
-  // UI State
-  activeTab: 'DASHBOARD' | 'TECHNICAL' | 'FUNDAMENTAL' | 'SHAREHOLDERS' = 'DASHBOARD';
-
-  // Search State
-  tickerInput = '';
-  isAnalyzing = false;
+  ticker: string = '';
+  tickerInput: string = '';
+  loading: boolean = false;
+  isAnalyzing: boolean = false;
+  activeTab: string = 'OVERVIEW';
   analysisResult: StockAnalysisResult | null = null;
+  isPremium: boolean = false;
 
-  // 1. Whale Tracker Chart (Bar Chart)
-  public whaleChartType: 'bar' = 'bar';
-  public whaleChartData: ChartData<'bar'> = {
-    labels: ['VCB', 'SSI', 'HSG', 'Hpg', 'VHM', 'MWG'],
+  // Chart Properties
+  public priceChartType: ChartType = 'line';
+  public priceChartData: ChartData<'line'> = {
+    labels: [],
     datasets: [
-      {
-        label: 'Tự Doanh Bán Ròng (Tỷ VNĐ)',
-        data: [-120, -50, -32, 0, 0, 0],
-        backgroundColor: 'rgba(239, 68, 68, 0.7)',
-        borderColor: '#ef4444',
-      },
-      {
-        label: 'Khối Ngoại Mua Ròng (Tỷ VNĐ)',
-        data: [0, 0, 0, 85, 150, 310],
-        backgroundColor: 'rgba(16, 185, 129, 0.7)',
-        borderColor: '#10b981',
-      }
-    ]
-  };
-  public whaleChartOptions: ChartOptions<'bar'> = {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
-      x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
-    },
-    plugins: { legend: { labels: { color: '#f8fafc' } } }
-  };
-
-  // 2. Stress Test Chart (Line Chart)
-  public stressChartType: 'line' = 'line';
-  public stressChartData: ChartData<'line'> = {
-    labels: ['T-5', 'T-4', 'T-3', 'T-2', 'T-1', 'Today', 'T+1', 'T+2', 'T+3'],
-    datasets: [
-      {
-        label: 'Dự báo Bình thường',
-        data: [1200, 1220, 1250, 1240, 1260, 1250, 1265, 1280, 1300],
-        borderColor: '#6366f1',
+      { 
+        data: [], 
+        label: 'Giá Đóng Cửa', 
+        borderColor: '#6366f1', 
         backgroundColor: 'rgba(99, 102, 241, 0.1)',
         fill: true,
-        tension: 0.4
+        tension: 0.3,
+        pointRadius: 2
       },
-      {
-        label: 'Giả lập Khủng hoảng',
-        data: [1200, 1220, 1250, 1240, 1260, 1250, 1000, 950, 880],
-        borderColor: '#f43f5e',
-        backgroundColor: 'transparent',
-        borderDash: [5, 5],
-        tension: 0.4
+      { 
+        data: [], 
+        label: 'SMA 20', 
+        borderColor: '#f59e0b', 
+        borderWidth: 1.5,
+        pointRadius: 0,
+        fill: false,
+        tension: 0.3
+      },
+      { 
+        data: [], 
+        label: 'SMA 50', 
+        borderColor: '#ef4444', 
+        borderWidth: 1.5,
+        pointRadius: 0,
+        fill: false,
+        tension: 0.3
+      },
+      { 
+        data: [], 
+        label: 'SMA 200', 
+        borderColor: '#10b981', 
+        borderWidth: 2,
+        pointRadius: 0,
+        fill: false,
+        tension: 0.3
       }
     ]
   };
-  public stressChartOptions: ChartOptions<'line'> = {
+
+  public priceChartOptions: ChartConfiguration['options'] = {
     responsive: true,
     maintainAspectRatio: false,
-    scales: {
-      y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
-      x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+    plugins: {
+      legend: { display: true, position: 'top', labels: { color: '#475569', font: { weight: '600' } } },
+      tooltip: { mode: 'index', intersect: false }
     },
-    plugins: { legend: { labels: { color: '#f8fafc' } } }
+    scales: {
+      x: { grid: { display: false }, ticks: { color: '#64748b', font: { weight: '600' } } },
+      y: { grid: { color: '#f1f5f9' }, ticks: { color: '#64748b', font: { weight: '600' } } }
+    }
   };
 
-  constructor(
-    private analyticsService: AnalyticsService,
-    private toastr: ToastrService
-  ) { }
-
-  ngOnInit(): void {
-    const user = AuthDetail.getLoginedInfo();
-    if (user) {
-      this.userTier = user.tier || 'BASIC';
-      this.isPremium = (this.userTier === 'PRO' || this.userTier === 'PLUS' || user.role === 'ADMIN');
+  setTab(tab: string) {
+    this.activeTab = tab;
+    const techs = this.analysisResult?.technicals;
+    if (tab === 'TECHNICAL' && techs && techs.length > 0) {
+      setTimeout(() => this.updatePriceChart(techs), 50);
     }
   }
 
-  setTab(tab: 'DASHBOARD' | 'TECHNICAL' | 'FUNDAMENTAL' | 'SHAREHOLDERS') {
-    this.activeTab = tab;
+  constructor(
+    private route: ActivatedRoute,
+    private analyticsService: AnalyticsService
+  ) {}
+
+  ngOnInit(): void {
+    const userInfo = AuthDetail.getLoginedInfo();
+    const now = new Date();
+    const expiryDate = userInfo.expiryDate ? new Date(userInfo.expiryDate) : null;
+    const isExpired = expiryDate ? expiryDate < now : true;
+
+    // Chỉ PRO hoặc ADMIN (và chưa hết hạn) mới được dùng
+    this.isPremium = (userInfo.tier === 'PRO' || userInfo.tier === 'PLUS' || userInfo.role === 'ADMIN') && !isExpired;
+    
+    // Nếu là ADMIN thì luôn bypass expiry
+    if (userInfo.role === 'ADMIN') this.isPremium = true;
+
+    this.route.queryParams.subscribe(params => {
+      this.ticker = params['ticker'];
+      if (this.ticker) {
+        this.performAnalysis();
+      } else {
+        this.analysisResult = null;
+      }
+    });
   }
 
   performAnalysis() {
-    if (!this.tickerInput.trim()) {
-      this.toastr.warning("Vui lòng nhập mã Chứng khoán hoặc Crypto (ví dụ: FPT, BTCUSDT)");
-      return;
+    if (this.tickerInput) {
+      this.ticker = this.tickerInput;
     }
+    
+    if (!this.ticker) return;
 
-    // Luôn cho phép test ở bản UI cao cấp này
+    this.loading = true;
     this.isAnalyzing = true;
-    this.analysisResult = null;
-
-    this.analyticsService.analyzeTicker(this.tickerInput.toUpperCase()).subscribe({
+    this.analyticsService.analyzeTicker(this.ticker).subscribe({
       next: (res) => {
         this.analysisResult = res;
-        this.updateWhaleChart(res);
+        this.loading = false;
         this.isAnalyzing = false;
-        this.toastr.success("Phân tích hoàn tất!");
+        if (res.technicals && res.technicals.length > 0) {
+          this.updatePriceChart(res.technicals);
+        }
       },
       error: (err) => {
         console.error(err);
-        this.toastr.error("Không thể phân tích mã này. Vui lòng thử lại sau.");
+        this.loading = false;
         this.isAnalyzing = false;
       }
     });
   }
 
-  private updateWhaleChart(res: StockAnalysisResult) {
-    if (res.whaleFlow) {
-      // Mock update to chart based on simulated whale data
-      this.whaleChartData.datasets[0].data[5] = -200; // Example
-      this.whaleChartData.datasets[1].data[5] = 450;  // Example
-      this.whaleChartData = { ...this.whaleChartData }; // Trigger CD
-    }
+  private updatePriceChart(technicals: any[]) {
+    // Technicals contains Daily history from Python
+    const labels = technicals.map(t => {
+      const d = new Date(t.time);
+      return isNaN(d.getTime()) ? t.time : d.toLocaleDateString('vi-VN', {day: '2-digit', month: '2-digit'});
+    });
+    
+    const prices = technicals.map(t => t.close);
+    const sma20 = technicals.map(t => t.sma20);
+    const sma50 = technicals.map(t => t.sma50);
+    const sma200 = technicals.map(t => t.sma200);
+
+    this.priceChartData.labels = labels;
+    this.priceChartData.datasets[0].data = prices;
+    this.priceChartData.datasets[1].data = sma20;
+    this.priceChartData.datasets[2].data = sma50;
+    this.priceChartData.datasets[3].data = sma200;
+    
+    this.priceChartData = { ...this.priceChartData };
   }
 
   getSentimentColor(sentiment: string): string {
-    switch (sentiment) {
+    switch (sentiment?.toUpperCase()) {
       case 'BULLISH': return '#10b981';
       case 'BEARISH': return '#ef4444';
       default: return '#f59e0b';
@@ -146,7 +168,7 @@ export class AnalyticsComponent implements OnInit {
   }
 
   getRiskColor(risk: string): string {
-    switch (risk) {
+    switch (risk?.toUpperCase()) {
       case 'LOW': return '#10b981';
       case 'MEDIUM': return '#f59e0b';
       case 'HIGH': return '#ef4444';

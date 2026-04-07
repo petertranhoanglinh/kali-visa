@@ -10,7 +10,7 @@
   </div>
 
   <div class="magazine-grid" *ngIf="newsItems.length > 0">
-    <!-- LEFT: Sidebar Widgets -->
+    <!-- LEFT: Sidebar (Hidden on small screens) -->
     <div class="left-sidebar">
       <div class="sidebar-widget trending-widget">
         <h4 class="widget-title-line">TRENDING TOPICS</h4>
@@ -21,22 +21,26 @@
           <span class="topic-tag" (click)="filterByCategory('CRYPTO')">#Crypto</span>
         </div>
       </div>
-
-      <!-- Small secondary news widgets -->
-      <div *ngFor="let news of newsItems.slice(6, 9)" class="mini-news-card" [routerLink]="['/news', news.id]">
-        <div class="mini-thumb">
-          <img [src]="news.thumbUrl || news.imageUrl || 'assets/img/news-placeholder.jpg'" alt="Mini">
-        </div>
-        <div class="mini-content">
-          <h5 class="mini-title">{{ news.title }}</h5>
-          <span class="mini-time">{{ news.createdAt | date:'HH:mm' }}</span>
+      
+      <!-- Market Sentiment in Left Sidebar for Desktop -->
+      <div class="sidebar-card sentiment-sidebar">
+        <h4 class="sidebar-title">SENTIMENT</h4>
+        <div class="sentiment-summary">
+           <div class="bar-container">
+             <div class="bar bull" style="width: 65%"></div>
+             <div class="bar bear" style="width: 35%"></div>
+           </div>
+           <div class="labels">
+             <span>Bullish 65%</span>
+             <span>Bearish 35%</span>
+           </div>
         </div>
       </div>
     </div>
 
-    <!-- MIDDLE: Main Content Area -->
+    <!-- MAIN FEED -->
     <div class="main-content-section">
-      <!-- Featured Story -->
+      <!-- 1. Featured Story (Always First) -->
       <div class="featured-section" [routerLink]="['/news', newsItems[0].id]">
         <div class="featured-card">
           <div class="image-wrapper">
@@ -56,52 +60,50 @@
         </div>
       </div>
 
-      <!-- Feed: Latest Insights (Limit to 5) -->
+      <!-- 2. Infinite Feed (The rest of items) -->
       <div class="feed-section">
-        <div class="section-title">LATEST INSIGHTS</div>
-        <div *ngFor="let news of newsItems.slice(1, 6)" class="news-widget" [routerLink]="['/news', news.id]">
-          <div class="widget-thumb">
-            <img [src]="news.thumbUrl || news.imageUrl || 'assets/img/news-placeholder.jpg'" alt="Thumb">
-          </div>
-          <div class="widget-content">
-            <h3 class="widget-title">{{ news.title }}</h3>
-            <div class="widget-meta">
-              <span class="cat">{{ news.category }}</span>
-              <span class="dot">·</span>
-              <span class="time">{{ news.createdAt | date:'HH:mm' }}</span>
+        <div class="section-title">LATEST CONTENT</div>
+        
+        <div class="news-feed-grid">
+          <div *ngFor="let news of newsItems.slice(1)" class="news-widget-card" [routerLink]="['/news', news.id]">
+            <div class="widget-image">
+              <img [src]="news.thumbUrl || news.imageUrl || 'assets/img/news-placeholder.jpg'" alt="Thumb">
+              <div class="widget-category">{{ news.category }}</div>
+            </div>
+            <div class="widget-details">
+              <h3 class="widget-headline">{{ news.title }}</h3>
+              <p class="widget-excerpt" *ngIf="news.summary">{{ news.summary }}</p>
+              <div class="widget-footer">
+                <span class="widget-time"><i class="far fa-clock"></i> {{ news.createdAt | date:'HH:mm, dd/MM' }}</span>
+                <span class="widget-impact" *ngIf="news.aiScore">Score: {{ news.aiScore }}</span>
+              </div>
             </div>
           </div>
         </div>
 
-        <div *ngIf="isLoading" class="loader">
-          <i class="fas fa-spinner fa-spin"></i> Loading more...
+        <!-- Scroll Loading Indicator -->
+        <div *ngIf="isLoading" class="infinite-loader">
+          <div class="spinner"></div>
+          <span>Đang tải thêm tin tức...</span>
+        </div>
+        
+        <div *ngIf="isLastPage && newsItems.length > 0" class="end-of-content">
+          <i class="fas fa-check-circle"></i> Bạn đã xem hết tin tức hôm nay.
         </div>
       </div>
     </div>
 
-    <!-- RIGHT: Sidebar (Hot Topics & Tools) -->
+    <!-- RIGHT: Actions -->
     <div class="sidebar-section">
-      <div class="sidebar-card">
-        <h4 class="sidebar-title">MARKET SENTIMENT</h4>
-        <div class="sentiment-summary">
-           <div class="bar-container">
-             <div class="bar bull" style="width: 65%"></div>
-             <div class="bar bear" style="width: 35%"></div>
-           </div>
-           <div class="labels">
-             <span>Bullish 65%</span>
-             <span>Bearish 35%</span>
-           </div>
-        </div>
-      </div>
-
-      <button class="btn-refresh" (click)="forceRefresh()">
+      <button *ngIf="isAdmin" class="btn-refresh" (click)="forceRefresh()">
         <i class="fas fa-sync-alt"></i> REGENERATE NEWS
       </button>
 
-      <div class="ad-widget-mock">
-        <span>T'L WEALTH MANAGEMENT</span>
-        <p>Premium Financial Analysis Powered by AI</p>
+      <div class="premium-ad">
+        <span class="ad-tag">PREMIUM ACCESS</span>
+        <h4>T'L WEALTH MANAGEMENT</h4>
+        <p>Phân tích thị trường chuyên sâu hỗ trợ bởi AI v1.2</p>
+        <button class="btn-learn-more">Learn More</button>
       </div>
     </div>
   </div>
