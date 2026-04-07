@@ -4,6 +4,7 @@ export enum AssetType {
     CRYPTO = 'CRYPTO',
     CASH = 'CASH',
     BOND = 'BOND',
+    FUND = 'FUND',
 }
 
 export interface AssetModel {

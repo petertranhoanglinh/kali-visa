@@ -30,6 +30,19 @@ export class AssetListComponent implements OnInit {
   marketPrices: Map<string, number> = new Map();
   userTier: string = 'BASIC';
   assetTypes = Object.values(AssetType);
+  Math = Math; // Expose Math for template pagination
+  
+  // Ticker Selector State
+  fullListing: any[] = [];
+  cryptoListing: string[] = []; // New live list from Binance
+  fundListing: any[] = []; // New live list from Fmarket
+  filteredListing: any[] = [];
+  searchTerm: string = '';
+  currentPage: number = 1;
+  pageSize: number = 12;
+  showTickerSelector = false;
+  activeSelectorTab: 'STOCK' | 'CRYPTO' | 'GOLD' | 'FUND' = 'STOCK';
+  selectedTicker: any = null;
   
   private EXCHANGE_RATE = 25000; // Default fallback
   
@@ -72,6 +85,94 @@ export class AssetListComponent implements OnInit {
     this.userTier = loginInfo?.tier || 'BASIC';
     this.loadExchangeRate();
     this.loadAssets();
+    this.loadFullListing();
+  }
+
+  loadFullListing() {
+    this.assetService.getAssetListing().subscribe({
+      next: (res) => {
+        this.fullListing = res;
+        this.filterListing();
+      }
+    });
+
+    this.assetService.getCryptoListing().subscribe({
+        next: (res) => {
+            this.cryptoListing = res;
+            if (this.activeSelectorTab === 'CRYPTO') this.filterListing();
+        }
+    });
+
+    this.assetService.getAssetListing('FUND').subscribe({
+        next: (res) => {
+            this.fundListing = res;
+            if (this.activeSelectorTab === 'FUND') this.filterListing();
+        }
+    });
+  }
+
+  filterListing() {
+    let list = [];
+    if (this.activeSelectorTab === 'STOCK') {
+      list = this.fullListing.filter(item => 
+        item.symbol.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        item.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+      );
+    } else if (this.activeSelectorTab === 'CRYPTO') {
+      // Map Binance string symbols to the expected Object format
+      list = this.cryptoListing
+        .filter(sym => sym.toLowerCase().includes(this.searchTerm.toLowerCase()))
+        .map(sym => ({ symbol: sym, name: sym }));
+    } else if (this.activeSelectorTab === 'GOLD') {
+      this.assetService.getRealtimePrices(['SJC'], ['GOLD']).subscribe(prices => {
+        const sjcPrice = prices['SJC'] || 82000000;
+        this.filteredListing = [
+            {symbol: 'SJC', name: `Vàng Miếng SJC (${this.formatNumber(sjcPrice)} ₫)`, type: 'AUTO'},
+            {symbol: 'Vàng 9999', name: 'Vàng Truyền Thống / Nhẫn (Nhập tay)', type: 'MANUAL'}
+        ];
+      });
+      return; // Async update handled
+    } else if (this.activeSelectorTab === 'FUND') {
+        list = this.fundListing.filter(item => 
+          item.symbol.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+          item.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+        );
+    }
+    this.filteredListing = list;
+    this.currentPage = 1;
+  }
+
+  get paginatedListing() {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.filteredListing.slice(start, start + this.pageSize);
+  }
+
+  setSelectorTab(tab: 'STOCK' | 'CRYPTO' | 'GOLD' | 'FUND') {
+    this.activeSelectorTab = tab;
+    this.searchTerm = '';
+    this.filterListing();
+  }
+
+  selectTicker(item: any) {
+    this.newAsset.symbol = item.symbol;
+    this.newAsset.type = this.activeSelectorTab as AssetType;
+    
+    // Custom logic for Gold types
+    if (this.activeSelectorTab === 'GOLD') {
+      if (item.symbol === 'SJC') {
+        this.newAsset.currency = 'VND';
+      } else {
+        this.newAsset.currency = 'VND';
+      }
+    } else if (this.activeSelectorTab === 'STOCK') {
+      this.newAsset.currency = 'VND';
+    } else if (this.activeSelectorTab === 'FUND') {
+        this.newAsset.currency = 'VND';
+    } else {
+      this.newAsset.currency = 'USD';
+    }
+
+    this.showTickerSelector = false;
   }
 
   loadExchangeRate() {
@@ -92,7 +193,7 @@ export class AssetListComponent implements OnInit {
         next: (res) => {
           this.assets = res;
           
-          if (this.userTier === 'BASIC') {
+          //if (this.userTier === 'BASIC') {
             this.marketPriceService.getPricesByUser(userId).subscribe({
               next: (prices) => {
                 prices.forEach(p => this.marketPrices.set(p.symbol, p.price));
@@ -100,9 +201,10 @@ export class AssetListComponent implements OnInit {
               },
               error: () => this.groupAssets()
             });
-          } else {
-            this.groupAssets();
-          }
+          //} else {
+            // PRO Tier: Fetch real-time prices directly
+            //this.refreshProPrices();
+         // }
         },
         error: (err) => {
           this.toastr.error("Failed to load assets");
@@ -132,37 +234,77 @@ export class AssetListComponent implements OnInit {
       
       const group = groups.get(key)!;
       group.history.push(asset);
-      if (asset.isSell) {
-        group.totalQuantity -= (asset.quantity || 0);
-      } else {
-        group.totalQuantity += (asset.quantity || 0);
-        group.totalCost += ((asset.quantity || 0) * (asset.averagePrice || 0));
-      }
     });
 
     this.groupedAssets = Array.from(groups.values()).map(group => {
-      // Calculate Average Cost Basis only from remaining Buy transactions if needed,
-      // but standard weighted average cost used for totalCost.
-      if (group.totalQuantity > 0 && group.totalCost > 0) {
-        // We keep the cost basis from the Buy transactions
-        group.averagePrice = group.totalCost / (group.history.filter(h => !h.isSell).reduce((s, h) => s + (h.quantity || 0), 0) || 1);
-      }
+      let totalPurchaseQty = 0;
+      let totalPurchaseCost = 0;
+      let netQty = 0;
+
+      // Calculate Weighted Average Cost from all BUYS
+      group.history.forEach(h => {
+        if (!h.isSell) {
+          totalPurchaseQty += (h.quantity || 0);
+          totalPurchaseCost += ((h.quantity || 0) * (h.averagePrice || 0));
+          netQty += (h.quantity || 0);
+        } else {
+          netQty -= (h.quantity || 0);
+        }
+      });
+
+      group.totalQuantity = netQty;
+      group.averagePrice = totalPurchaseQty > 0 ? (totalPurchaseCost / totalPurchaseQty) : 0;
       
-      // Calculate Market Value based on current total quantity
+      // Cost Basis of REMAINING quantity
+      group.totalCost = Math.max(0, netQty * group.averagePrice);
+
+      // Current Market Value
       const currentPrice = this.marketPrices.get(group.symbol) || group.averagePrice;
       group.marketPrice = currentPrice;
-      group.totalValue = group.totalQuantity * currentPrice;
-      
-      // Total Cost for display = Remaining Quantity * Avg Cost
-      group.totalCost = group.totalQuantity * group.averagePrice;
+      group.totalValue = netQty * currentPrice;
 
-      // Sort history by date descending
+      // Sort history Descending
       group.history.sort((a, b) => {
         const dateA = a.purchaseDate ? new Date(a.purchaseDate).getTime() : 0;
         const dateB = b.purchaseDate ? new Date(b.purchaseDate).getTime() : 0;
         return dateB - dateA;
       });
+
       return group;
+    });
+  }
+
+  refreshProPrices() {
+    if (this.userTier === 'BASIC') {
+      this.groupAssets();
+      return;
+    }
+
+    const uniqueSymbols = Array.from(new Set(this.assets.map(a => a.symbol)));
+    // Only refresh automated types (STOCK, SJC, CRYPTO, FUND)
+    const symbolsToRefresh = uniqueSymbols.filter(s => {
+      const asset = this.assets.find(a => a.symbol === s);
+      if (!asset) return false;
+      if (asset.type === AssetType.GOLD && s !== 'SJC') return false; // Ignore traditional gold
+      if (asset.type === AssetType.CASH || asset.type === AssetType.BOND) return false;
+      return true;
+    });
+
+    const types = symbolsToRefresh.map(sym => this.assets.find(a => a.symbol === sym)?.type || 'STOCK');
+
+    if (symbolsToRefresh.length === 0) {
+      this.groupAssets();
+      return;
+    }
+
+    this.assetService.getRealtimePrices(symbolsToRefresh, types).subscribe({
+      next: (priceMap) => {
+        Object.keys(priceMap).forEach(sym => {
+          if (priceMap[sym] > 0) this.marketPrices.set(sym, priceMap[sym]);
+        });
+        this.groupAssets();
+      },
+      error: () => this.groupAssets()
     });
   }
 
@@ -185,14 +327,30 @@ export class AssetListComponent implements OnInit {
     }
 
     this.newAsset.userId = userId;
-    // Parse the display price back to number
     this.newAsset.averagePrice = this.parseNumber(this.displayPrice);
 
-    // If user didn't pick a date, default to now (though the input should have it)
     if (!this.newAsset.purchaseDate) {
       this.newAsset.purchaseDate = new Date().toISOString();
     }
-    
+
+    // Validation for Stocks
+    if (this.newAsset.type === 'STOCK') {
+      this.assetService.validateSymbol(this.newAsset.symbol).subscribe({
+        next: (v) => {
+          if (v.isValid) {
+            this.executeAddAsset();
+          } else {
+            this.toastr.error(`Mã chứng khoán '${this.newAsset.symbol}' không hợp lệ trên thị trường Việt Nam.`);
+          }
+        },
+        error: () => this.executeAddAsset() // Fallback to add if validation service fails
+      });
+    } else {
+      this.executeAddAsset();
+    }
+  }
+
+  private executeAddAsset() {
     this.assetService.addAsset(this.newAsset).subscribe({
       next: (res) => {
         this.toastr.success("Asset added successfully");
@@ -342,32 +500,25 @@ export class AssetListComponent implements OnInit {
 
   getTotalValueVND(): number {
     return this.groupedAssets.reduce((acc, g) => {
-      let val = g.totalValue;
-      if (g.history[0].currency === 'USD') val *= this.EXCHANGE_RATE;
-      return acc + val;
+      let valVND = g.totalValue;
+      if (g.history.length > 0 && g.history[0].currency === 'USD') {
+        valVND *= this.EXCHANGE_RATE;
+      }
+      return acc + valVND;
     }, 0);
   }
 
   getTotalCostVND(): number {
-  return this.groupedAssets.reduce((acc, g) => {
-    // 1. Vẫn bỏ qua nếu là tiền mặt
-    if (g.type === AssetType.CASH) return acc;
-
-    // 2. Chỉ tính tổng các giao dịch có type là 'BUY' (hoặc giá trị tương ứng của bạn)
-    const buyCost = g.history.reduce((sum, record) => {
-      if (!record.isSell) { // Thay 'BUY' bằng enum hoặc string chuẩn của bạn
-        let amount = record.averagePrice * record.quantity; // Giả sử totalPrice là số tiền bỏ ra cho lệnh đó
-        if (record.currency === 'USD') {
-          amount *= this.EXCHANGE_RATE;
-        }
-        return sum + amount;
+    return this.groupedAssets.reduce((acc, g) => {
+      if (g.type === AssetType.CASH) return acc;
+      
+      let costVND = g.totalCost;
+      if (g.history.length > 0 && g.history[0].currency === 'USD') {
+        costVND *= this.EXCHANGE_RATE;
       }
-      return sum;
+      return acc + costVND;
     }, 0);
-
-    return acc + buyCost;
-  }, 0);
-}
+  }
 
   getTotalValue(): number {
     return this.groupedAssets.reduce((acc, g) => acc + g.totalValue, 0);

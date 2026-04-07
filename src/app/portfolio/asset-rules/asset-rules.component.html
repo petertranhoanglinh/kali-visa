@@ -1,38 +1,143 @@
-<div class="rules-card">
-  <div class="rules-header">
-    <h3>Automated Disciplines</h3>
-    <label class="switch">
-      <input type="checkbox" checked>
-      <span class="slider round"></span>
-    </label>
-  </div>
-  
-  <p class="description">Your automated wealth building rules are currently <strong>Active</strong>.</p>
-
-  <div class="rule-item">
-    <div class="rule-icon gold-icon">🪙</div>
-    <div class="rule-details">
-      <h4>Odd Months Target</h4>
-      <p>Buy 1 Chỉ SJC Gold</p>
+<div class="rules-page fade-in">
+    <div class="rules-header">
+        <div class="header-text">
+            <h2>Kỷ Luật Đầu Tư <span class="text-pro">PRO Rules</span></h2>
+            <p class="description">Thiết lập tỷ trọng mục tiêu và để AI tự động giám sát sức khỏe danh mục.</p>
+        </div>
+        <button class="btn-add" (click)="toggleAddModal()" *ngIf="isPremium">
+            <i class="fas fa-plus"></i> Thêm Quy Tắc
+        </button>
     </div>
-    <div class="rule-status active">Next: May 15</div>
-  </div>
 
-  <div class="rule-item">
-    <div class="rule-icon stock-icon">📈</div>
-    <div class="rule-details">
-      <h4>Even Months Target</h4>
-      <p>Buy 10,000,000 ₫ VNM Stock</p>
-    </div>
-    <div class="rule-status pending">Next: Jun 15</div>
-  </div>
+    <!-- Legendary Templates Selection -->
+    <div class="legend-section" *ngIf="isPremium">
+        <h3 class="section-label">📚 CHIẾN LƯỢC TỪ HUYỀN THOẠI</h3>
+        <div class="legend-carousel">
+            <div class="legend-card graham" (click)="applyTemplate('GRAHAM')">
+                <div class="card-glow"></div>
+                <div class="legend-info">
+                    <h4>Benjamin Graham</h4>
+                    <p>Chia đều 50/50 Cổ phiếu & Vàng. An toàn tuyệt đối.</p>
+                </div>
+                <button class="btn-apply">Áp dụng</button>
+            </div>
+            
+            <div class="legend-card dalio" (click)="applyTemplate('DALIO')">
+                <div class="card-glow"></div>
+                <div class="legend-info">
+                    <h4>Ray Dalio</h4>
+                    <p>Cân bằng 30/50/20 (Stock/Gold/Crypto). Chống vĩ mô.</p>
+                </div>
+                <button class="btn-apply">Áp dụng</button>
+            </div>
 
-  <div class="rule-item warning">
-    <div class="rule-icon alert-icon">⚠️</div>
-    <div class="rule-details">
-      <h4>Imbalance Alert</h4>
-      <p>Gold allocation exceeds 50% max threshold (Currently 54%).</p>
+            <div class="legend-card buffett" (click)="applyTemplate('BUFFETT')">
+                <div class="card-glow"></div>
+                <div class="legend-info">
+                    <h4>Warren Buffett</h4>
+                    <p>Tập trung 90% Cổ phiếu & 10% Tiền mặt. Tăng trưởng.</p>
+                </div>
+                <button class="btn-apply">Áp dụng</button>
+            </div>
+        </div>
     </div>
-    <button class="btn-action">Rebalance</button>
-  </div>
+
+    <!-- Rebalancing Alerts (Dynamic) -->
+    <div class="alerts-section" *ngIf="isPremium && analysisResult">
+        <div class="alert-card warning fade-in" *ngFor="let report of analysisResult.analysis" [hidden]="!report.isViolated">
+            <div class="alert-icon">⚠️</div>
+            <div class="alert-content">
+                <h4>Cảnh báo Tỷ trọng: {{report.ruleName}}</h4>
+                <p>{{report.assetType}} đang chiếm <b>{{report.currentPercent | number:'1.1-1'}}%</b> danh mục (Mục tiêu: {{report.targetPercent}}%).</p>
+            </div>
+            <button class="btn-action" routerLink="/portfolio/asset-list">Cân đối lại</button>
+        </div>
+    </div>
+
+    <!-- Active Rules List -->
+    <div class="rules-grid" *ngIf="isPremium; else paywall">
+        <div class="rule-card" *ngFor="let rule of rules">
+            <div class="rule-header">
+                <div class="rule-type-icon" [ngClass]="rule.assetType.toLowerCase() + '-bg'">
+                    <i class="fas" [ngClass]="{
+                        'fa-chart-line': rule.assetType === 'STOCK', 
+                        'fa-coins': rule.assetType === 'GOLD', 
+                        'fa-btc': rule.assetType === 'CRYPTO',
+                        'fa-wallet': rule.assetType === 'CASH',
+                        'fa-file-invoice-dollar': rule.assetType === 'BOND'
+                    }"></i>
+                </div>
+                <div class="status-toggle">
+                    <span class="status-dot" [class.active]="rule.isActive"></span>
+                    {{rule.isActive ? 'Đang chạy' : 'Tạm dừng'}}
+                </div>
+            </div>
+            
+            <div class="rule-body">
+                <h4>{{rule.ruleName}}</h4>
+                <div class="target-bar-container">
+                    <div class="target-label">Tỷ trọng mục tiêu: <b>{{rule.targetPercentage}}%</b></div>
+                    <div class="progress-bg">
+                        <div class="progress-fill" [style.width.%]="rule.targetPercentage"></div>
+                    </div>
+                </div>
+                <p class="rule-meta">Ngưỡng lệch cho phép: ±{{rule.thresholdPercent}}%</p>
+            </div>
+
+            <div class="rule-footer">
+                <button class="btn-delete" (click)="deleteRule(rule.id!)">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Add Rule Modal (Simplified overlay) -->
+        <div class="modal-overlay" *ngIf="showAddModal">
+            <div class="modal-card">
+                <h3>Thiết lập Quy tắc mới</h3>
+                <div class="form-group">
+                    <label>Tên quy tắc</label>
+                    <input type="text" [(ngModel)]="newRule.ruleName" placeholder="Vd: Tích sản FPT">
+                </div>
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Loại tài sản</label>
+                        <select [(ngModel)]="newRule.assetType">
+                            <option value="STOCK">Cổ phiếu</option>
+                            <option value="GOLD">Vàng</option>
+                            <option value="CRYPTO">Crypto</option>
+                            <option value="CASH">Tiền mặt</option>
+                            <option value="BOND">Trái phiếu</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Tỷ trọng mục tiêu (%)</label>
+                        <input type="number" [(ngModel)]="newRule.targetPercentage">
+                    </div>
+                    <div class="form-group flex-1">
+                        <label>Ngưỡng cảnh báo (%)</label>
+                        <input type="number" [(ngModel)]="newRule.thresholdPercent">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-cancel" (click)="toggleAddModal()">Hủy</button>
+                    <button class="btn-save" (click)="saveRule()">Kích hoạt ngay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Paywall if not PRO -->
+    <ng-template #paywall>
+        <div class="paywall-lock">
+            <div class="lock-content">
+                <i class="fas fa-shield-alt"></i>
+                <h3>TỰ ĐỘNG HÓA KỶ LUẬT</h3>
+                <p>Nâng cấp lên PRO để sử dụng 5 quy tắc quản trị danh mục thông minh.</p>
+                <button class="btn-upgrade" routerLink="/portfolio/pricing">NÂNG CẤP CHỈ 20K/THÁNG</button>
+            </div>
+        </div>
+    </ng-template>
 </div>

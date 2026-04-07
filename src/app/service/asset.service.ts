@@ -36,4 +36,29 @@ export class AssetService {
       headers: AuthDetail.getHeaderJwt()
     });
   }
+
+  validateSymbol(symbol: string): Observable<{isValid: boolean, symbol: string}> {
+    return this.http.get<{isValid: boolean, symbol: string}>(`${this.apiUrl}/validate/${symbol}`, {
+      headers: AuthDetail.getHeaderJwt()
+    });
+  }
+
+  getRealtimePrices(symbols: string[], types: string[]): Observable<{[key: string]: number}> {
+    return this.http.get<{[key: string]: number}>(`${this.apiUrl}/prices`, {
+      params: { symbols: symbols, types: types },
+      headers: AuthDetail.getHeaderJwt()
+    });
+  }
+
+  getAssetListing(type: string = 'ALL'): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/listing?type=${type}`, {
+      headers: AuthDetail.getHeaderJwt()
+    });
+  }
+
+  getCryptoListing(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/listing/crypto`, {
+      headers: AuthDetail.getHeaderJwt()
+    });
+  }
 }

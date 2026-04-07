@@ -1,215 +1,238 @@
-<div class="portfolio-container animate__animated animate__fadeIn">
-  <!-- Portfolio Header Summary -->
-  <div class="summary-cards">
-    <div class="summary-card total-value">
-      <span class="label">Tổng Giá Trị (VND)</span>
-      <h2 class="value">{{ getTotalValueVND() | number:'1.0-0' }}₫</h2>
-      <div class="indicator" [ngClass]="(getTotalValueVND() - getTotalCostVND()) >= 0 ? 'plus' : 'minus'">
-        {{ (getTotalValueVND() - getTotalCostVND()) >= 0 ? '+' : '' }}{{ (getTotalValueVND() - getTotalCostVND()) | number:'1.0-0' }}₫ 
-        <small>({{ (getTotalValueVND() - getTotalCostVND()) / (getTotalCostVND() || 1) | percent:'1.2-2' }})</small>
-      </div>
-    </div>
-    <div class="summary-card asset-count">
-      <span class="label">Tổng Vốn Đầu Tư (VND)</span>
-      <h2 class="value">{{ getTotalCostVND() | number:'1.0-0' }}₫</h2>
-      <div class="sub-label">Danh mục: {{ groupedAssets.length }} mã</div>
-    </div>
-    <div class="summary-card actions">
-      <div class="action-buttons">
-        <button class="btn-premium add-btn" (click)="toggleAddForm()">
-          <i class="fas fa-plus"></i> THÊM TÀI SẢN
-        </button>
-        <button class="btn-settings" routerLink="/price-settings">
-          <i class="fas fa-cog"></i> CÀI ĐẶT GIÁ
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: Add Asset (Premium Popup) -->
-  <div class="modal-overlay" *ngIf="showAddForm" (click)="toggleAddForm()">
-    <div class="modal-content glass-morphism animate__animated animate__zoomIn" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h3><i class="fas fa-plus-circle"></i> Thêm Tài Sản Mới</h3>
-        <button class="close-btn" (click)="toggleAddForm()">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Mã Tài Sản (Symbol)</label>
-            <input type="text" [(ngModel)]="newAsset.symbol" placeholder="Ví dụ: BTC, VCB, SJC">
-          </div>
-          <div class="form-group">
-            <label>Loại Danh Mục</label>
-            <select [(ngModel)]="newAsset.type">
-              <option *ngFor="let t of assetTypes" [value]="t">{{ t }}</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Số Lượng</label>
-            <input type="number" [(ngModel)]="newAsset.quantity" placeholder="0.00">
-          </div>
-          <div class="form-group">
-            <label>Giá Mua & Loại Tiền</label>
-            <div class="price-currency-grid">
-              <input type="text" [(ngModel)]="displayPrice" (input)="onPriceChange($event)" placeholder="Ví dụ: 1,000,000">
-              <select [(ngModel)]="newAsset.currency">
-                <option value="USD">USD ($)</option>
-                <option value="VND">VND (₫)</option>
-              </select>
+<div class="assets-page fade-in">
+    <!-- Top Summary Metrics -->
+    <div class="metrics-header shadow-sm">
+        <div class="metric-item">
+            <span class="metric-label">Tổng Giá Trị (VND)</span>
+            <h2 class="metric-value">{{ getTotalValueVND() | number:'1.0-0' }}₫</h2>
+            <div class="metric-trend" [ngClass]="(getTotalValueVND() - getTotalCostVND()) >= 0 ? 'trend-up' : 'trend-down'">
+                <i class="fas" [ngClass]="(getTotalValueVND() - getTotalCostVND()) >= 0 ? 'fa-caret-up' : 'fa-caret-down'"></i>
+                {{ (getTotalValueVND() - getTotalCostVND()) / (getTotalCostVND() || 1) | percent:'1.1-2' }}
             </div>
-            <small class="hint" *ngIf="displayPrice">Nhập giá mua / 1 tài sản: {{ parseNumber(displayPrice) | number }} {{ newAsset.currency }}</small>
-          </div>
-          <div class="form-group">
-            <label>Thời gian (Ngày/Giờ)</label>
-            <input type="datetime-local" [(ngModel)]="newAsset.purchaseDate">
-          </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-cancel" (click)="toggleAddForm()">HỦY BỎ</button>
-        <button class="btn-save" (click)="addAsset()">LƯU TÀI SẢN</button>
-      </div>
+        <div class="metric-divider"></div>
+        <div class="metric-item">
+            <span class="metric-label">Vốn Đầu Tư (Active)</span>
+            <h2 class="metric-value">{{ getTotalCostVND() | number:'1.0-0' }}₫</h2>
+            <span class="metric-subtext">Danh mục: {{ groupedAssets.length }} mã</span>
+        </div>
+        <div class="metric-divider"></div>
+        <div class="metric-item actions">
+            <button class="btn-create" (click)="toggleAddForm()">
+                <i class="fas fa-plus"></i> Thêm Tài Sản
+            </button>
+        </div>
     </div>
-  </div>
 
-  <!-- MAIN TABLE: Grouped Assets -->
-  <div class="asset-table-container glass-morphism shadow-premium">
-    <table class="premium-table">
-      <thead>
-        <tr>
-          <th>Tài Sản</th>
-          <th>Phân Loại</th>
-          <th>Số Lượng</th>
-          <th>Giá Vốn / Hiện Tại</th>
-          <th>Thành Tiền / P&L</th>
-          <th class="text-right">Chi tiết</th>
-        </tr>
-      </thead>
-      <tbody>
-        <ng-container *ngFor="let group of groupedAssets">
-          <!-- Main Asset Row -->
-          <tr class="asset-row" [class.active]="group.isExpanded">
-            <td data-label="Tài Sản">
-              <div class="symbol-box">
-                <span class="symbol-icon">{{ group.symbol?.charAt(0) }}</span>
-                <div class="name-info">
-                  <span class="symbol-name">{{ group.symbol }}</span>
+    <!-- Asset Cards Grid -->
+    <div class="assets-grid">
+        <div class="asset-card" *ngFor="let group of groupedAssets" [class.expanded]="group.isExpanded">
+            <div class="card-main" (click)="toggleDetail(group)">
+                <div class="asset-info">
+                    <div class="type-icon" [ngClass]="group.type.toLowerCase() + '-bg'">
+                        <i class="fas" [ngClass]="{
+                            'fa-coins': group.type === 'GOLD',
+                            'fa-chart-line': group.type === 'STOCK',
+                            'fa-btc': group.type === 'CRYPTO',
+                            'fa-wallet': group.type === 'CASH',
+                            'fa-file-invoice-dollar': group.type === 'BOND'
+                        }"></i>
+                    </div>
+                    <div class="name-meta">
+                        <h3>{{ group.symbol }}</h3>
+                        <span class="badge-type">{{ group.type }}</span>
+                    </div>
                 </div>
-              </div>
-            </td>
-            <td data-label="Phân Loại"><span class="badge" [ngClass]="group.type?.toLowerCase() || ''">{{ group.type }}</span></td>
-            <td data-label="Tổng Số Lượng">{{ group.totalQuantity | number:'1.0-8' }}</td>
-            <td data-label="Giá Vốn / Hiện Tại">
-              <div class="price-stack">
-                <span class="cost-price">{{ getCurrencySymbol(group.history[0].currency) }}{{ group.averagePrice | number:getCurrencyPipe(group.history[0].currency) }}</span>
-                <span class="market-price" [ngClass]="(group.marketPrice || 0) >= group.averagePrice ? 'plus' : 'minus'">
-                  {{ getCurrencySymbol(group.history[0].currency) }}{{ group.marketPrice | number:getCurrencyPipe(group.history[0].currency) }}
-                </span>
-              </div>
-            </td>
-            <td data-label="Thành Tiền / P&L">
-              <div class="value-stack">
-                <span class="total-val">{{ getCurrencySymbol(group.history[0].currency) }}{{ group.totalValue | number:getCurrencyPipe(group.history[0].currency) }}</span>
-                <span class="pl-val" [ngClass]="calculatePL(group) >= 0 ? 'plus' : 'minus'">
-                  {{ calculatePL(group) >= 0 ? '+' : '' }}{{ calculatePL(group) / (group.totalCost || 1) | percent:'1.1-2' }}
-                </span>
-              </div>
-            </td>
-            <td class="text-right">
-              <div class="action-cell">
-                <button class="btn-detail" (click)="toggleDetail(group)">
-                  {{ group.isExpanded ? 'ĐÓNG' : 'CHI TIẾT' }} 
-                </button>
-                <button *ngIf="group.type !== 'CASH'" class="btn-sell" (click)="toggleSellForm(group)">
-                  BÁN
-                </button>
-              </div>
-            </td>
-          </tr>
 
-          <!-- COLLAPSIBLE: Transaction History -->
-          <tr *ngIf="group.isExpanded" class="history-row">
-            <td colspan="6">
-              <div class="history-container animate__animated animate__fadeInDown">
-                <div class="history-header">Lịch sử thêm mới cho <strong>{{ group.symbol }}</strong></div>
-                <table class="history-table">
-                  <thead>
-                    <tr>
-                      <th>Loại</th>
-                      <th>Thời gian</th>
-                      <th>Số lượng</th>
-                      <th>Giá vốn</th>
-                      <th>Thành tiền</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let record of group.history">
-                      <td>
-                        <span class="type-badge" [ngClass]="record.isSell ? 'sell' : 'buy'">
-                          {{ record.isSell ? 'BÁN' : 'MUA' }}
-                        </span>
-                      </td>
-                      <td>{{ record.purchaseDate | date:'dd/MM/yyyy HH:mm' }}</td>
-                      <td>{{ record.quantity | number:'1.0-8' }}</td>
-                      <td>{{ getCurrencySymbol(record.currency) }}{{ record.averagePrice | number:getCurrencyPipe(record.currency) }}</td>
-                      <td>{{ getCurrencySymbol(record.currency) }}{{ calculateTotal(record) | number:getCurrencyPipe(record.currency) }}</td>
-                      <td class="text-right">
-                        <button class="btn-delete-small" (click)="deleteAsset(record.id)">
-                          <i class="fas fa-trash-alt"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </td>
-          </tr>
-        </ng-container>
+                <div class="asset-stats">
+                    <div class="stat-group">
+                        <span class="stat-label">Số lượng</span>
+                        <span class="stat-value">{{ group.totalQuantity | number:'1.0-8' }}</span>
+                    </div>
+                    <div class="stat-group">
+                        <span class="stat-label">Giá vốn / Hiện tại</span>
+                        <div class="price-flow">
+                            <span class="p-avg">{{ getCurrencySymbol(group.history[0].currency) }}{{ group.averagePrice | number:getCurrencyPipe(group.history[0].currency) }}</span>
+                            <i class="fas fa-arrow-right"></i>
+                            <span class="p-now" [ngClass]="(group.marketPrice || 0) >= group.averagePrice ? 'text-up' : 'text-down'">
+                                {{ getCurrencySymbol(group.history[0].currency) }}{{ group.marketPrice | number:getCurrencyPipe(group.history[0].currency) }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="stat-group">
+                        <span class="stat-label">Thành tiền</span>
+                        <span class="stat-value-big">{{ getCurrencySymbol(group.history[0].currency) }}{{ group.totalValue | number:getCurrencyPipe(group.history[0].currency) }}</span>
+                    </div>
+                </div>
 
-        <tr *ngIf="groupedAssets.length === 0">
-          <td colspan="6" class="empty-state">
-            <div class="empty-icon"><i class="fas fa-wallet"></i></div>
-            <p>Chưa có tài sản nào trong danh mục.</p>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <!-- MODAL: Sell Asset -->
-  <div class="modal-overlay" *ngIf="showSellForm" (click)="toggleSellForm()">
-    <div class="modal-content glass-morphism animate__animated animate__zoomIn" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h3><i class="fas fa-hand-holding-usd"></i> Bán Tài Sản: {{ selectedGroup?.symbol }}</h3>
-        <button class="close-btn" (click)="toggleSellForm()">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Số lượng bán (Tối đa: {{ selectedGroup?.totalQuantity | number:'1.0-8' }})</label>
-            <input type="number" [(ngModel)]="newSellAsset.quantity" [max]="selectedGroup?.totalQuantity || 0" placeholder="0.00">
-          </div>
-          <div class="form-group">
-            <label>Giá Bán ({{ newSellAsset.currency }})</label>
-            <div class="input-with-currency">
-              <input type="text" [(ngModel)]="displaySellPrice" (input)="onSellPriceChange($event)" placeholder="Nhập giá bán...">
-              <span class="currency-label">{{ newSellAsset.currency }}</span>
+                <div class="card-actions" (click)="$event.stopPropagation()">
+                    <button class="btn-sell-action" *ngIf="group.type !== 'CASH'" (click)="toggleSellForm(group)">BÁN</button>
+                    <button class="btn-expand"><i class="fas" [ngClass]="group.isExpanded ? 'fa-chevron-up' : 'fa-chevron-down'"></i></button>
+                </div>
             </div>
-            <small class="hint" *ngIf="displaySellPrice">Thanh khoản dự kiến: {{ parseNumber(displaySellPrice) * newSellAsset.quantity | number }} {{ newSellAsset.currency }}</small>
-          </div>
-          <div class="form-group">
-            <label>Thời gian Bán</label>
-            <input type="datetime-local" [(ngModel)]="newSellAsset.purchaseDate">
-          </div>
+
+            <!-- Expanded History -->
+            <div class="card-details" *ngIf="group.isExpanded">
+                <div class="history-table-wrapper">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Lệnh</th>
+                                <th>Thời gian</th>
+                                <th>S.Lượng</th>
+                                <th>Giá</th>
+                                <th>Thành tiền</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let record of group.history">
+                                <td><span class="t-badge" [ngClass]="record.isSell ? 't-sell' : 't-buy'">{{ record.isSell ? 'BÁN' : 'MUA' }}</span></td>
+                                <td>{{ record.purchaseDate | date:'dd/MM/yyyy HH:mm' }}</td>
+                                <td>{{ record.quantity | number:'1.0-8' }}</td>
+                                <td>{{ getCurrencySymbol(record.currency) }}{{ record.averagePrice | number:getCurrencyPipe(record.currency) }}</td>
+                                <td>{{ getCurrencySymbol(record.currency) }}{{ calculateTotal(record) | number:getCurrencyPipe(record.currency) }}</td>
+                                <td><button class="btn-del" (click)="deleteAsset(record.id)"><i class="fas fa-trash"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-cancel" (click)="toggleSellForm()">Hủy</button>
-        <button class="btn-save sell-btn" (click)="submitSell()" [disabled]="!newSellAsset.quantity || newSellAsset.quantity <= 0">
-          XÁC NHẬN BÁN
-        </button>
-      </div>
     </div>
-  </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="groupedAssets.length === 0">
+        <i class="fas fa-layer-group"></i>
+        <p>Danh mục trống. Hãy bắt đầu xây dựng sự nghiệp đầu tư của bạn ngay!</p>
+    </div>
+
+    <!-- MODAL: Add/Edit Asset -->
+    <div class="modal-overlay" *ngIf="showAddForm">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Thêm Tài Sản Mới</h3>
+                <button class="btn-close" (click)="toggleAddForm()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Mã (Symbol)</label>
+                        <div class="input-with-search">
+                            <input type="text" [(ngModel)]="newAsset.symbol" placeholder="Vd: BTC, VNM...">
+                            <button class="btn-search-ticker" (click)="showTickerSelector = true">
+                                <i class="fas fa-search-plus"></i> Tìm
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group flex-1">
+                        <label>Loại tài sản</label>
+                        <select [(ngModel)]="newAsset.type">
+                            <option *ngFor="let t of assetTypes" [value]="t">{{ t }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Số lượng</label>
+                        <input type="number" [(ngModel)]="newAsset.quantity">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group flex-2">
+                        <label>Giá mua đơn vị</label>
+                        <input type="text" [(ngModel)]="displayPrice" (input)="onPriceChange($event)" placeholder="0.00">
+                    </div>
+                    <div class="form-group flex-1">
+                        <label>Tiền tệ</label>
+                        <select [(ngModel)]="newAsset.currency">
+                            <option value="USD">USD ($)</option>
+                            <option value="VND">VND (₫)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Thời điểm mua</label>
+                    <input type="datetime-local" [(ngModel)]="newAsset.purchaseDate">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" (click)="toggleAddForm()">Hủy</button>
+                <button class="btn-primary" (click)="addAsset()">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Sell Asset -->
+    <div class="modal-overlay" *ngIf="showSellForm">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Bán Tài Sản: {{ selectedGroup?.symbol }}</h3>
+                <button class="btn-close" (click)="toggleSellForm()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Số lượng bán (Tối đa: {{ selectedGroup?.totalQuantity | number:'1.0-8' }})</label>
+                    <input type="number" [(ngModel)]="newSellAsset.quantity">
+                </div>
+                <div class="form-group">
+                    <label>Giá bán đơn vị ({{ newSellAsset.currency }})</label>
+                    <input type="text" [(ngModel)]="displaySellPrice" (input)="onSellPriceChange($event)">
+                </div>
+                <div class="form-group">
+                    <label>Thời điểm bán</label>
+                    <input type="datetime-local" [(ngModel)]="newSellAsset.purchaseDate">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" (click)="toggleSellForm()">Hủy</button>
+                <button class="btn-primary btn-sell-final" (click)="submitSell()">Xác nhận Bán</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Ticker Selector (Sub-modal) -->
+    <div class="modal-overlay z-index-top" *ngIf="showTickerSelector">
+        <div class="modal-card ticker-modal">
+            <div class="modal-header">
+                <h3>Chọn Tài Sản</h3>
+                <button class="btn-close" (click)="showTickerSelector = false">&times;</button>
+            </div>
+            <div class="modal-body p-0">
+                <!-- Selector Tabs -->
+                <div class="selector-tabs">
+                    <button [class.active]="activeSelectorTab === 'STOCK'" (click)="setSelectorTab('STOCK')">CHỨNG KHOÁN</button>
+                    <button [class.active]="activeSelectorTab === 'FUND'" (click)="setSelectorTab('FUND')">QUỸ MỞ</button>
+                    <button [class.active]="activeSelectorTab === 'CRYPTO'" (click)="setSelectorTab('CRYPTO')">CRYPTO</button>
+                    <button [class.active]="activeSelectorTab === 'GOLD'" (click)="setSelectorTab('GOLD')">VÀNG</button>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="selector-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" [(ngModel)]="searchTerm" (input)="filterListing()" placeholder="Tìm theo mã hoặc tên...">
+                </div>
+
+                <!-- Listing Grid -->
+                <div class="ticker-list">
+                    <div class="ticker-item" *ngFor="let item of paginatedListing" (click)="selectTicker(item)">
+                        <div class="ticker-id">{{ item.symbol }}</div>
+                        <div class="ticker-exchange" *ngIf="item.exchange">{{ item.exchange }}</div>
+                        <div class="ticker-badge" *ngIf="item.type === 'AUTO'">Tự động</div>
+                    </div>
+                    <div class="empty-results" *ngIf="filteredListing.length === 0">
+                        Không tìm thấy tài sản nào phù hợp.
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer listing-footer">
+                <div class="pagination-info">
+                    Trang {{ currentPage }} / {{ Math.ceil(filteredListing.length / pageSize) || 1 }}
+                </div>
+                <div class="pagination-btns">
+                    <button [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1">Trước</button>
+                    <button [disabled]="currentPage * pageSize >= filteredListing.length" (click)="currentPage = currentPage + 1">Sau</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

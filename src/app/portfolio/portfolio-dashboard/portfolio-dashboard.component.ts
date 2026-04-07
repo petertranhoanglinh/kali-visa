@@ -8,6 +8,8 @@ import { forkJoin } from 'rxjs';
 import { AuthService } from 'src/app/service/auth.service';
 import { MemberModel } from 'src/app/model/member.model';
 import { SystemConfigService } from 'src/app/service/system-config.service';
+import { AssetRuleService } from 'src/app/service/asset-rule.service';
+import { RebalanceReport } from 'src/app/model/asset-rule.model';
 
 @Component({
   selector: 'app-portfolio-dashboard',
@@ -19,6 +21,8 @@ export class PortfolioDashboardComponent implements OnInit {
   isIncognito = false;
   isLoading = false;
   currentUser: any;
+  violatedRules: RebalanceReport[] = [];
+  isPremium = false;
   
   // Financial Metrics (VND)
   totalValueVND = 0;
@@ -29,14 +33,14 @@ export class PortfolioDashboardComponent implements OnInit {
   private EXCHANGE_RATE = 25000; // Default fallback
 
   // Chart Properties
-  public chartLabels: string[] = ['Crypto', 'Chứng Khoán', 'Vàng', 'Tiền Mặt' , 'Trái Phiếu'];
+  public chartLabels: string[] = ['Crypto', 'Chứng Khoán', 'Quỹ Mở', 'Vàng', 'Tiền Mặt' , 'Trái Phiếu'];
   public chartData: ChartData<'doughnut'> = {
     labels: this.chartLabels,
     datasets: [
       {
-        data: [0, 0, 0, 0, 0], 
-        backgroundColor: ['#8b5cf6', '#3b82f6', '#f59e0b', '#10b981', '#6366f1'],
-        hoverBackgroundColor: ['#7c3aed', '#2563eb', '#d97706', '#059669', '#4f46e5'],
+        data: [0, 0, 0, 0, 0, 0], 
+        backgroundColor: ['#8b5cf6', '#3b82f6', '#f43f5e', '#f59e0b', '#10b981', '#6366f1'],
+        hoverBackgroundColor: ['#7c3aed', '#2563eb', '#e11d48', '#d97706', '#059669', '#4f46e5'],
         borderWidth: 0
       }
     ]
@@ -58,12 +62,33 @@ export class PortfolioDashboardComponent implements OnInit {
     private assetService: AssetService,
     private marketPriceService: MarketPriceService,
     private authService: AuthService,
-    private configService: SystemConfigService
+    private configService: SystemConfigService,
+    private ruleService: AssetRuleService
   ) { }
 
   ngOnInit(): void {
+    const userInfo = AuthDetail.getLoginedInfo();
+    const now = new Date();
+    const expiryDate = userInfo.expiryDate ? new Date(userInfo.expiryDate) : null;
+    const isExpired = expiryDate ? expiryDate < now : true;
+    this.isPremium = (userInfo.tier === 'PRO' || userInfo.tier === 'PLUS' || userInfo.role === 'ADMIN') && !isExpired;
+    if (userInfo && userInfo.role === 'ADMIN') this.isPremium = true;
+
     this.refreshUserProfile();
     this.loadExchangeRate();
+    if (this.isPremium) {
+      this.checkRules();
+    }
+  }
+
+  checkRules() {
+    this.ruleService.analyzePortfolio().subscribe({
+      next: (res) => {
+        if (res && res.analysis) {
+          this.violatedRules = res.analysis.filter(r => r.isViolated);
+        }
+      }
+    });
   }
 
   refreshUserProfile() {
@@ -81,39 +106,80 @@ export class PortfolioDashboardComponent implements OnInit {
   }
 
   loadExchangeRate() {
-    this.configService.getConfig('USD_VND_RATE').subscribe({
-      next: (res) => {
-        if (res && res.configValue) {
-          this.EXCHANGE_RATE = Number(res.configValue);
-        }
-        this.loadData();
-      },
-      error: () => {
-        console.warn('Could not load exchange rate, using default 25,000');
-        this.loadData();
+        this.configService.getConfig('USD_VND_RATE').subscribe({
+          next: (res) => {
+            if (res && res.configValue) {
+              this.EXCHANGE_RATE = Number(res.configValue);
+            }
+            this.loadData();
+          },
+          error: () => {
+            console.warn('Could not load exchange rate, using default 25,000');
+            this.loadData();
+          }
+        });
       }
-    });
-  }
-
-  loadData() {
-    const userId = AuthDetail.getLoginedInfo()?.id;
-    if (!userId) return;
-
-    this.isLoading = true;
-    forkJoin({
-      assets: this.assetService.getAssetsByUser(userId),
-      prices: this.marketPriceService.getPricesByUser(userId)
-    }).subscribe({
-      next: ({ assets, prices }) => {
-        const priceMap = new Map<string, number>();
-        prices.forEach(p => priceMap.set(p.symbol, p.price));
-        
-        this.calculateMetrics(assets, priceMap);
-        this.isLoading = false;
-      },
-      error: () => this.isLoading = false
-    });
-  }
+    
+      loadData() {
+        const userId = AuthDetail.getLoginedInfo()?.id;
+        if (!userId) return;
+    
+        this.isLoading = true;
+        this.assetService.getAssetsByUser(userId).subscribe({
+          next: (assets) => {
+            //if (this.isPremium) {
+            // this.refreshProPrices(assets);
+           // } else {
+              this.marketPriceService.getPricesByUser(userId).subscribe({
+                next: (prices) => {
+                  const priceMap = new Map<string, number>();
+                  prices.forEach(p => priceMap.set(p.symbol, p.price));
+                  this.calculateMetrics(assets, priceMap);
+                  this.isLoading = false;
+                },
+                error: () => {
+                  this.calculateMetrics(assets, new Map());
+                  this.isLoading = false;
+                }
+              });
+           // }
+          },
+          error: () => this.isLoading = false
+        });
+      }
+    
+      refreshProPrices(assets: AssetModel[]) {
+        const uniqueSymbols = Array.from(new Set(assets.map(a => a.symbol)));
+        const automatedSymbols = uniqueSymbols.filter(s => {
+          const firstAsset = assets.find(a => a.symbol === s);
+          if (!firstAsset) return false;
+          // Automate STOCK, CRYPTO, FUND, and SJC Gold
+          if (firstAsset.type === AssetType.GOLD && s !== 'SJC') return false; 
+          if (firstAsset.type === AssetType.CASH || firstAsset.type === AssetType.BOND) return false;
+          return true;
+        });
+    
+        const types = automatedSymbols.map(sym => assets.find(a => a.symbol === sym)?.type || 'STOCK');
+    
+        if (automatedSymbols.length === 0) {
+          this.calculateMetrics(assets, new Map());
+          this.isLoading = false;
+          return;
+        }
+    
+        this.assetService.getRealtimePrices(automatedSymbols, types).subscribe({
+          next: (priceMap) => {
+            const mPriceMap = new Map<string, number>();
+            Object.keys(priceMap).forEach(sym => mPriceMap.set(sym, priceMap[sym]));
+            this.calculateMetrics(assets, mPriceMap);
+            this.isLoading = false;
+          },
+          error: () => {
+            this.calculateMetrics(assets, new Map());
+            this.isLoading = false;
+          }
+        });
+      }
 
   private calculateMetrics(assets: AssetModel[], priceMap: Map<string, number>) {
     let totalValVND = 0;
@@ -182,6 +248,7 @@ export class PortfolioDashboardComponent implements OnInit {
         data: [
           categoryTotals.get(AssetType.CRYPTO) || 0,
           categoryTotals.get(AssetType.STOCK) || 0,
+          categoryTotals.get(AssetType.FUND) || 0,
           categoryTotals.get(AssetType.GOLD) || 0,
           categoryTotals.get(AssetType.CASH) || 0,
           categoryTotals.get(AssetType.BOND) || 0
