@@ -67,7 +67,6 @@ export class LoginPageComponent implements OnInit {
 
     this.clearAuth$ = this.userAuth$.subscribe(
       (res) => {
-        debugger;
         if (ValidationUtil.isNotNullAndNotEmpty(res)) {
           if(ValidationUtil.isNotNullAndNotEmpty(res.id)){
             this.loginProcess(res);
