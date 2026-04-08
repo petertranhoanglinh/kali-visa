@@ -17,7 +17,9 @@ import { SocialFeedComponent } from './social-feed/social-feed.component';
 import { AdminUpgradeComponent } from './admin-upgrade/admin-upgrade.component';
 import { AdminSettingComponent } from './admin-setting/admin-setting.component';
 import { AdminNewsComponent } from './admin-news/admin-news.component';
+import { AdminPostsComponent } from './admin-posts/admin-posts.component';
 import { AuthGuardService } from '../service/auth-guard.service';
+import { AdminGuard } from '../service/admin-guard.service';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -33,9 +35,17 @@ const routes: Routes = [
   { path: 'notes', component: NotesComponent, canActivate: [AuthGuardService] },
   { path: 'social', component: SocialFeedComponent, canActivate: [AuthGuardService] },
   { path: 'privacy', component: PrivacyComponent },
-  { path: 'admin-upgrade', component: AdminUpgradeComponent, canActivate: [AuthGuardService] },
-  { path: 'admin-setting', component: AdminSettingComponent, canActivate: [AuthGuardService] },
-  { path: 'admin-news', component: AdminNewsComponent, canActivate: [AuthGuardService] }
+  { 
+    path: 'admin', 
+    canActivate: [AdminGuard],
+    children: [
+      { path: 'upgrade', component: AdminUpgradeComponent },
+      { path: 'setting', component: AdminSettingComponent },
+      { path: 'news', component: AdminNewsComponent },
+      { path: 'posts', component: AdminPostsComponent },
+      { path: '', redirectTo: 'upgrade', pathMatch: 'full' }
+    ]
+  }
 ];
 
 @NgModule({

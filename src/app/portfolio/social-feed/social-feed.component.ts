@@ -2,7 +2,9 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { SocialService } from 'src/app/service/social.service';
 import { PostModel, CommentModel } from 'src/app/model/social.model';
 import { AuthDetail } from 'src/app/common/util/auth-detail';
+import { CommonUtils } from 'src/app/common/util/common-utils';
 import { ToastrService } from 'ngx-toastr';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
 @Component({
@@ -14,6 +16,9 @@ export class SocialFeedComponent implements OnInit {
 
   public Editor: any = (DecoupledEditor as any).default || DecoupledEditor;
   posts: PostModel[] = [];
+  isPremium: boolean = false;
+  highlightedPostId: string | null = null;
+  isSinglePostMode: boolean = false;
 
   onReady(editor: any): void {
     const toolbarElement = editor.ui.view.toolbar.element;
@@ -49,16 +54,49 @@ export class SocialFeedComponent implements OnInit {
 
   constructor(
     private socialService: SocialService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
     const user = AuthDetail.getLoginedInfo();
+    this.isPremium = CommonUtils.checkPremiumStatus(user);
     if (user) {
       this.currentUserId = user.id;
       this.currentUserName = user.email || 'Nhà Đầu Tư ẩn danh';
     }
-    this.loadFeed(true);
+
+    // Handle Shared Post if present in URL
+    this.route.queryParamMap.subscribe(params => {
+      const postId = params.get('post');
+      if (postId) {
+        this.highlightedPostId = postId;
+        this.isSinglePostMode = true; // Enter single post mode
+        this.posts = []; // Clear existing for focused view
+        this.socialService.getPostById(postId).subscribe({
+          next: (post) => {
+            post.isExpanded = true;
+            post.showComments = true;
+            this.posts = [post];
+          },
+          error: () => {
+            this.toastr.error("Không tìm thấy bài viết này.");
+            this.backToFeed();
+          }
+        });
+      } else {
+        this.isSinglePostMode = false;
+        this.loadFeed(true);
+      }
+    });
+  }
+
+  backToFeed() {
+    this.isSinglePostMode = false;
+    this.highlightedPostId = null;
+    this.posts = [];
+    this.router.navigate(['/social'], { queryParams: { post: null }, queryParamsHandling: 'merge' });
   }
 
   setFilterMode(mode: 'ALL' | 'MINE') {
@@ -99,9 +137,21 @@ export class SocialFeedComponent implements OnInit {
 
     this.socialService.getAllPosts(this.currentPage, this.pageSize, queryAuthorId).subscribe({
       next: (res: any) => {
-        const newPosts: PostModel[] = res.content || [];
+        let newPosts: PostModel[] = res.content || [];
+        
+        // Filter out the highlighted post to avoid duplicates
+        if (this.highlightedPostId) {
+          newPosts = newPosts.filter(p => p.id !== this.highlightedPostId);
+        }
+
         this.posts = [...this.posts, ...newPosts];
         this.hasMorePosts = !res.last; // Spring Data Page returns 'last' boolean flag
+        
+        // --- PRO Limit: Max 10 posts for Non-PRO ---
+        if (!this.isPremium && this.posts.length >= 10) {
+          this.hasMorePosts = false;
+        }
+
         this.currentPage++;
         this.isLoadingPosts = false;
       },
@@ -196,6 +246,19 @@ export class SocialFeedComponent implements OnInit {
         this.toastr.error("Lỗi khi đăng bài!");
         this.isUploading = false;
       }
+    });
+  }
+
+  toggleExpand(post: PostModel) {
+    post.isExpanded = !post.isExpanded;
+  }
+
+  sharePost(post: PostModel) {
+    const postUrl = `${window.location.origin}/social?post=${post.id}`;
+    navigator.clipboard.writeText(postUrl).then(() => {
+      this.toastr.info("Đã sao chép link chia sẻ bài viết!");
+    }).catch(err => {
+      this.toastr.error("Không thể sao chép link.");
     });
   }
 

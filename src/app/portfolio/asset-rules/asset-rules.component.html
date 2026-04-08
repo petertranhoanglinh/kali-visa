@@ -50,7 +50,7 @@
                 <h4>Cảnh báo Tỷ trọng: {{report.ruleName}}</h4>
                 <p>{{report.assetType}} đang chiếm <b>{{report.currentPercent | number:'1.1-1'}}%</b> danh mục (Mục tiêu: {{report.targetPercent}}%).</p>
             </div>
-            <button class="btn-action" routerLink="/portfolio/asset-list">Cân đối lại</button>
+            <button class="btn-action" routerLink="/assets">Cân đối lại</button>
         </div>
     </div>
 
@@ -131,13 +131,11 @@
 
     <!-- Paywall if not PRO -->
     <ng-template #paywall>
-        <div class="paywall-lock">
-            <div class="lock-content">
-                <i class="fas fa-shield-alt"></i>
-                <h3>TỰ ĐỘNG HÓA KỶ LUẬT</h3>
-                <p>Nâng cấp lên PRO để sử dụng 5 quy tắc quản trị danh mục thông minh.</p>
-                <button class="btn-upgrade" routerLink="/portfolio/pricing">NÂNG CẤP CHỈ 20K/THÁNG</button>
-            </div>
+        <div class="pro-promo-card" style="background: white; border: 2px dashed #6366f1; border-radius: 1rem; padding: 2.5rem; margin-top: 2rem; text-align: center; max-width: 600px; margin-left: auto; margin-right: auto;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🚀</div>
+            <h3 style="color: #1e293b; margin: 0 0 1rem 0; font-size: 1.5rem; font-weight: 800;">Tự Động Hóa Kỷ Luật</h3>
+            <p style="color: #64748b; font-size: 1rem; margin-bottom: 2rem;">Nâng cấp lên PRO để sử dụng 5 quy tắc quản trị danh mục thông minh, tự động theo dõi tỷ trọng từ các huyền thoại đầu tư.</p>
+            <button routerLink="/pricing" style="background: linear-gradient(90deg, #6366f1, #a855f7); color: white; border: none; padding: 1rem 2rem; border-radius: 1rem; cursor: pointer; font-weight: 700; font-size: 1rem; width: 100%; box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);">Nâng cấp ngay - Chỉ 20k/tháng</button>
         </div>
     </ng-template>
 </div>

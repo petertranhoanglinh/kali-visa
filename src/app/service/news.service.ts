@@ -53,4 +53,8 @@ export class NewsService {
   deleteNews(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`, this.getOptions());
   }
+
+  deleteMultipleNews(ids: string[]): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/bulk-delete`, ids, this.getOptions());
+  }
 }

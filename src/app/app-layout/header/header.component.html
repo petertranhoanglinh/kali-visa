@@ -7,7 +7,8 @@
         </div>
         
         <nav class="header-nav">
-            <ul class="nav-menu">
+            <!-- USER MENU -->
+            <ul class="nav-menu" *ngIf="!isAdminSection">
                 <li><a routerLink="/dashboard" routerLinkActive="active">Tổng Quan</a></li>
                 <li><a routerLink="/assets" routerLinkActive="active">Danh Mục</a></li>
                 <li><a routerLink="/news" routerLinkActive="active">Tin Tức AI</a></li>
@@ -16,10 +17,17 @@
                 <li><a routerLink="/social" routerLinkActive="active">Cộng Đồng</a></li>
                 <li><a routerLink="/analytics" routerLinkActive="active">Phân Tích AI <span style="font-size: 0.7em; background: #fbbf24; color: black; padding: 2px 6px; border-radius: 4px; margin-left:4px; vertical-align: top;">PRO</span></a></li>
                 <li><a routerLink="/pricing" class="highlight-nav" routerLinkActive="active">Nâng Cấp Gói</a></li>
-                <li *ngIf="isAdmin"><a routerLink="/admin-upgrade" class="admin-nav" routerLinkActive="active">Duyệt Nâng Cấp</a></li>
-                <li *ngIf="isAdmin"><a routerLink="/admin-setting" class="admin-nav" routerLinkActive="active">Cài Đặt Tỷ Giá</a></li>
-                <li *ngIf="isAdmin"><a routerLink="/admin-news" class="admin-nav" routerLinkActive="active">Quản Lý News</a></li>
+                <li *ngIf="isAdmin"><a routerLink="/admin" class="admin-entry-nav">Quản trị <i class="fas fa-user-shield"></i></a></li>
             </ul>
+
+            <!-- ADMIN MENU -->
+            <ul class="nav-menu admin-mode" *ngIf="isAdminSection">
+                <li class="admin-label">CHẾ ĐỘ QUẢN TRỊ</li>
+                <li><a routerLink="/admin/upgrade" routerLinkActive="active">Duyệt Nâng Cấp</a></li>
+                <li><a routerLink="/admin/news" routerLinkActive="active">Quản Lý News</a></li>
+                <li><a routerLink="/admin/posts" routerLinkActive="active">Quản Lý Post</a></li>
+                <li class="exit-admin"><a routerLink="/dashboard" class="highlight-nav"><i class="fas fa-sign-out-alt"></i> Thoát quản trị</a></li>
+        </ul>
         </nav>
 
         <div class="header-right">
@@ -41,16 +49,27 @@
     <div class="mobile-menu-overlay" *ngIf="isMobileMenuOpen" (click)="isMobileMenuOpen = false"></div>
     <div class="mobile-menu-container" [class.open]="isMobileMenuOpen">
         <nav class="mobile-nav">
-            <a routerLink="/dashboard" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-chart-pie"></i> Tổng Quan</a>
-            <a routerLink="/assets" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-wallet"></i> Danh Mục</a>
-            <a routerLink="/news" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-newspaper"></i> Tin Tức AI</a>
-            <a routerLink="/rules" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-bolt"></i> Quy Tắc</a>
-            <a routerLink="/notes" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-sticky-note"></i> Ghi Chú</a>
-            <a routerLink="/social" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-globe-asia"></i> Cộng Đồng</a>
-            <a routerLink="/pricing" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link highlight"><i class="fas fa-gem"></i> Nâng Cấp Gói</a>
-            <a *ngIf="isAdmin" routerLink="/admin-upgrade" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link admin"><i class="fas fa-user-shield"></i> Duyệt Nâng Cấp</a>
-            <a *ngIf="isAdmin" routerLink="/admin-setting" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link admin"><i class="fas fa-cogs"></i> Cài Đặt Tỷ Giá</a>
-            <a *ngIf="isAdmin" routerLink="/admin-news" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link admin"><i class="fas fa-edit"></i> Quản Lý News</a>
+            <!-- USER MOBILE MENU -->
+            <ng-container *ngIf="!isAdminSection">
+                <a routerLink="/dashboard" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-chart-pie"></i> Tổng Quan</a>
+                <a routerLink="/assets" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-wallet"></i> Danh Mục</a>
+                <a routerLink="/news" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-newspaper"></i> Tin Tức AI</a>
+                <a routerLink="/rules" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-bolt"></i> Quy Tắc</a>
+                <a routerLink="/notes" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-sticky-note"></i> Ghi Chú</a>
+                <a routerLink="/social" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-globe-asia"></i> Cộng Đồng</a>
+                <a routerLink="/pricing" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link highlight"><i class="fas fa-gem"></i> Nâng Cấp Gói</a>
+                <a *ngIf="isAdmin" routerLink="/admin" (click)="isMobileMenuOpen = false" class="mobile-link admin-entry"><i class="fas fa-user-shield"></i> Chế độ Quản trị</a>
+            </ng-container>
+
+            <!-- ADMIN MOBILE MENU -->
+            <ng-container *ngIf="isAdminSection">
+                <div class="mobile-admin-header">CHẾ ĐỘ QUẢN TRỊ</div>
+                <a routerLink="/admin/upgrade" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link admin"><i class="fas fa-check-double"></i> Duyệt Nâng Cấp</a>
+                <a routerLink="/admin/news" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link admin"><i class="fas fa-edit"></i> Quản Lý News</a>
+                <a routerLink="/admin/posts" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link admin"><i class="fas fa-comments"></i> Quản Lý Post</a>
+                <hr class="mobile-divider">
+                <a routerLink="/dashboard" (click)="isMobileMenuOpen = false" class="mobile-link highlight"><i class="fas fa-sign-out-alt"></i> Thoát quản trị</a>
+            </ng-container>
             <hr class="mobile-divider" *ngIf="!isLogin">
             <a *ngIf="!isLogin" routerLink="/login" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-sign-in-alt"></i> Đăng Nhập</a>
         </nav>

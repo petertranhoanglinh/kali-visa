@@ -19,7 +19,8 @@
         <div class="search-box">
             <input type="text" [(ngModel)]="tickerInput" 
                    placeholder="Nhập mã Chứng khoán (Vd: SSI, FPT, VCB...)" 
-                   (keyup.enter)="performAnalysis()">
+                   (keyup.enter)="performAnalysis()"
+                   (input)="errorMessage = ''">
             <button (click)="performAnalysis()" [disabled]="isAnalyzing">
                 <span *ngIf="!isAnalyzing"><i class="fas fa-search"></i> PHÂN TÍCH</span>
                 <span *ngIf="isAnalyzing" class="loader"></span>
@@ -27,8 +28,19 @@
         </div>
     </div>
 
+    <!-- Error Alert: Hiển thị thông điệp từ Backend (403/500/...) -->
+    <div class="alert alert-danger fade-in mt-3 mx-4" *ngIf="errorMessage" style="border-radius: 1rem; border-left: 5px solid #ef4444;">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-exclamation-triangle me-3" style="font-size: 1.2rem;"></i>
+                <span class="fw-bold">{{errorMessage}}</span>
+            </div>
+            <button type="button" class="btn-close" (click)="errorMessage = ''" aria-label="Close"></button>
+        </div>
+    </div>
+
     <!-- Analyzing State -->
-    <div class="analyzing-container fade-in" *ngIf="isAnalyzing">
+    <div class="analyzing-container fade-in" *ngIf="isAnalyzing && isPremium">
         <div class="pulse-radar">
             <i class="fas fa-microchip"></i>
         </div>
@@ -43,7 +55,7 @@
     </div>
 
     <!-- Main Results -->
-    <div class="analysis-results" *ngIf="analysisResult && !isAnalyzing">
+    <div class="analysis-results" *ngIf="analysisResult && !isAnalyzing && isPremium">
         
         <!-- Result Bar -->
         <div class="result-header">
@@ -231,7 +243,7 @@
                                 <tbody>
                                     <tr *ngFor="let s of analysisResult.shareholders">
                                         <td>{{s.name}}</td>
-                                        <td class="text-end"><b>{{s.percentage | number:'1.1-2'}}%</b></td>
+                                        <td class="text-end"><b>{{s.percentage * 100 | number:'1.1-2'}}%</b></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -268,15 +280,15 @@
     </div>
 
     <!-- Initial State / Paywall -->
-    <div class="paywall-overlay" *ngIf="!isPremium">
-        <div class="paywall-content">
-            <i class="fas fa-lock" style="font-size: 4rem; color: #6366f1; margin-bottom: 2rem;"></i>
-            <h2>NÂNG TẦM ĐẦU TƯ VỚI AI MASTER</h2>
-            <p>Tính năng phân tích đa nhân tố chuyên sâu chỉ dành cho tài khoản PRO.</p>
-            <div class="trial-info mb-4" style="color: #6366f1; font-weight: 700;">
-                ⭐ Tặng ngay 7 ngày dùng thử PRO cho tài khoản mới!
-            </div>
-            <button class="btn btn-primary btn-lg fw-bold px-5" routerLink="/portfolio/pricing">NÂNG CẤP NGAY (20K/THÁNG)</button>
+    <div class="paywall-overlay" *ngIf="!isPremium" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 100; border-radius: 2rem;">
+        <div class="pro-promo-card" style="background: white; border: 2px dashed #6366f1; border-radius: 1.5rem; padding: 3rem; text-align: center; max-width: 550px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
+            <div style="font-size: 3.5rem; margin-bottom: 1rem;">🚀</div>
+            <h3 style="color: #1e293b; margin: 0 0 1rem 0; font-size: 1.5rem; font-weight: 800;">Nâng Tầm Đầu Tư Với AI MASTER</h3>
+            <p style="color: #64748b; font-size: 1rem; margin-bottom: 2rem;">
+                Tính năng phân tích chuyên sâu đa nguồn dữ liệu (Vnstock, Google Gemini) dành riêng cho cấp độ PRO. <br>
+                <b style="color: #6366f1;">Tặng ngay 7 ngày dùng thử PRO cho tài khoản mới!</b>
+            </p>
+            <button routerLink="/pricing" style="background: linear-gradient(90deg, #6366f1, #a855f7); color: white; border: none; padding: 1rem 2.5rem; border-radius: 1rem; cursor: pointer; font-weight: 700; font-size: 1.1rem; width: 100%; box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.4);">Nâng cấp - Chỉ 20k/tháng</button>
         </div>
     </div>
   </div>

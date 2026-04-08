@@ -9,6 +9,7 @@ export interface PostModel {
   createdAt?: string;
   comments?: CommentModel[]; // For frontend convenience
   showComments?: boolean;    // For UI toggle
+  isExpanded?: boolean;      // For content truncation toggle
 }
 
 export interface CommentModel {

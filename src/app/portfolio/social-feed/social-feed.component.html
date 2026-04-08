@@ -3,14 +3,29 @@
     <h2 class="title">T'L Community</h2>
     <p class="subtitle">Nơi giao lưu, chia sẻ nhận định và thảo luận chiến lược đầu tư</p>
     
-    <div class="filter-tabs">
+    <div class="filter-tabs" *ngIf="!isSinglePostMode">
       <button class="filter-btn" [class.active]="filterMode === 'ALL'" (click)="setFilterMode('ALL')">Tất cả bảng tin</button>
       <button class="filter-btn" [class.active]="filterMode === 'MINE'" (click)="setFilterMode('MINE')">Bài viết của tôi</button>
     </div>
+
+    <!-- Back to Feed Button -->
+    <div class="back-navigation" *ngIf="isSinglePostMode">
+      <button class="btn-back-feed" (click)="backToFeed()">
+        <i class="fas fa-arrow-left me-2"></i> Quay lại bảng tin cộng đồng
+      </button>
+    </div>
+  </div>
+
+  <!-- PRO Promo: News & Signals -->
+  <div class="pro-promo-card" *ngIf="!isPremium && !isSinglePostMode" style="background: white; border: 2px dashed #6366f1; border-radius: 1rem; padding: 1.5rem; margin-bottom: 2rem; text-align: center;">
+    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🔥</div>
+    <h3 style="color: #1e293b; margin: 0 0 0.5rem 0; font-size: 1.05rem; font-weight: 800;">Kết Nối & Tín Hiệu PRO</h3>
+    <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 1rem;">Nâng cấp tài khoản để mở khóa đầy đủ quyền hạn thảo luận chuyên sâu và nhận tín hiệu đầu tư từ AI.</p>
+    <button routerLink="/pricing" style="background: linear-gradient(90deg, #6366f1, #a855f7); color: white; border: none; padding: 0.6rem 1.25rem; border-radius: 0.75rem; cursor: pointer; font-weight: 700; font-size: 0.85rem; width: 100%;">Nâng cấp gói ngay - 20k/tháng</button>
   </div>
 
   <!-- Create Post Area -->
-  <div class="create-post-card flat-surface">
+  <div class="create-post-card flat-surface" *ngIf="!isSinglePostMode">
     <div class="card-body">
       <div class="composer-header">
         <div class="avatar">{{ currentUserName.charAt(0).toUpperCase() }}</div>
@@ -74,7 +89,27 @@
 
       <div class="post-content">
         <!-- Display Mode -->
-        <div class="text-content" *ngIf="editingPostId !== post.id && post.content" [innerHTML]="post.content"></div>
+        <div class="text-content-wrapper">
+          <div class="text-content" *ngIf="editingPostId !== post.id && post.content" 
+               [class.gated-content]="!isPremium" 
+               [class.truncated-content]="!post.isExpanded"
+               [innerHTML]="post.content">
+               <div class="gated-fader" *ngIf="!isPremium"></div>
+          </div>
+          
+          <!-- Read More Toggle (for Pro users or long posts) -->
+          <button class="btn-toggle-expand" *ngIf="post.content && post.content.length > 200" (click)="toggleExpand(post)">
+            {{ post.isExpanded ? 'Thu gọn' : 'Đọc thêm' }}
+          </button>
+        </div>
+
+        <!-- Read More Pro Button -->
+        <div class="ready-more-pro-wrap" *ngIf="!isPremium">
+          <button class="btn-read-more-pro" routerLink="/pricing">
+            <i class="fas fa-crown"></i>
+            <span>Nâng cấp PRO để xem trọn đời bài viết</span>
+          </button>
+        </div>
         
         <!-- Edit Mode -->
         <div class="edit-mode-container" *ngIf="editingPostId === post.id">
@@ -112,6 +147,9 @@
         </button>
         <button class="btn-action" (click)="toggleComments(post)">
           <i class="far fa-comment-alt"></i> Bình luận
+        </button>
+        <button class="btn-action" (click)="sharePost(post)">
+          <i class="fas fa-share-alt"></i> Chia sẻ
         </button>
       </div>
 

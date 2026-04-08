@@ -1,13 +1,4 @@
 <div class="news-container animate__animated animate__fadeIn">
-  <!-- Header with high-end typography -->
-  <div class="magazine-header">
-    <div class="brand-line">
-      <span class="date">{{ today | date:'EEEE, dd MMMM yyyy' }}</span>
-      <div class="ai-status">
-        <i class="fas fa-robot"></i> AI Engine Active
-      </div>
-    </div>
-  </div>
 
   <div class="magazine-grid" *ngIf="newsItems.length > 0">
     <!-- LEFT: Sidebar (Hidden on small screens) -->
@@ -19,21 +10,6 @@
           <span class="topic-tag" (click)="filterByCategory('GOLD')">#GiaVang</span>
           <span class="topic-tag" (click)="filterByCategory('MACRO')">#ViMo</span>
           <span class="topic-tag" (click)="filterByCategory('CRYPTO')">#Crypto</span>
-        </div>
-      </div>
-      
-      <!-- Market Sentiment in Left Sidebar for Desktop -->
-      <div class="sidebar-card sentiment-sidebar">
-        <h4 class="sidebar-title">SENTIMENT</h4>
-        <div class="sentiment-summary">
-           <div class="bar-container">
-             <div class="bar bull" style="width: 65%"></div>
-             <div class="bar bear" style="width: 35%"></div>
-           </div>
-           <div class="labels">
-             <span>Bullish 65%</span>
-             <span>Bearish 35%</span>
-           </div>
         </div>
       </div>
     </div>
@@ -54,6 +30,10 @@
               <span class="time">{{ newsItems[0].createdAt | date:'HH:mm' }}</span>
               <span class="impact" [attr.data-score]="newsItems[0].aiScore">
                 Impact: {{ newsItems[0].aiScore }}/10
+              </span>
+              <!-- PRO Lock for Featured -->
+              <span *ngIf="!isPremium" class="pro-lock-badge mini">
+                <i class="fas fa-lock"></i> PRO Only
               </span>
             </div>
           </div>
@@ -76,6 +56,11 @@
               <div class="widget-footer">
                 <span class="widget-time"><i class="far fa-clock"></i> {{ news.createdAt | date:'HH:mm, dd/MM' }}</span>
                 <span class="widget-impact" *ngIf="news.aiScore">Score: {{ news.aiScore }}</span>
+                
+                <!-- PRO Lock for List Item -->
+                <span *ngIf="!isPremium" class="pro-lock-badge mini">
+                  <i class="fas fa-lock"></i> PRO
+                </span>
               </div>
             </div>
           </div>
@@ -95,22 +80,13 @@
 
     <!-- RIGHT: Actions -->
     <div class="sidebar-section">
-      <button *ngIf="isAdmin" class="btn-refresh" (click)="forceRefresh()">
-        <i class="fas fa-sync-alt"></i> REGENERATE NEWS
-      </button>
 
-      <div class="premium-ad">
-        <span class="ad-tag">PREMIUM ACCESS</span>
-        <h4>T'L WEALTH MANAGEMENT</h4>
-        <p>Phân tích thị trường chuyên sâu hỗ trợ bởi AI v1.2</p>
-        <button class="btn-learn-more">Learn More</button>
+      <div class="pro-promo-card" *ngIf="!isPremium" style="background: white; border: 2px dashed #6366f1; border-radius: 1rem; padding: 1.5rem; margin-top: 1rem; text-align: center;">
+        <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🚀</div>
+        <h3 style="color: #1e293b; margin: 0 0 0.5rem 0; font-size: 1.05rem; font-weight: 800;">Dòng Chảy Tức Thời PRO</h3>
+        <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 1rem;">Nâng cấp PRO để truy cập hệ thống phân tích tin tức thời gian thực & tín hiệu từ AI.</p>
+        <button routerLink="/pricing" style="background: linear-gradient(90deg, #6366f1, #a855f7); color: white; border: none; padding: 0.6rem 1.25rem; border-radius: 0.75rem; cursor: pointer; font-weight: 700; font-size: 0.85rem; width: 100%;">Nâng cấp ngay - 20k/tháng</button>
       </div>
     </div>
-  </div>
-
-  <div *ngIf="newsItems.length === 0 && !isLoading" class="empty-state">
-    <i class="fas fa-newspaper"></i>
-    <p>Chưa có bản tin nào được tạo.</p>
-    <button class="btn-primary" (click)="forceRefresh()">Tạo bản tin ngay</button>
   </div>
 </div>

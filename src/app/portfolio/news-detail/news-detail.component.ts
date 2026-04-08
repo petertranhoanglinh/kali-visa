@@ -4,6 +4,7 @@ import { NewsService } from 'src/app/service/news.service';
 import { MarketNews } from 'src/app/model/market-news.model';
 import { CommentModel } from 'src/app/model/social.model';
 import { AuthDetail } from 'src/app/common/util/auth-detail';
+import { CommonUtils } from 'src/app/common/util/common-utils';
 import { ToastrService } from 'ngx-toastr';
 import { Title, Meta } from '@angular/platform-browser';
 
@@ -18,6 +19,7 @@ export class NewsDetailComponent implements OnInit {
   comments: CommentModel[] = [];
   newCommentContent: string = '';
   isLoading: boolean = true;
+  isPremium: boolean = false;
 
   currentUserId: string = '';
   currentUserName: string = 'Khách';
@@ -32,6 +34,7 @@ export class NewsDetailComponent implements OnInit {
 
   ngOnInit(): void {
     const user = AuthDetail.getLoginedInfo();
+    this.isPremium = CommonUtils.checkPremiumStatus(user);
     if (user) {
       this.currentUserId = user.id;
       this.currentUserName = user.email || 'Nhà Đầu Tư';

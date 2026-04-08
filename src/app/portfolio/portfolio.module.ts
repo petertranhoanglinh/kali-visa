@@ -20,6 +20,7 @@ import { AdminUpgradeComponent } from './admin-upgrade/admin-upgrade.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { AdminSettingComponent } from './admin-setting/admin-setting.component';
 import { AdminNewsComponent } from './admin-news/admin-news.component';
+import { AdminPostsComponent } from './admin-posts/admin-posts.component';
 
 
 import { FormsModule } from '@angular/forms';
@@ -42,7 +43,8 @@ import { FormsModule } from '@angular/forms';
     NewsDetailComponent,
     AdminUpgradeComponent,
     AdminSettingComponent,
-    AdminNewsComponent
+    AdminNewsComponent,
+    AdminPostsComponent
   ],
   imports: [
     CommonModule,

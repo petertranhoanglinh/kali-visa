@@ -254,3 +254,56 @@
     display: block; /* Show overlay when ngIf matches */
   }
 }
+
+/* Admin Mode Styles */
+.nav-menu.admin-mode {
+  border-left: 2px solid #e2e8f0;
+  padding-left: 1.5rem;
+  margin-left: 1rem;
+}
+
+.admin-label {
+  font-size: 0.7rem;
+  font-weight: 900;
+  color: #6366f1;
+  letter-spacing: 1px;
+  background: #eef2ff;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.admin-entry-nav {
+  color: #4f46e5 !important;
+  font-weight: 800;
+  background: #f5f3ff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.exit-admin a {
+  color: #ef4444 !important;
+}
+
+.mobile-admin-header {
+  padding: 1.5rem 1.5rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: #6366f1;
+  letter-spacing: 1px;
+}
+
+.mobile-link.admin {
+  color: #4f46e5 !important;
+  background: #f5f3ff !important;
+  margin: 0.25rem 1rem !important;
+  border-radius: 8px;
+}
+
+.mobile-link.admin-entry {
+  color: #4f46e5 !important;
+  font-weight: 800;
+  border: 1px dashed #4f46e5;
+  margin: 1.5rem 1rem 0.5rem !important;
+  border-radius: 8px;
+}

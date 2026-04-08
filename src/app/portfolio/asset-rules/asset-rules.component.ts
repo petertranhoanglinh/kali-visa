@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthDetail } from 'src/app/common/util/auth-detail';
+import { CommonUtils } from 'src/app/common/util/common-utils';
 import { AssetRule, RebalanceAnalysis } from 'src/app/model/asset-rule.model';
 import { AssetRuleService } from 'src/app/service/asset-rule.service';
 
@@ -27,12 +28,7 @@ export class AssetRulesComponent implements OnInit {
   constructor(private ruleService: AssetRuleService) { }
 
   ngOnInit(): void {
-      const userInfo = AuthDetail.getLoginedInfo();
-      const now = new Date();
-      const expiryDate = userInfo.expiryDate ? new Date(userInfo.expiryDate) : null;
-      const isExpired = expiryDate ? expiryDate < now : true;
-      this.isPremium = (userInfo.tier === 'PRO' || userInfo.tier === 'PLUS' || userInfo.role === 'ADMIN') && !isExpired;
-      if (userInfo.role === 'ADMIN') this.isPremium = true;
+      this.isPremium = CommonUtils.checkPremiumStatus( AuthDetail.getLoginedInfo());
       if (this.isPremium) {
         this.loadData();
       }

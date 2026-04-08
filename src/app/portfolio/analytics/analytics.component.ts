@@ -5,6 +5,7 @@ import { StockAnalysisResult } from '../../model/stock-analysis.model';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 
 import { AuthDetail } from 'src/app/common/util/auth-detail';
+import { CommonUtils } from 'src/app/common/util/common-utils';
 
 @Component({
   selector: 'app-analytics',
@@ -19,6 +20,7 @@ export class AnalyticsComponent implements OnInit {
   activeTab: string = 'OVERVIEW';
   analysisResult: StockAnalysisResult | null = null;
   isPremium: boolean = false;
+  errorMessage: string = '';
 
   // Chart Properties
   public priceChartType: ChartType = 'line';
@@ -91,16 +93,7 @@ export class AnalyticsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const userInfo = AuthDetail.getLoginedInfo();
-    const now = new Date();
-    const expiryDate = userInfo.expiryDate ? new Date(userInfo.expiryDate) : null;
-    const isExpired = expiryDate ? expiryDate < now : true;
-
-    // Chỉ PRO hoặc ADMIN (và chưa hết hạn) mới được dùng
-    this.isPremium = (userInfo.tier === 'PRO' || userInfo.tier === 'PLUS' || userInfo.role === 'ADMIN') && !isExpired;
-    
-    // Nếu là ADMIN thì luôn bypass expiry
-    if (userInfo.role === 'ADMIN') this.isPremium = true;
+    this.isPremium = CommonUtils.checkPremiumStatus(AuthDetail.getLoginedInfo());
 
     this.route.queryParams.subscribe(params => {
       this.ticker = params['ticker'];
@@ -112,15 +105,20 @@ export class AnalyticsComponent implements OnInit {
     });
   }
 
-  performAnalysis() {
+   performAnalysis() {
+    if (!this.tickerInput?.trim() && !this.ticker) {
+      this.errorMessage = 'Vui lòng nhập mã chứng khoán để thực hiện phân tích.';
+      return;
+    }
+
     if (this.tickerInput) {
       this.ticker = this.tickerInput;
     }
-    
-    if (!this.ticker) return;
 
     this.loading = true;
     this.isAnalyzing = true;
+    this.errorMessage = ''; // Clear previous errors
+    
     this.analyticsService.analyzeTicker(this.ticker).subscribe({
       next: (res) => {
         this.analysisResult = res;
@@ -134,6 +132,9 @@ export class AnalyticsComponent implements OnInit {
         console.error(err);
         this.loading = false;
         this.isAnalyzing = false;
+        // Catch the 403 message or any error body
+        this.errorMessage = (typeof err.error === 'string') ? err.error : 
+                            (err.error?.message || 'Hệ thống đang bận hoặc phiên làm việc hết hạn. Vui lòng thử lại sau.');
       }
     });
   }

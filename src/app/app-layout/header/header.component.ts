@@ -45,6 +45,7 @@ export class HeaderComponent implements OnInit {
 
   // Biến để kiểm soát trạng thái mobile menu
   isMobileMenuOpen = false;
+  isAdminSection = false;
 
 
 
@@ -81,7 +82,12 @@ export class HeaderComponent implements OnInit {
     private authService: AuthService) {
     this.isHeader$ = this.headerStore.select(getIsHeader);
     this.resultConnect$ = this.coinStore.select(getTestConnect);
-    this.quantityCart$ = this.authStore.select(getCartNumber)
+    this.quantityCart$ = this.authStore.select(getCartNumber);
+
+    // Phát hiện vùng Admin
+    this.router.events.subscribe(() => {
+      this.isAdminSection = window.location.pathname.startsWith('/admin');
+    });
   }
   ngOnInit(): void {
 

@@ -1,5 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthDetail } from 'src/app/common/util/auth-detail';
+import { CommonUtils } from 'src/app/common/util/common-utils';
 
 @Component({
   selector: 'app-pricing',
@@ -9,10 +11,15 @@ import { Router } from '@angular/router';
 export class PricingComponent implements OnInit {
 
   @Output() planSelected = new EventEmitter<any>();
+  isPremium: boolean = false;
+  userTier: string = 'BASIC';
 
   constructor(private router: Router) { }
 
   ngOnInit(): void {
+    const user = AuthDetail.getLoginedInfo();
+    this.userTier = user?.tier || 'BASIC';
+    this.isPremium = CommonUtils.checkPremiumStatus(user);
   }
 
   selectPlan(planName: string, price: number) {

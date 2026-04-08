@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { MarketPriceService } from 'src/app/service/market-price.service';
 import { MarketPriceModel } from 'src/app/model/market-price.model';
 import { SystemConfigService } from 'src/app/service/system-config.service';
+import { CommonUtils } from 'src/app/common/util/common-utils';
 
 export interface GroupedAsset {
   symbol: string;
@@ -29,6 +30,7 @@ export class AssetListComponent implements OnInit {
   groupedAssets: GroupedAsset[] = [];
   marketPrices: Map<string, number> = new Map();
   userTier: string = 'BASIC';
+  isPremium: boolean = false;
   assetTypes = Object.values(AssetType);
   Math = Math; // Expose Math for template pagination
   
@@ -83,6 +85,7 @@ export class AssetListComponent implements OnInit {
   ngOnInit(): void {
     const loginInfo = AuthDetail.getLoginedInfo();
     this.userTier = loginInfo?.tier || 'BASIC';
+    this.isPremium = CommonUtils.checkPremiumStatus(loginInfo);
     this.loadExchangeRate();
     this.loadAssets();
     this.loadFullListing();

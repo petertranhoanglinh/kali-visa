@@ -277,6 +277,85 @@
   color: #1e293b;
 }
 
+/* Gated & Truncated Content */
+.gated-content {
+  position: relative;
+  max-height: 4.8em; /* Khoảng 3 dòng */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.truncated-content {
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.text-content-wrapper {
+  position: relative;
+}
+
+.btn-toggle-expand {
+  background: transparent;
+  border: none;
+  color: #2563eb;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 5px 0;
+  cursor: pointer;
+  display: block;
+  margin-top: 5px;
+}
+
+.btn-toggle-expand:hover {
+  text-decoration: underline;
+}
+
+.gated-fader {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: linear-gradient(transparent, rgba(255, 255, 255, 0.9));
+  pointer-events: none;
+}
+
+.ready-more-pro-wrap {
+  margin-top: 12px;
+}
+
+.btn-read-more-pro {
+  background: #f8fafc;
+  border: 1px dashed #6366f1;
+  color: #4f46e5;
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.btn-read-more-pro:hover {
+  background: #eef2ff;
+  border-style: solid;
+}
+
+.btn-read-more-pro i {
+  font-size: 1rem;
+}
+
 .media-content {
   margin: 0; 
   background: #f8fafc;
@@ -479,4 +558,29 @@
   .create-post-card { margin-bottom: 0; border-radius: 0; box-shadow: none; border: none; padding-bottom: 15px;}
   .portfolio-container { padding: 0; max-width: 100vw; background: #cbd5e1; }
   .header-section { margin-top: 1rem; background: #cbd5e1;}
+}
+
+/* Back Navigation */
+.back-navigation {
+  margin-top: 20px;
+}
+
+.btn-back-feed {
+  background: white;
+  border: 1px solid #2563eb;
+  color: #2563eb;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.1);
+}
+
+.btn-back-feed:hover {
+  background: #f0f4ff;
+  transform: translateX(-5px);
 }

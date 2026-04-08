@@ -3,6 +3,7 @@ import { NewsService } from 'src/app/service/news.service';
 import { MarketNews } from 'src/app/model/market-news.model';
 import { ToastrService } from 'ngx-toastr';
 import { AuthDetail } from 'src/app/common/util/auth-detail';
+import { CommonUtils } from 'src/app/common/util/common-utils';
 
 @Component({
   selector: 'app-news-summary',
@@ -17,6 +18,7 @@ export class NewsSummaryComponent implements OnInit {
   isLastPage: boolean = false;
   isLoading: boolean = false;
   isAdmin: boolean = false;
+  isPremium: boolean = false;
   selectedCategory: string = '';
   today: Date = new Date();
 
@@ -28,6 +30,7 @@ export class NewsSummaryComponent implements OnInit {
   ngOnInit(): void {
     const user = AuthDetail.getLoginedInfo();
     this.isAdmin = user && user.role === 'ADMIN';
+    this.isPremium = CommonUtils.checkPremiumStatus(user);
     this.loadNews();
   }
 
@@ -46,6 +49,12 @@ export class NewsSummaryComponent implements OnInit {
       next: (res) => {
         this.newsItems = [...this.newsItems, ...res.content];
         this.isLastPage = res.last;
+
+        // --- PRO Limit: Max 10 news items for Non-PRO ---
+        if (!this.isPremium && this.newsItems.length >= 10) {
+          this.isLastPage = true;
+        }
+
         this.isLoading = false;
       },
       error: (err) => {

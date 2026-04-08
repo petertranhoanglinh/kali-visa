@@ -26,12 +26,20 @@ export class SocialService {
     return this.http.get<any>(url, this.getOptions());
   }
 
+  getPostById(id: string): Observable<PostModel> {
+    return this.http.get<PostModel>(`${this.apiUrl}/posts/${id}`, this.getOptions());
+  }
+
   createPost(post: PostModel): Observable<PostModel> {
     return this.http.post<PostModel>(`${this.apiUrl}/posts`, post, this.getOptions());
   }
 
   deletePost(id: string, userId: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/posts/${id}?userId=${userId}`, this.getOptions());
+  }
+
+  deleteMultiplePosts(ids: string[], userId: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/posts/bulk-delete?userId=${userId}`, ids, this.getOptions());
   }
 
   updatePost(id: string, post: PostModel, userId: string): Observable<PostModel> {

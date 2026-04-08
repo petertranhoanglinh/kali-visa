@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth.service';
 import { UpgradeService } from 'src/app/service/upgrade.service';
 import { MemberModel } from 'src/app/model/member.model';
@@ -22,7 +23,8 @@ export class CheckoutComponent implements OnInit {
 
   constructor(
     private upgradeService: UpgradeService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -34,6 +36,11 @@ export class CheckoutComponent implements OnInit {
     if (planJson) {
       this.selectedPlan = JSON.parse(planJson);
     }
+  }
+
+  goBack() {
+    this.router.navigate(['/pricing']);
+    this.cancel.emit();
   }
 
   onFileSelected(event: any) {
@@ -62,9 +69,7 @@ export class CheckoutComponent implements OnInit {
       next: (res) => {
         alert('Yêu cầu đã được gửi! Vui lòng chờ Admin xác nhận.');
         this.loading = false;
-        if (this.cancel) {
-          this.cancel.emit();
-        }
+        this.goBack();
       },
       error: (err) => {
         alert('Lỗi khi gửi yêu cầu. Vui lòng thử lại.');

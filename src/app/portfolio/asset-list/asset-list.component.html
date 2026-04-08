@@ -4,8 +4,10 @@
         <div class="metric-item">
             <span class="metric-label">Tổng Giá Trị (VND)</span>
             <h2 class="metric-value">{{ getTotalValueVND() | number:'1.0-0' }}₫</h2>
-            <div class="metric-trend" [ngClass]="(getTotalValueVND() - getTotalCostVND()) >= 0 ? 'trend-up' : 'trend-down'">
-                <i class="fas" [ngClass]="(getTotalValueVND() - getTotalCostVND()) >= 0 ? 'fa-caret-up' : 'fa-caret-down'"></i>
+            <div class="metric-trend"
+                [ngClass]="(getTotalValueVND() - getTotalCostVND()) >= 0 ? 'trend-up' : 'trend-down'">
+                <i class="fas"
+                    [ngClass]="(getTotalValueVND() - getTotalCostVND()) >= 0 ? 'fa-caret-up' : 'fa-caret-down'"></i>
                 {{ (getTotalValueVND() - getTotalCostVND()) / (getTotalCostVND() || 1) | percent:'1.1-2' }}
             </div>
         </div>
@@ -20,6 +22,9 @@
             <button class="btn-create" (click)="toggleAddForm()">
                 <i class="fas fa-plus"></i> Thêm Tài Sản
             </button>
+             <button *ngIf="userTier === 'BASIC'" class="btn-settings" routerLink="/price-settings">
+                <i class="fas fa-cog"></i> Cấu hình giá
+             </button>
         </div>
     </div>
 
@@ -51,22 +56,28 @@
                     <div class="stat-group">
                         <span class="stat-label">Giá vốn / Hiện tại</span>
                         <div class="price-flow">
-                            <span class="p-avg">{{ getCurrencySymbol(group.history[0].currency) }}{{ group.averagePrice | number:getCurrencyPipe(group.history[0].currency) }}</span>
+                            <span class="p-avg">{{ getCurrencySymbol(group.history[0].currency) }}{{ group.averagePrice
+                                | number:getCurrencyPipe(group.history[0].currency) }}</span>
                             <i class="fas fa-arrow-right"></i>
-                            <span class="p-now" [ngClass]="(group.marketPrice || 0) >= group.averagePrice ? 'text-up' : 'text-down'">
-                                {{ getCurrencySymbol(group.history[0].currency) }}{{ group.marketPrice | number:getCurrencyPipe(group.history[0].currency) }}
+                            <span class="p-now"
+                                [ngClass]="(group.marketPrice || 0) >= group.averagePrice ? 'text-up' : 'text-down'">
+                                {{ getCurrencySymbol(group.history[0].currency) }}{{ group.marketPrice |
+                                number:getCurrencyPipe(group.history[0].currency) }}
                             </span>
                         </div>
                     </div>
                     <div class="stat-group">
                         <span class="stat-label">Thành tiền</span>
-                        <span class="stat-value-big">{{ getCurrencySymbol(group.history[0].currency) }}{{ group.totalValue | number:getCurrencyPipe(group.history[0].currency) }}</span>
+                        <span class="stat-value-big">{{ getCurrencySymbol(group.history[0].currency) }}{{
+                            group.totalValue | number:getCurrencyPipe(group.history[0].currency) }}</span>
                     </div>
                 </div>
 
                 <div class="card-actions" (click)="$event.stopPropagation()">
-                    <button class="btn-sell-action" *ngIf="group.type !== 'CASH'" (click)="toggleSellForm(group)">BÁN</button>
-                    <button class="btn-expand"><i class="fas" [ngClass]="group.isExpanded ? 'fa-chevron-up' : 'fa-chevron-down'"></i></button>
+                    <button class="btn-sell-action" *ngIf="group.type !== 'CASH'"
+                        (click)="toggleSellForm(group)">BÁN</button>
+                    <button class="btn-expand"><i class="fas"
+                            [ngClass]="group.isExpanded ? 'fa-chevron-up' : 'fa-chevron-down'"></i></button>
                 </div>
             </div>
 
@@ -86,18 +97,30 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let record of group.history">
-                                <td><span class="t-badge" [ngClass]="record.isSell ? 't-sell' : 't-buy'">{{ record.isSell ? 'BÁN' : 'MUA' }}</span></td>
+                                <td><span class="t-badge" [ngClass]="record.isSell ? 't-sell' : 't-buy'">{{
+                                        record.isSell ? 'BÁN' : 'MUA' }}</span></td>
                                 <td>{{ record.purchaseDate | date:'dd/MM/yyyy HH:mm' }}</td>
                                 <td>{{ record.quantity | number:'1.0-8' }}</td>
-                                <td>{{ getCurrencySymbol(record.currency) }}{{ record.averagePrice | number:getCurrencyPipe(record.currency) }}</td>
-                                <td>{{ getCurrencySymbol(record.currency) }}{{ calculateTotal(record) | number:getCurrencyPipe(record.currency) }}</td>
-                                <td><button class="btn-del" (click)="deleteAsset(record.id)"><i class="fas fa-trash"></i></button></td>
+                                <td>{{ getCurrencySymbol(record.currency) }}{{ record.averagePrice |
+                                    number:getCurrencyPipe(record.currency) }}</td>
+                                <td>{{ getCurrencySymbol(record.currency) }}{{ calculateTotal(record) |
+                                    number:getCurrencyPipe(record.currency) }}</td>
+                                <td><button class="btn-del" (click)="deleteAsset(record.id)"><i
+                                            class="fas fa-trash"></i></button></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- PRO Promo: Real-time Pricing (20k/month) -->
+    <div class="pro-promo-card" *ngIf="!isPremium" style="background: white; border: 2px dashed #6366f1; border-radius: 1rem; padding: 1.5rem; margin-top: 2rem; margin-bottom: 2rem; text-align: center;">
+        <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">⚡</div>
+        <h3 style="color: #1e293b; margin: 0 0 0.5rem 0; font-size: 1.05rem; font-weight: 800;">Tự Động Cập Nhật Giá PRO</h3>
+        <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 1rem;">Nâng cấp lên PRO để tự động cập nhật giá **Vàng, Chứng khoán & Crypto** thời gian thực (Real-time). Không còn phải nhập tay thủ công.</p>
+        <button routerLink="/pricing" style="background: linear-gradient(90deg, #6366f1, #a855f7); color: white; border: none; padding: 0.6rem 1.25rem; border-radius: 0.75rem; cursor: pointer; font-weight: 700; font-size: 0.85rem; width: 100%;">Mở khóa tính năng - Chỉ 20k/tháng</button>
     </div>
 
     <!-- Empty State -->
@@ -140,7 +163,8 @@
                 <div class="form-row">
                     <div class="form-group flex-2">
                         <label>Giá mua đơn vị</label>
-                        <input type="text" [(ngModel)]="displayPrice" (input)="onPriceChange($event)" placeholder="0.00">
+                        <input type="text" [(ngModel)]="displayPrice" (input)="onPriceChange($event)"
+                            placeholder="0.00">
                     </div>
                     <div class="form-group flex-1">
                         <label>Tiền tệ</label>
@@ -200,16 +224,20 @@
             <div class="modal-body p-0">
                 <!-- Selector Tabs -->
                 <div class="selector-tabs">
-                    <button [class.active]="activeSelectorTab === 'STOCK'" (click)="setSelectorTab('STOCK')">CHỨNG KHOÁN</button>
-                    <button [class.active]="activeSelectorTab === 'FUND'" (click)="setSelectorTab('FUND')">QUỸ MỞ</button>
-                    <button [class.active]="activeSelectorTab === 'CRYPTO'" (click)="setSelectorTab('CRYPTO')">CRYPTO</button>
+                    <button [class.active]="activeSelectorTab === 'STOCK'" (click)="setSelectorTab('STOCK')">CHỨNG
+                        KHOÁN</button>
+                    <button [class.active]="activeSelectorTab === 'FUND'" (click)="setSelectorTab('FUND')">QUỸ
+                        MỞ</button>
+                    <button [class.active]="activeSelectorTab === 'CRYPTO'"
+                        (click)="setSelectorTab('CRYPTO')">CRYPTO</button>
                     <button [class.active]="activeSelectorTab === 'GOLD'" (click)="setSelectorTab('GOLD')">VÀNG</button>
                 </div>
 
                 <!-- Search Bar -->
                 <div class="selector-search">
                     <i class="fas fa-search"></i>
-                    <input type="text" [(ngModel)]="searchTerm" (input)="filterListing()" placeholder="Tìm theo mã hoặc tên...">
+                    <input type="text" [(ngModel)]="searchTerm" (input)="filterListing()"
+                        placeholder="Tìm theo mã hoặc tên...">
                 </div>
 
                 <!-- Listing Grid -->
@@ -230,7 +258,8 @@
                 </div>
                 <div class="pagination-btns">
                     <button [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1">Trước</button>
-                    <button [disabled]="currentPage * pageSize >= filteredListing.length" (click)="currentPage = currentPage + 1">Sau</button>
+                    <button [disabled]="currentPage * pageSize >= filteredListing.length"
+                        (click)="currentPage = currentPage + 1">Sau</button>
                 </div>
             </div>
         </div>

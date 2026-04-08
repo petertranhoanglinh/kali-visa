@@ -4,6 +4,30 @@
   padding: 2rem;
 }
 
+.btn-back {
+  background: none;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #64748b;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem 0.5rem 0;
+  margin-bottom: 1.5rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-back:hover {
+  color: #4f46e5;
+  transform: translateX(-4px);
+}
+
+.btn-back i {
+  font-size: 1rem;
+}
+
 .fade-in {
   animation: fadeIn 0.5s ease-out;
 }

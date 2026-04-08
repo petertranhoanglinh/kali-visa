@@ -21,17 +21,27 @@
       </div>
     </div>
 
-    <div class="article-image" *ngIf="news.imageUrl">
+    <!-- PRO PAYWALL OVERLAY -->
+    <div class="pro-paywall-overlay" *ngIf="!isPremium">
+      <div class="paywall-card animate__animated animate__zoomIn">
+        <div class="premium-icon">👑</div>
+        <h2>Bản Tin Dành Cho Hội Viên PRO</h2>
+        <p>Hệ thống AI đã tổng hợp và phân tích chuyên sâu cho tin tức này. Vui lòng nâng cấp tài khoản để xem toàn bộ nội dung và các khuyến nghị đầu tư.</p>
+        <button routerLink="/pricing" class="btn-upgrade-now">Mở khóa nội dung - 20k/tháng</button>
+      </div>
+    </div>
+
+    <div class="article-image" *ngIf="news.imageUrl && isPremium">
       <img [src]="news.imageUrl" [alt]="news.title">
     </div>
 
-    <div class="article-summary">
+    <div class="article-summary" *ngIf="isPremium">
       {{ news.summary }}
     </div>
 
-    <div class="article-body" [innerHTML]="news.content"></div>
+    <div class="article-body" *ngIf="isPremium" [innerHTML]="news.content"></div>
 
-    <div class="article-footer">
+    <div class="article-footer" *ngIf="isPremium">
       <div class="sentiment-badge" [attr.data-sentiment]="news.sentiment">
         {{ news.sentiment }}
       </div>
@@ -40,8 +50,8 @@
       </a>
     </div>
 
-    <!-- COMMENTS SECTION -->
-    <div class="comments-container">
+    <!-- COMMENTS SECTION - GATED -->
+    <div class="comments-container" *ngIf="isPremium">
       <h3 class="comments-title">Thảo luận ({{ comments.length }})</h3>
       
       <div class="comment-list" *ngIf="comments.length > 0">

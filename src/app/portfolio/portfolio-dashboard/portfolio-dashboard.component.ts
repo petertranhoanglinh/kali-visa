@@ -74,7 +74,7 @@ export class PortfolioDashboardComponent implements OnInit {
     this.isPremium = (userInfo.tier === 'PRO' || userInfo.tier === 'PLUS' || userInfo.role === 'ADMIN') && !isExpired;
     if (userInfo && userInfo.role === 'ADMIN') this.isPremium = true;
 
-    this.refreshUserProfile();
+    this.currentUser = userInfo;
     this.loadExchangeRate();
     if (this.isPremium) {
       this.checkRules();
@@ -91,19 +91,7 @@ export class PortfolioDashboardComponent implements OnInit {
     });
   }
 
-  refreshUserProfile() {
-    const jwt = AuthDetail.getCookie('jwt');
-    if (jwt) {
-      this.authService.getProfile(jwt).subscribe({
-        next: (res) => {
-          if (res.code === 200) {
-            this.currentUser = res.data;
-            // Optionally update local storage info if needed
-          }
-        }
-      });
-    }
-  }
+ 
 
   loadExchangeRate() {
         this.configService.getConfig('USD_VND_RATE').subscribe({

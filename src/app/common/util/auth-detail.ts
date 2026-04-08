@@ -21,7 +21,8 @@ export class AuthDetail {
           email: decoded.email,
           role: decoded.role || decoded.roles,
           tier: decoded.tier || 'BASIC',
-          id: decoded.id || decoded.sub // Use sub as fallback for ID
+          id: decoded.id || decoded.sub, // Use sub as fallback for ID
+          expiryDate: decoded.expiryDate
         } as any as MemberModel;
       } catch (e) {
         return { jwt: jwt } as any as MemberModel;
