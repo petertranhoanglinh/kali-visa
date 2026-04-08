@@ -28,7 +28,7 @@
   <div class="create-post-card flat-surface" *ngIf="!isSinglePostMode">
     <div class="card-body">
       <div class="composer-header">
-        <div class="avatar">{{ currentUserName.charAt(0).toUpperCase() }}</div>
+        <div class="avatar hide-mobile">{{ currentUserName.charAt(0).toUpperCase() }}</div>
         <div class="ck-editor-container">
           <ckeditor 
             [editor]="Editor" 

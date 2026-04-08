@@ -554,10 +554,99 @@
 .btn-cancel-edit:hover { background: #e2e8f0; }
 
 @media (max-width: 768px) {
-  .post-card { border-radius: 0; border: none; border-top: 8px solid #cbd5e1; border-bottom: 8px solid #cbd5e1; margin-bottom: 0px; }
-  .create-post-card { margin-bottom: 0; border-radius: 0; box-shadow: none; border: none; padding-bottom: 15px;}
-  .portfolio-container { padding: 0; max-width: 100vw; background: #cbd5e1; }
-  .header-section { margin-top: 1rem; background: #cbd5e1;}
+  .portfolio-container { 
+    max-width: 100vw; 
+    margin: 0;
+    padding: 0;
+    background: #f1f5f9; /* Sáng hơn màu xám cũ */
+  }
+
+  .header-section { 
+    margin-top: 0;
+    padding: 2.5rem 1rem 1.5rem 1rem;
+    background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .title {
+    font-size: 1.8rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+  }
+
+  .filter-tabs {
+    justify-content: flex-start;
+    margin-top: 1.25rem;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 5px;
+    scrollbar-width: none;
+  }
+  .filter-tabs::-webkit-scrollbar { display: none; }
+
+  .filter-btn {
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    border-radius: 12px;
+  }
+
+  .create-post-card { 
+    margin: 0; 
+    border-radius: 0; 
+    border: none;
+    border-bottom: 8px solid #e2e8f0;
+  }
+  .card-body { padding: 1.25rem 1rem; }
+
+  /* Composer Mobile Optimizations */
+  .hide-mobile { display: none !important; }
+  .composer-header { gap: 0; }
+  
+  :host ::v-deep .ck-editor__editable {
+    min-height: 120px !important; /* Cao hơn để dễ viết */
+  }
+
+  .composer-footer {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid #f1f5f9;
+  }
+
+  .btn-attach {
+    font-size: 1.1rem;
+    padding: 0.8rem 1rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+  }
+
+  .btn-post {
+    padding: 0.8rem 2.5rem;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+  }
+
+  .ck-editor-container {
+    border-radius: 12px;
+  }
+
+  .post-card {
+    margin-bottom: 8px;
+    border-radius: 0; 
+    border: none;
+    border-bottom: 1px solid #e2e8f0; 
+    box-shadow: none;
+  }
+
+  .post-header { padding: 12px 15px 8px 15px; }
+  .post-content { padding: 5px 15px 12px 15px; }
+  .post-stats { padding: 10px 15px; }
+  .post-actions { padding: 4px 10px; }
+  .btn-action { gap: 4px; font-size: 0.85rem; }
 }
 
 /* Back Navigation */
