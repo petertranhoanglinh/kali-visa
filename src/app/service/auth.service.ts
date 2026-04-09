@@ -43,6 +43,22 @@ export class AuthService {
     });
     return this._http.get<ResultModel>(url, { headers: headers });
   }
+
+  getUsersAdmin(jwt: string): Observable<MemberModel[]> {
+    let url = `${environment.apiUrl}/api/v1/admin/users`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${jwt}`
+    });
+    return this._http.get<MemberModel[]>(url, { headers: headers });
+  }
+
+  updateUserAdmin(id: string, user: any, jwt: string): Observable<MemberModel> {
+    let url = `${environment.apiUrl}/api/v1/admin/users/${id}`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${jwt}`
+    });
+    return this._http.put<MemberModel>(url, user, { headers: headers });
+  }
 }
 
 

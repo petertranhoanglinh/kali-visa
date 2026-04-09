@@ -1,0 +1,81 @@
+<div class="admin-container animate-fade">
+    <header class="admin-header">
+        <div class="header-main">
+            <h1>👥 Quản lý Người dùng</h1>
+            <p>Phân quyền, cấp bậc và quản lý thời hạn sử dụng tài khoản.</p>
+        </div>
+        <div class="header-actions">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" [(ngModel)]="searchTerm" (input)="applyFilter()" placeholder="Tìm theo tên, email, ID...">
+            </div>
+            <button class="btn-refresh" (click)="loadUsers()">
+                <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
+            </button>
+        </div>
+    </header>
+
+    <div class="table-card">
+        <div class="table-responsive">
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th>Người dùng</th>
+                        <th>Quyền (Role)</th>
+                        <th>Cấp bậc (Tier)</th>
+                        <th>Ngày hết hạn</th>
+                        <th>Ngày đăng ký</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let user of filteredUsers">
+                        <td>
+                            <div class="user-cell">
+                                <div class="user-avatar">
+                                    {{ user.username?.charAt(0)?.toUpperCase() || 'U' }}
+                                </div>
+                                <div class="user-meta">
+                                    <span class="user-name">{{ user.username }}</span>
+                                    <span class="user-email">{{ user.email }}</span>
+                                    <small class="user-id">ID: {{ user.id }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <select [(ngModel)]="user.role" class="select-field">
+                                <option value="USER">USER</option>
+                                <option value="ADMIN">ADMIN</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select [(ngModel)]="user.tier" class="select-field tier-select" [class]="user.tier?.toLowerCase()">
+                                <option value="BASIC">BASIC</option>
+                                <option value="PRO">PRO</option>
+                                <option value="PREMIUM">PREMIUM</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="datetime-local" [(ngModel)]="user.expiryDate" class="date-field">
+                        </td>
+                        <td>
+                            <span class="reg-date">{{ user.loginDate || 'N/A' }}</span>
+                        </td>
+                        <td>
+                            <button class="btn-save-row" (click)="updateUser(user)" [disabled]="loading">
+                                <i class="fas fa-save"></i> Lưu
+                            </button>
+                        </td>
+                    </tr>
+                    <tr *ngIf="filteredUsers.length === 0 && !loading">
+                        <td colspan="6" class="empty-row">Không tìm thấy người dùng nào.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="loading-overlay" *ngIf="loading">
+        <div class="spinner"></div>
+    </div>
+</div>

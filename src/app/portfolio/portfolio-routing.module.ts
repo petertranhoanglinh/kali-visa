@@ -20,6 +20,7 @@ import { AdminUpgradeComponent } from './admin-upgrade/admin-upgrade.component';
 import { AdminSettingComponent } from './admin-setting/admin-setting.component';
 import { AdminNewsComponent } from './admin-news/admin-news.component';
 import { AdminPostsComponent } from './admin-posts/admin-posts.component';
+import { AdminUsersComponent } from './admin-users/admin-users.component';
 import { AuthGuardService } from '../service/auth-guard.service';
 import { AdminGuard } from '../service/admin-guard.service';
 
@@ -47,6 +48,7 @@ const routes: Routes = [
       { path: 'setting', component: AdminSettingComponent },
       { path: 'news', component: AdminNewsComponent },
       { path: 'posts', component: AdminPostsComponent },
+      { path: 'users', component: AdminUsersComponent },
       { path: '', redirectTo: 'upgrade', pathMatch: 'full' }
     ]
   }
