@@ -64,7 +64,8 @@
                         'fa-coins': rule.assetType === 'GOLD', 
                         'fa-btc': rule.assetType === 'CRYPTO',
                         'fa-wallet': rule.assetType === 'CASH',
-                        'fa-file-invoice-dollar': rule.assetType === 'BOND'
+                        'fa-file-invoice-dollar': rule.assetType === 'BOND',
+                        'fa-university': rule.assetType === 'FUND'
                     }"></i>
                 </div>
                 <div class="status-toggle">
@@ -76,12 +77,20 @@
             <div class="rule-body">
                 <h4>{{rule.ruleName}}</h4>
                 <div class="target-bar-container">
-                    <div class="target-label">Tỷ trọng mục tiêu: <b>{{rule.targetPercentage}}%</b></div>
+                    <div class="target-label">
+                        Mục tiêu: 
+                        <b>
+                            {{ rule.operator === 'GE' ? '≥' : rule.operator === 'LE' ? '≤' : '' }} 
+                            {{rule.targetPercentage}}%
+                        </b>
+                    </div>
                     <div class="progress-bg">
                         <div class="progress-fill" [style.width.%]="rule.targetPercentage"></div>
                     </div>
                 </div>
-                <p class="rule-meta">Ngưỡng lệch cho phép: ±{{rule.thresholdPercent}}%</p>
+                <p class="rule-meta" *ngIf="!rule.operator || rule.operator === 'DEVIATION'">Ngưỡng lệch cho phép: ±{{rule.thresholdPercent}}%</p>
+                <p class="rule-meta" *ngIf="rule.operator === 'GE'">Cảnh báo khi dưới ngưỡng mục tiêu</p>
+                <p class="rule-meta" *ngIf="rule.operator === 'LE'">Cảnh báo khi vượt ngưỡng mục tiêu</p>
             </div>
 
             <div class="rule-footer">
@@ -108,6 +117,15 @@
                             <option value="CRYPTO">Crypto</option>
                             <option value="CASH">Tiền mặt</option>
                             <option value="BOND">Trái phiếu</option>
+                            <option value="FUND">Quỹ mở</option>
+                        </select>
+                    </div>
+                    <div class="form-group flex-1">
+                        <label>Toán tử so sánh</label>
+                        <select [(ngModel)]="newRule.operator">
+                            <option value="DEVIATION">± Sai lệch</option>
+                            <option value="GE">≥ Lớn hơn hoặc bằng</option>
+                            <option value="LE">≤ Nhỏ hơn hoặc bằng</option>
                         </select>
                     </div>
                 </div>
@@ -116,7 +134,7 @@
                         <label>Tỷ trọng mục tiêu (%)</label>
                         <input type="number" [(ngModel)]="newRule.targetPercentage">
                     </div>
-                    <div class="form-group flex-1">
+                    <div class="form-group flex-1" *ngIf="newRule.operator === 'DEVIATION'">
                         <label>Ngưỡng cảnh báo (%)</label>
                         <input type="number" [(ngModel)]="newRule.thresholdPercent">
                     </div>

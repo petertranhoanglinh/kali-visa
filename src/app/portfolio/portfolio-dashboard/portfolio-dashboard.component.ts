@@ -33,14 +33,14 @@ export class PortfolioDashboardComponent implements OnInit {
   private EXCHANGE_RATE = 25000; // Default fallback
 
   // Chart Properties
-  public chartLabels: string[] = ['Crypto', 'Chứng Khoán', 'Quỹ Mở', 'Vàng', 'Tiền Mặt' , 'Trái Phiếu'];
+  public chartLabels: string[] = ['Vàng (GOLD)', 'Chứng Khoán (STOCK)', 'Coin (CRYPTO)', 'Tiền Mặt (CASH)', 'Trái Phiếu (BOND)', 'Quỹ Mở (FUND)'];
   public chartData: ChartData<'doughnut'> = {
     labels: this.chartLabels,
     datasets: [
       {
         data: [0, 0, 0, 0, 0, 0], 
-        backgroundColor: ['#8b5cf6', '#3b82f6', '#f43f5e', '#f59e0b', '#10b981', '#6366f1'],
-        hoverBackgroundColor: ['#7c3aed', '#2563eb', '#e11d48', '#d97706', '#059669', '#4f46e5'],
+        backgroundColor: ['#f59e0b', '#3b82f6', '#8b5cf6', '#10b981', '#6366f1', '#0ea5e9'],
+        hoverBackgroundColor: ['#d97706', '#2563eb', '#7c3aed', '#059669', '#4f46e5', '#0284c7'],
         borderWidth: 0
       }
     ]
@@ -114,58 +114,69 @@ export class PortfolioDashboardComponent implements OnInit {
         this.isLoading = true;
         this.assetService.getAssetsByUser(userId).subscribe({
           next: (assets) => {
-            if (this.isPremium) {
-            this.refreshProPrices(assets);
-           } else {
-              this.marketPriceService.getPricesByUser(userId).subscribe({
-                next: (prices) => {
-                  const priceMap = new Map<string, number>();
-                  prices.forEach(p => priceMap.set(p.symbol, p.price));
+            // LUÔN LUÔN load giá thủ công từ DB trước (Dành cho Vàng, Quỹ, Trái phiếu...)
+            this.marketPriceService.getPricesByUser(userId).subscribe({
+              next: (prices) => {
+                const priceMap = new Map<string, number>();
+                prices.forEach(p => priceMap.set(p.symbol, p.price));
+                
+                if (this.isPremium) {
+                  // Nếu là PRO: Fetch thêm giá realtime cho STOCK/CRYPTO để đè lên
+                  this.refreshProPricesWithBase(assets, priceMap);
+                } else {
                   this.calculateMetrics(assets, priceMap);
-                  this.checkRules(); // Cập nhật cảnh báo dựa trên giá vừa load
+                  this.checkRules();
                   this.isLoading = false;
-                },
-                error: () => {
+                }
+              },
+              error: () => {
+                if (this.isPremium) {
+                  this.refreshProPrices(assets);
+                } else {
                   this.calculateMetrics(assets, new Map());
                   this.checkRules();
                   this.isLoading = false;
                 }
-              });
-            }
+              }
+            });
           },
           error: () => this.isLoading = false
         });
       }
     
       refreshProPrices(assets: AssetModel[]) {
+        this.refreshProPricesWithBase(assets, new Map<string, number>());
+      }
+
+      refreshProPricesWithBase(assets: AssetModel[], basePriceMap: Map<string, number>) {
         const uniqueSymbols = Array.from(new Set(assets.map(a => a.symbol)));
         const automatedSymbols = uniqueSymbols.filter(s => {
           const firstAsset = assets.find(a => a.symbol === s);
           if (!firstAsset) return false;
-          // Automate STOCK, CRYPTO, FUND, and SJC Gold
-          if (firstAsset.type === AssetType.GOLD && s !== 'SJC') return false; 
-          if (firstAsset.type === AssetType.CASH || firstAsset.type === AssetType.BOND) return false;
-          return true;
+          // Automate ONLY STOCK and CRYPTO
+          return firstAsset.type === AssetType.STOCK || firstAsset.type === AssetType.CRYPTO;
         });
     
         const types = automatedSymbols.map(sym => assets.find(a => a.symbol === sym)?.type || 'STOCK');
     
         if (automatedSymbols.length === 0) {
-          this.calculateMetrics(assets, new Map());
+          this.calculateMetrics(assets, basePriceMap);
           this.isLoading = false;
           return;
         }
     
         this.assetService.getRealtimePrices(automatedSymbols, types).subscribe({
           next: (priceMap) => {
-            const mPriceMap = new Map<string, number>();
-            Object.keys(priceMap).forEach(sym => mPriceMap.set(sym, priceMap[sym]));
-            this.calculateMetrics(assets, mPriceMap);
+            const mergedPriceMap = new Map<string, number>(basePriceMap);
+            Object.keys(priceMap).forEach(sym => {
+                if (priceMap[sym] > 0) mergedPriceMap.set(sym, priceMap[sym]);
+            });
+            this.calculateMetrics(assets, mergedPriceMap);
             this.checkRules(); // Cập nhật cảnh báo dựa trên giá Realtime vừa lấy
             this.isLoading = false;
           },
           error: () => {
-            this.calculateMetrics(assets, new Map());
+            this.calculateMetrics(assets, basePriceMap);
             this.checkRules();
             this.isLoading = false;
           }
@@ -237,12 +248,12 @@ export class PortfolioDashboardComponent implements OnInit {
       datasets: [{
         ...this.chartData.datasets[0],
         data: [
-          categoryTotals.get(AssetType.CRYPTO) || 0,
-          categoryTotals.get(AssetType.STOCK) || 0,
-          categoryTotals.get(AssetType.FUND) || 0,
           categoryTotals.get(AssetType.GOLD) || 0,
+          categoryTotals.get(AssetType.STOCK) || 0,
+          categoryTotals.get(AssetType.CRYPTO) || 0,
           categoryTotals.get(AssetType.CASH) || 0,
-          categoryTotals.get(AssetType.BOND) || 0
+          categoryTotals.get(AssetType.BOND) || 0,
+          categoryTotals.get(AssetType.FUND) || 0
         ]
       }]
     };

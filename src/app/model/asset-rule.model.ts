@@ -7,6 +7,7 @@ export interface AssetRule {
     thresholdPercent: number;
     ruleName: string;
     isActive: boolean;
+    operator?: string;
     createdAt?: string;
 }
 
@@ -20,6 +21,7 @@ export interface RebalanceReport {
     assetType: string;
     currentPercent: number;
     targetPercent: number;
-    deviation: number;
+    deviation?: number;
+    operator: string;
     isViolated: boolean;
 }

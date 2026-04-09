@@ -22,6 +22,7 @@ export class AssetRulesComponent implements OnInit {
     targetPercentage: 10,
     thresholdPercent: 5,
     ruleName: '',
+    operator: 'DEVIATION',
     isActive: true
   };
 

@@ -204,19 +204,26 @@ export class AssetListComponent implements OnInit {
         next: (res) => {
           this.assets = res;
           
-          if (!this.isPremium) {
-            // BASIC Tier: Dùng giá thủ công từ DB người dùng tự lưu
-            this.marketPriceService.getPricesByUser(userId).subscribe({
-              next: (prices) => {
-                prices.forEach(p => this.marketPrices.set(p.symbol, p.price));
+          // LUÔN LUÔN load giá thủ công từ DB trước (Dành cho Vàng, Quỹ, Trái phiếu...)
+          this.marketPriceService.getPricesByUser(userId).subscribe({
+            next: (prices) => {
+              prices.forEach(p => this.marketPrices.set(p.symbol, p.price));
+              
+              if (this.isPremium) {
+                // Nếu là PRO: Fetch thêm giá realtime cho STOCK/CRYPTO để đè lên
+                this.refreshProPrices();
+              } else {
                 this.groupAssets();
-              },
-              error: () => this.groupAssets()
-            });
-          } else {
-            // PRO Tier: Fetch giá realtime trực tiếp
-            this.refreshProPrices();
-          }
+              }
+            },
+            error: () => {
+              if (this.isPremium) {
+                this.refreshProPrices();
+              } else {
+                this.groupAssets();
+              }
+            }
+          });
         },
         error: (err) => {
           this.toastr.error("Failed to load assets");
@@ -294,12 +301,11 @@ export class AssetListComponent implements OnInit {
 
     const uniqueSymbols = Array.from(new Set(this.assets.map(a => a.symbol)));
     // Only refresh automated types (STOCK, SJC, CRYPTO, FUND)
+    // Only refresh automated types (STOCK and CRYPTO)
     const symbolsToRefresh = uniqueSymbols.filter(s => {
       const asset = this.assets.find(a => a.symbol === s);
       if (!asset) return false;
-      if (asset.type === AssetType.GOLD && s !== 'SJC') return false; // Ignore traditional gold
-      if (asset.type === AssetType.CASH || asset.type === AssetType.BOND) return false;
-      return true;
+      return asset.type === AssetType.STOCK || asset.type === AssetType.CRYPTO;
     });
 
     const types = symbolsToRefresh.map(sym => this.assets.find(a => a.symbol === sym)?.type || 'STOCK');
