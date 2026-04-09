@@ -1,0 +1,206 @@
+<div class="row w-100 g-0 mt-3 px-3">
+    <div class="col-12 mb-3">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h2 class="m-0 fw-800" style="color: #6366f1;"><i class="fas fa-satellite-dish text-primary"></i> SIÊU RA-ĐA TÍN HIỆU VN100</h2>
+                <p class="text-muted m-0">Hệ thống quét ngầm 100 mã cổ phiếu hàng đầu thị trường. Dữ liệu được cập nhật tuần tự 24/7.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row w-100 g-0 px-3 pb-5 position-relative">
+
+    <!-- Premium Lock Status -->
+    <div *ngIf="!isPremium" class="paywall-overlay fade-in" style="position: absolute; top: 0; left: 0; right: 0; bottom: -50px; background: rgba(248, 250, 252, 0.85); backdrop-filter: blur(12px); display: flex; align-items: flex-start; justify-content: center; z-index: 100; border-radius: 1.5rem; padding-top: 10vh;">
+        <div class="pro-promo-card text-center p-5 shadow-lg" style="background: white; border: 2px dashed #a855f7; border-radius: 1.5rem; max-width: 600px;">
+            <i class="fas fa-lock fa-4x mb-3" style="color: #cbd5e1;"></i>
+            <h3 style="color: #1e293b; font-weight: 800;">Tính Năng Độc Quyền Dành Cho Nhóm PRO</h3>
+            <p style="color: #64748b; margin-bottom: 2rem; font-size: 1.1rem;">Máy Quét Tín Hiệu VN100 tự động tổng hợp sức mạnh từ 100 doanh nghiệp lớn nhất Việt Nam. Vui lòng nâng cấp để mở khóa Radar rà soát thông minh.</p>
+            <button routerLink="/pricing" class="btn btn-primary w-100 fw-bold py-3 fs-5" style="border-radius: 1rem; background: linear-gradient(90deg, #6366f1, #a855f7); border: none;">Mở Khóa Không Giới Hạn</button>
+        </div>
+    </div>
+    <!-- Main Content -->
+    <div class="col-lg-3 col-md-4 pe-md-3 mb-4 mb-md-0">
+        <!-- Control Panel -->
+        <div class="card border-0 shadow-sm p-4 h-100" style="border-radius: 1.5rem; background: #ffffff;">
+            
+            <div class="mb-4">
+                <h5 class="fw-bold text-primary mb-3"><i class="fas fa-microchip"></i> TRẠNG THÁI QUÉT NGẦM</h5>
+                <div class="p-3 rounded-4 bg-light border">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small text-muted">Tổng mã theo dõi:</span>
+                        <span class="badge bg-primary rounded-pill">100 VN100</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small text-muted">Kết quả tìm thấy:</span>
+                        <span class="badge bg-warning text-dark rounded-pill">{{totalElements}} Mã</span>
+                    </div>
+                    <div class="small text-muted mt-2" style="font-size: 0.7rem;">
+                        <i class="fas fa-info-circle"></i> Hệ thống Java đang quét tuần tự 1 mã/phút để đảm bảo tính ổn định tuyệt đối.
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-bold small text-muted">CHẾ ĐỘ HIỂN THỊ</label>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-primary py-3 fw-bold" 
+                            [class.active]="signalFilter === 'ALL'"
+                            (click)="setSignalFilter('ALL')"
+                            style="border-radius: 1rem;">
+                        <i class="fas fa-list me-2"></i> Toàn Bộ VN100
+                    </button>
+                    <button class="btn btn-outline-warning py-3 fw-bold text-dark" 
+                            [class.active]="signalFilter === 'MUA' || signalFilter === 'BÁN'"
+                            (click)="setSignalFilter('MUA')"
+                            style="border-radius: 1rem;">
+                        <i class="fas fa-crown me-2"></i> Bảng Vàng Tín Hiệu
+                    </button>
+                </div>
+                <div class="form-text text-muted small mt-3">
+                    <i class="fas fa-magic"></i> "Bảng Vàng" chỉ lọc ra những mã đang thỏa điều kiện kỹ thuật (MUA/BÁN).
+                </div>
+            </div>
+
+            <button class="btn btn-primary w-100 py-3 fw-bold shadow-sm mt-3" style="border-radius: 1rem; font-size: 1.1rem; background: linear-gradient(90deg, #6366f1, #a855f7); border: none;"
+                    (click)="fetchScreenerData()" [disabled]="isLoading">
+                <span *ngIf="!isLoading">
+                    <i class="fas fa-sync-alt me-2"></i> LÀM MỚI DANH SÁCH
+                </span>
+                <span *ngIf="isLoading"><i class="fas fa-spinner fa-spin me-2"></i> ĐANG TẢI...</span>
+            </button>
+            
+            <div class="mt-4 p-3 bg-light rounded" style="border: 1px dashed #cbd5e1;">
+                <div class="small fw-bold text-muted mb-1"><i class="far fa-clock"></i> CẬP NHẬT CACHE GẦN NHẤT:</div>
+                <div class="fs-5 fw-bold text-dark">{{ lastUpdated || '--:--:--' }}</div>
+                <div class="small text-muted mt-1" style="font-size: 0.75rem;">Dữ liệu quét được làm mới mỗi 1 tiếng chống quả tải máy chủ.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Side: Table -->
+    <div class="col-lg-9 col-md-8 ps-md-2">
+        <div class="card border-0 shadow-sm p-4 h-100" style="border-radius: 1.5rem; background: #ffffff;">
+            <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+                <h4 class="m-0 fw-bold">
+                    <i class="fas fa-table text-primary"></i> 
+                    BẢNG TÍN HIỆU {{ signalFilter === 'ALL' ? 'VN100' : (signalFilter === 'MUA' ? 'MUA' : (signalFilter === 'BAN' ? 'BÁN' : 'TRUNG LẬP')) }}
+                </h4>
+                <div class="badge bg-light text-dark px-3 py-2 border rounded-pill">
+                    <i class="fas fa-layer-group text-primary"></i> 
+                    Tìm thấy: <span class="fw-bold">{{totalElements}}</span> mã
+                </div>
+            </div>
+
+            <div *ngIf="isLoading" class="text-center py-5 my-3 fade-in">
+                <div class="matrix-loader-container mx-auto" style="height: 120px; width: 600px; max-width: 100%; border-radius: 0.5rem; background: #0f172a; padding: 1.5rem; text-align: left; font-family: monospace;">
+                    <div class="matrix-text-line" style="color: #10b981;">> Establishing Java-DB Sync Connection... [OK]</div>
+                    <div class="matrix-text-line" style="color: #38bdf8;">> Fetching VN100 Signals Table... [OK]</div>
+                    <div class="matrix-text-line" style="color: #fbbf24; animation: blink 1s infinite;">> Populating UI Data Table...</div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="d-flex flex-wrap gap-3 align-items-center mb-4">
+                <div class="btn-group shadow-sm" role="group">
+                    <button type="button" class="btn btn-outline-primary px-3" 
+                            [class.active]="signalFilter === 'ALL'"
+                            (click)="setSignalFilter('ALL')">
+                        Tất cả
+                    </button>
+                    <button type="button" class="btn btn-outline-success px-3"
+                            [class.active]="signalFilter === 'MUA'"
+                            (click)="setSignalFilter('MUA')">
+                        <i class="fas fa-shopping-cart me-1"></i> Mua
+                    </button>
+                    <button type="button" class="btn btn-outline-danger px-3"
+                            [class.active]="signalFilter === 'BÁN'"
+                            (click)="setSignalFilter('BÁN')">
+                        <i class="fas fa-hand-holding-usd me-1"></i> Bán
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary px-3"
+                            [class.active]="signalFilter === 'CHO'"
+                            (click)="setSignalFilter('CHO')">
+                        Trung lập
+                    </button>
+                </div>
+                
+                <div class="ms-md-auto d-flex align-items-center gap-2">
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div *ngIf="!isLoading && processedSignals.length > 0" class="border rounded shadow-sm overflow-hidden fade-in">
+                <table class="table table-hover align-middle m-0" style="font-size: 0.95rem;">
+                    <thead class="table-light sticky-top">
+                        <tr>
+                            <th class="py-3 px-3">Mã CK</th>
+                            <th class="text-end">Giá Hiện Tại</th>
+                            <th class="text-end">RSI</th>
+                            <th class="text-end">Xu Hướng (MACD)</th>
+                            <th class="text-center px-4">TÍN HIỆU</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let s of processedSignals" [class.bg-success-subtle]="s.isBuy" [class.bg-danger-subtle]="s.isSell">
+                            <td class="px-3 fw-bold fs-5 text-primary">
+                                {{s.symbol}}
+                                <div class="text-muted" style="font-size: 0.65rem;">Updated: {{s.lastUpdated | date:'HH:mm'}}</div>
+                            </td>
+                            <td class="text-end">
+                                <div class="fw-bold text-primary">{{s.price | number:'1.0-0'}} đ</div>
+                                <div class="small" [class.text-success]="s.changePercent > 0" [class.text-danger]="s.changePercent < 0" [class.text-muted]="s.changePercent === 0">
+                                    {{s.changePercent > 0 ? '+' : ''}}{{s.changePercent | number:'1.2-2'}}%
+                                </div>
+                            </td>
+                            <td class="text-end">
+                                <span class="fw-bold" [class.text-danger]="s.rsi < 30" [class.text-success]="s.rsi > 70">{{ s.rsi ? (s.rsi | number:'1.1-1') : 'N/A' }}</span>
+                            </td>
+                            <td class="text-end">
+                                <div>{{ s.macd ? (s.macd | number:'1.1-1') : 'N/A' }}</div>
+                                <div class="small text-muted border-top d-inline-block pt-1 mt-1">Xu hướng: {{s.price > s.sma200 ? 'Tăng' : 'Giảm'}} (MA200)</div>
+                            </td>
+                            <td class="text-center px-3" style="width: 250px;">
+                                <div *ngIf="s.isBuy" class="badge bg-success p-2 w-100 text-uppercase shadow-sm fw-bold mb-1" style="font-size: 0.85rem;"><i class="fas fa-arrow-up"></i> TÍN HIỆU MUA</div>
+                                <div *ngIf="s.isSell" class="badge bg-danger p-2 w-100 text-uppercase shadow-sm fw-bold mb-1" style="font-size: 0.85rem;"><i class="fas fa-arrow-down"></i> TÍN HIỆU BÁN</div>
+                                <div *ngIf="!s.isBuy && !s.isSell" class="badge bg-secondary p-2 w-100 text-uppercase mb-1" style="font-size: 0.85rem; opacity: 0.5;">ĐANG THEO DÕI</div>
+                                
+                                <div class="small text-muted">{{s.reason}}</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div *ngIf="!isLoading && totalPages > 1" class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                <div class="text-muted small">
+                    Hiển thị <b>{{page * size + 1}}</b> - <b>{{ (page + 1) * size > totalElements ? totalElements : (page + 1) * size }}</b> trong tổng số <b>{{totalElements}}</b> mã
+                </div>
+                <div class="pagination-container d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-secondary px-3" 
+                            [disabled]="page === 0" 
+                            (click)="changePage(page - 1)">
+                        <i class="fas fa-chevron-left me-1"></i> Trước
+                    </button>
+                    <div class="d-flex align-items-center px-3 bg-light rounded-pill border">
+                        <span class="fw-bold text-primary">Trang {{page + 1}} / {{totalPages}}</span>
+                    </div>
+                    <button class="btn btn-sm btn-outline-secondary px-3" 
+                            [disabled]="page >= totalPages - 1" 
+                            (click)="changePage(page + 1)">
+                        Sau <i class="fas fa-chevron-right ms-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div *ngIf="!isLoading && processedSignals.length === 0" class="text-center py-5 my-5 text-muted">
+                <i class="fas fa-satellite-dish fa-4x mb-3" style="color: #cbd5e1;"></i>
+                <h5>Radar Đang Thu Thập Dữ Liệu</h5>
+                <p>Hệ thống background quét tuần tự chưa ghi nhận tín hiệu cho bộ lọc này. Vui lòng quay lại sau ít phút.</p>
+            </div>
+            
+        </div>
+    </div>
+</div>

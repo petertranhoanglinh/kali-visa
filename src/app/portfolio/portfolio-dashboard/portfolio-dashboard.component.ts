@@ -71,14 +71,11 @@ export class PortfolioDashboardComponent implements OnInit {
     const now = new Date();
     const expiryDate = userInfo.expiryDate ? new Date(userInfo.expiryDate) : null;
     const isExpired = expiryDate ? expiryDate < now : true;
-    this.isPremium = (userInfo.tier === 'PRO' || userInfo.tier === 'PLUS' || userInfo.role === 'ADMIN') && !isExpired;
+    this.isPremium = (userInfo.tier === 'PRO' || userInfo.tier === 'PREMIUM' || userInfo.tier === 'PLUS' || userInfo.role === 'ADMIN') && !isExpired;
     if (userInfo && userInfo.role === 'ADMIN') this.isPremium = true;
 
     this.currentUser = userInfo;
     this.loadExchangeRate();
-    if (this.isPremium) {
-      this.checkRules();
-    }
   }
 
   checkRules() {
@@ -86,6 +83,8 @@ export class PortfolioDashboardComponent implements OnInit {
       next: (res) => {
         if (res && res.analysis) {
           this.violatedRules = res.analysis.filter(r => r.isViolated);
+        } else {
+          this.violatedRules = [];
         }
       }
     });
@@ -115,22 +114,24 @@ export class PortfolioDashboardComponent implements OnInit {
         this.isLoading = true;
         this.assetService.getAssetsByUser(userId).subscribe({
           next: (assets) => {
-            //if (this.isPremium) {
-            // this.refreshProPrices(assets);
-           // } else {
+            if (this.isPremium) {
+            this.refreshProPrices(assets);
+           } else {
               this.marketPriceService.getPricesByUser(userId).subscribe({
                 next: (prices) => {
                   const priceMap = new Map<string, number>();
                   prices.forEach(p => priceMap.set(p.symbol, p.price));
                   this.calculateMetrics(assets, priceMap);
+                  this.checkRules(); // Cập nhật cảnh báo dựa trên giá vừa load
                   this.isLoading = false;
                 },
                 error: () => {
                   this.calculateMetrics(assets, new Map());
+                  this.checkRules();
                   this.isLoading = false;
                 }
               });
-           // }
+            }
           },
           error: () => this.isLoading = false
         });
@@ -160,10 +161,12 @@ export class PortfolioDashboardComponent implements OnInit {
             const mPriceMap = new Map<string, number>();
             Object.keys(priceMap).forEach(sym => mPriceMap.set(sym, priceMap[sym]));
             this.calculateMetrics(assets, mPriceMap);
+            this.checkRules(); // Cập nhật cảnh báo dựa trên giá Realtime vừa lấy
             this.isLoading = false;
           },
           error: () => {
             this.calculateMetrics(assets, new Map());
+            this.checkRules();
             this.isLoading = false;
           }
         });

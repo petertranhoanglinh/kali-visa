@@ -19,7 +19,9 @@
                 <li><a routerLink="/rules" routerLinkActive="active">Quy Tắc</a></li>
                 <li><a routerLink="/notes" routerLinkActive="active">Ghi Chú</a></li>
                 <li><a routerLink="/social" routerLinkActive="active">Cộng Đồng</a></li>
-                <li><a routerLink="/analytics" routerLinkActive="active">Phân Tích AI <span style="font-size: 0.7em; background: #fbbf24; color: black; padding: 2px 6px; border-radius: 4px; margin-left:4px; vertical-align: top;">PRO</span></a></li>
+                <li><a [routerLink]="['/analytics']" [queryParams]="{ ticker: 'FPT' }" routerLinkActive="active">Phân Tích AI</a></li>
+                <li><a routerLink="/screener" routerLinkActive="active">Tín Hiệu VN30 <span style="font-size: 0.7em; background: #fbbf24; color: black; padding: 2px 6px; border-radius: 4px; margin-left:4px; vertical-align: top; font-weight: 800;">PRO</span></a></li>
+                <li><a routerLink="/backtest" routerLinkActive="active">Chiến Lược AI <span style="font-size: 0.7em; background: #fbbf24; color: black; padding: 2px 6px; border-radius: 4px; margin-left:4px; vertical-align: top; font-weight: 800;">PRO</span></a></li>
                 <li><a routerLink="/pricing" class="highlight-nav" routerLinkActive="active">Nâng Cấp Gói</a></li>
                 <li *ngIf="isAdmin"><a routerLink="/admin" class="admin-entry-nav">Quản trị <i class="fas fa-user-shield"></i></a></li>
             </ul>
@@ -61,6 +63,9 @@
                 <a routerLink="/rules" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-bolt"></i> Quy Tắc</a>
                 <a routerLink="/notes" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-sticky-note"></i> Ghi Chú</a>
                 <a routerLink="/social" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-globe-asia"></i> Cộng Đồng</a>
+                <a [routerLink]="['/analytics']" [queryParams]="{ ticker: 'FPT' }" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-search-dollar"></i> Phân Tích Cơ Bản</a>
+                <a routerLink="/screener" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-satellite-dish"></i> Tín Hiệu VN30 PRO</a>
+                <a routerLink="/backtest" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link" style="color: #6366f1; font-weight: bold;"><i class="fas fa-robot text-warning"></i> AI Backtest PRO</a>
                 <a routerLink="/pricing" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link highlight"><i class="fas fa-gem"></i> Nâng Cấp Gói</a>
                 <a *ngIf="isAdmin" routerLink="/admin" (click)="isMobileMenuOpen = false" class="mobile-link admin-entry"><i class="fas fa-user-shield"></i> Chế độ Quản trị</a>
             </ng-container>

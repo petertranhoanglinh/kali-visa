@@ -27,4 +27,5 @@ export interface StockAnalysisResult {
     
     whaleFlow?: any;
     latestIndicators?: any;
+    macroContext?: any;
 }

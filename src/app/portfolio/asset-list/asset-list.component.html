@@ -22,7 +22,7 @@
             <button class="btn-create" (click)="toggleAddForm()">
                 <i class="fas fa-plus"></i> Thêm Tài Sản
             </button>
-             <button *ngIf="userTier === 'BASIC'" class="btn-settings" routerLink="/price-settings">
+             <button class="btn-settings" routerLink="/price-settings">
                 <i class="fas fa-cog"></i> Cấu hình giá
              </button>
         </div>
@@ -74,8 +74,11 @@
                 </div>
 
                 <div class="card-actions" (click)="$event.stopPropagation()">
-                    <button class="btn-sell-action" *ngIf="group.type !== 'CASH'"
+                    <button class="btn-sell-action" *ngIf="group.type !== 'CASH' && group.totalValue > 0"
                         (click)="toggleSellForm(group)">BÁN</button>
+                    <button class="btn-group-del" title="Xóa toàn bộ lịch sử" (click)="deleteAssetGroup(group)">
+                        <i class="far fa-trash-alt"></i>
+                    </button>
                     <button class="btn-expand"><i class="fas"
                             [ngClass]="group.isExpanded ? 'fa-chevron-up' : 'fa-chevron-down'"></i></button>
                 </div>
@@ -226,17 +229,14 @@
                 <div class="selector-tabs">
                     <button [class.active]="activeSelectorTab === 'STOCK'" (click)="setSelectorTab('STOCK')">CHỨNG
                         KHOÁN</button>
-                    <button [class.active]="activeSelectorTab === 'FUND'" (click)="setSelectorTab('FUND')">QUỸ
-                        MỞ</button>
                     <button [class.active]="activeSelectorTab === 'CRYPTO'"
                         (click)="setSelectorTab('CRYPTO')">CRYPTO</button>
-                    <button [class.active]="activeSelectorTab === 'GOLD'" (click)="setSelectorTab('GOLD')">VÀNG</button>
                 </div>
 
                 <!-- Search Bar -->
                 <div class="selector-search">
                     <i class="fas fa-search"></i>
-                    <input type="text" [(ngModel)]="searchTerm" (input)="filterListing()"
+                    <input type="text" [(ngModel)]="searchTerm" (input)="onSearchChange()"
                         placeholder="Tìm theo mã hoặc tên...">
                 </div>
 
@@ -254,12 +254,12 @@
             </div>
             <div class="modal-footer listing-footer">
                 <div class="pagination-info">
-                    Trang {{ currentPage }} / {{ Math.ceil(filteredListing.length / pageSize) || 1 }}
+                    Trang {{ currentPage + 1 }} / {{ Math.ceil(totalElements / pageSize) || 1 }} (Tổng: {{ totalElements }})
                 </div>
                 <div class="pagination-btns">
-                    <button [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1">Trước</button>
-                    <button [disabled]="currentPage * pageSize >= filteredListing.length"
-                        (click)="currentPage = currentPage + 1">Sau</button>
+                    <button [disabled]="currentPage === 0" (click)="changePage(currentPage - 1)">Trước</button>
+                    <button [disabled]="(currentPage + 1) * pageSize >= totalElements"
+                        (click)="changePage(currentPage + 1)">Sau</button>
                 </div>
             </div>
         </div>

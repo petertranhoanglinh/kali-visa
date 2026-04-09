@@ -10,6 +10,8 @@ import { NewsSummaryComponent } from './news-summary/news-summary.component';
 import { PricingComponent } from './pricing/pricing.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { AnalyticsComponent } from './analytics/analytics.component';
+import { BacktesterComponent } from './backtester/backtester.component';
+import { ScreenerComponent } from './screener/screener.component';
 import { PrivacyComponent } from './privacy/privacy.component';
 import { HomeComponent } from './home/home.component';
 import { PriceSettingsComponent } from './price-settings/price-settings.component';
@@ -35,6 +37,8 @@ import { FormsModule } from '@angular/forms';
     PricingComponent,
     CheckoutComponent,
     AnalyticsComponent,
+    BacktesterComponent,
+    ScreenerComponent,
     PrivacyComponent,
     HomeComponent,
     PriceSettingsComponent,

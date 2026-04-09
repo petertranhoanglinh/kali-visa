@@ -57,9 +57,17 @@
             <div class="analyzing-title">BATTLE-TESTING {{tickerInput?.toUpperCase()}}...</div>
             <p class="analyzing-subtitle">Đang quét 1,500+ điểm dữ liệu, tỷ giá vĩ mô và phân tích kỹ thuật đa khung thời gian từ chuyên gia AI.</p>
         </div>
-        <div class="mt-4">
-            <div class="loader"></div>
-            <p class="text-muted small mt-2">Vui lòng đợi trong giây lát... (Thường mất 15-30 giây)</p>
+        
+        <!-- Premium Matrix Loader -->
+        <div class="matrix-loader-container">
+            <div class="matrix-text-line">> System Initialized. Awaiting Data Payload...</div>
+            <div class="matrix-text-line">> Fetching OHLCV from vnstock & VCI backend...</div>
+            <div class="matrix-text-line">> Analyzing Whale Flow & Net Buy Ratio...</div>
+            <div class="matrix-text-line">> Gemini 1.5 PRO processing fundamental logics...</div>
+        </div>
+
+        <div class="mt-2">
+            <p class="text-muted small">Vui lòng đợi trong giây lát... (Thường mất 15-30 giây)</p>
         </div>
     </div>
 
@@ -78,10 +86,22 @@
                 </div>
             </div>
             
-            <div class="d-flex gap-4 align-items-center">
-                <div class="metric-mini">
-                    <label>KHUYẾN NGHỊ</label>
-                    <div [style.color]="getSentimentColor(analysisResult.sentiment)">{{analysisResult.recommendation}}</div>
+            <div class="d-flex flex-wrap gap-4 align-items-center mt-3 mt-md-0">
+                <!-- Target Price Card -->
+                <div class="target-price-card" *ngIf="analysisResult.targetPrice">
+                    <div class="tp-value">{{analysisResult.targetPrice}}</div>
+                    <div class="tp-label">GIÁ MỤC TIÊU (AI TP)</div>
+                </div>
+
+                <!-- Risk Level Card -->
+                <div class="risk-level-card" *ngIf="analysisResult.riskLevel">
+                    <div class="score-value" [style.color]="getRiskColor(analysisResult.riskLevel)">{{analysisResult.riskLevel}}</div>
+                    <div class="score-label" style="color: #64748b;">MỨC RỦI RO</div>
+                </div>
+
+                <div class="metric-mini" style="text-align: center; border-left: 1px solid #e2e8f0; padding-left: 1.5rem;">
+                    <label style="font-size: 0.75rem; font-weight: 800; color: #64748b; letter-spacing: 0.1em;">KHUYẾN NGHỊ</label>
+                    <div style="font-size: 1.5rem; font-weight: 900;" [style.color]="getSentimentColor(analysisResult.sentiment)">{{analysisResult.recommendation}}</div>
                 </div>
                 <div class="ai-score-card">
                     <div class="score-value">{{analysisResult.aiScore}}</div>
@@ -106,6 +126,9 @@
             </button>
             <button (click)="setTab('SHAREHOLDERS')" [class.active]="activeTab === 'SHAREHOLDERS'">
                 <i class="fas fa-users-cog"></i> Cổ Đông & Nội Bộ
+            </button>
+            <button (click)="setTab('BACKTEST_PRO')" [class.active]="activeTab === 'BACKTEST_PRO'" style="background: linear-gradient(90deg, #f8fafc, #f3e8ff); border: 1px solid #e9d5ff; color: #7c3aed;">
+                <i class="fas fa-robot"></i> Backtest PRO
             </button>
         </div>
 
@@ -187,6 +210,15 @@
 
             <!-- TECHNICAL TAB -->
             <div [hidden]="activeTab !== 'TECHNICAL'" class="tab-pane active fade-in">
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                    <h3 class="m-0 mb-2 mb-md-0"><i class="fas fa-chart-line"></i> Biểu Đồ Kỹ Thuật</h3>
+                    <div class="timeframe-filters btn-group shadow-sm">
+                        <button class="btn btn-outline-primary btn-sm" [class.active]="selectedTimeframe === 30" (click)="setTimeframe(30)">1 Tháng</button>
+                        <button class="btn btn-outline-primary btn-sm" [class.active]="selectedTimeframe === 60" (click)="setTimeframe(60)">3 Tháng</button>
+                        <button class="btn btn-outline-primary btn-sm" [class.active]="selectedTimeframe === 120" (click)="setTimeframe(120)">6 Tháng</button>
+                        <button class="btn btn-outline-primary btn-sm" [class.active]="selectedTimeframe === 200" (click)="setTimeframe(200)">1 Năm</button>
+                    </div>
+                </div>
                 <div class="chart-box" style="height: 500px; width: 100%; margin-bottom: 20px; position: relative;">
                     <div *ngIf="!analysisResult.technicals || analysisResult.technicals.length === 0" class="chart-overlay">
                          <div class="text-center text-muted"> <i class="fas fa-chart-line fa-3x mb-3"></i> <p>Chưa nạp được dữ liệu biểu đồ</p> </div>
@@ -219,16 +251,35 @@
             <div *ngIf="activeTab === 'FINANCE'" class="tab-pane active fade-in">
                 <div class="row g-4">
                     <div class="col-md-5">
-                        <h3>Chỉ Số Định Giá & Hiệu Quả</h3>
-                        <table class="pro-table" *ngIf="analysisResult.finance">
-                            <tbody>
-                                <tr><td>P/E (Hệ số giá/thu nhập)</td><td class="text-end"><b>{{analysisResult.finance.pe || '---'}}</b></td></tr>
-                                <tr><td>P/B (Hệ số giá/sổ sách)</td><td class="text-end"><b>{{analysisResult.finance.pb || '---'}}</b></td></tr>
-                                <tr><td>ROE (Lợi nhuận/Vốn chủ)</td><td class="text-end"><b>{{ (analysisResult.finance.roe ? analysisResult.finance.roe * 100 : 0) | number:'1.1-2' }}%</b></td></tr>
-                                <tr><td>ROA (Lợi nhuận/Tài sản)</td><td class="text-end"><b>{{ (analysisResult.finance.roa ? analysisResult.finance.roa * 100 : 0) | number:'1.1-2' }}%</b></td></tr>
-                                <tr><td>EPS (VND)</td><td class="text-end"><b>{{ (analysisResult.finance.eps | number:'1.0-0') || '---' }}</b></td></tr>
-                            </tbody>
-                        </table>
+                        <div class="summary-card mb-4 mt-2">
+                            <h3>Chỉ Số Định Giá & Hiệu Quả</h3>
+                            <table class="pro-table" *ngIf="analysisResult.finance">
+                                <tbody>
+                                    <tr><td>P/E (Hệ số giá/thu nhập)</td><td class="text-end"><b>{{analysisResult.finance.pe || '---'}}</b></td></tr>
+                                    <tr><td>P/B (Hệ số giá/sổ sách)</td><td class="text-end"><b>{{analysisResult.finance.pb || '---'}}</b></td></tr>
+                                    <tr><td>ROE (Lợi nhuận/Vốn chủ)</td><td class="text-end"><b>{{ (analysisResult.finance.roe ? analysisResult.finance.roe * 100 : 0) | number:'1.1-2' }}%</b></td></tr>
+                                    <tr><td>ROA (Lợi nhuận/Tài sản)</td><td class="text-end"><b>{{ (analysisResult.finance.roa ? analysisResult.finance.roa * 100 : 0) | number:'1.1-2' }}%</b></td></tr>
+                                    <tr><td>EPS (VND)</td><td class="text-end"><b>{{ (analysisResult.finance.eps | number:'1.0-0') || '---' }}</b></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Macro Board -->
+                        <div class="macro-board" *ngIf="analysisResult.macroContext">
+                            <h4 style="color: #1e293b; font-weight: 800; margin-bottom: 1.5rem;"><i class="fas fa-globe-asia" style="color: #3b82f6;"></i> Bối Cảnh Vĩ Mô</h4>
+                            <div class="macro-item">
+                                <label>Lãi Suất</label>
+                                <p>{{analysisResult.macroContext['interest_rate_avg'] || 'Ổn định'}}</p>
+                            </div>
+                            <div class="macro-item">
+                                <label>Tỷ Giá & Dòng Vốn FDI</label>
+                                <p>{{analysisResult.macroContext['exchange_rate_trend'] || 'Bình thường'}}</p>
+                            </div>
+                            <div class="macro-item">
+                                <label>Tâm Lý Thị Trường Chung</label>
+                                <p>{{analysisResult.macroContext['market_sentiment'] || 'Tích cực'}}</p>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-7">
                         <div class="summary-card">

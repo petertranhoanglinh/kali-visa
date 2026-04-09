@@ -1,0 +1,286 @@
+<div class="row w-100 g-0 mt-3 px-3">
+    <div class="col-12 mb-3">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h2 class="m-0 fw-800" style="color: #6366f1;"><i class="fas fa-robot text-primary"></i> STUDIO LẬP CHIẾN LƯỢC AI BACKTEST</h2>
+                <p class="text-muted m-0">Kiểm tra chiến lược của bạn trên hàng ngàn phiên giao dịch quá khứ.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row w-100 g-0 px-3 pb-5 position-relative">
+
+    <!-- Premium Lock Status -->
+    <div *ngIf="!isPremium" class="paywall-overlay fade-in" style="position: absolute; top: 0; left: 0; right: 0; bottom: -50px; background: rgba(248, 250, 252, 0.85); backdrop-filter: blur(12px); display: flex; align-items: flex-start; justify-content: center; z-index: 100; border-radius: 1.5rem; padding-top: 10vh;">
+        <div class="pro-promo-card text-center p-5 shadow-lg" style="background: white; border: 2px dashed #a855f7; border-radius: 1.5rem; max-width: 600px;">
+            <i class="fas fa-lock fa-4x mb-3" style="color: #cbd5e1;"></i>
+            <h3 style="color: #1e293b; font-weight: 800;">Tính Năng Độc Quyền Dành Cho Nhóm PRO</h3>
+            <p style="color: #64748b; margin-bottom: 2rem; font-size: 1.1rem;">Nền tảng kiểm định chiến lược độc lập này tiêu tốn nhiều tài nguyên xử lý dữ liệu và thuật toán quét lệnh tốc độ cao. Vui lòng trở thành thành viên chuyên nghiệp để mở khóa cỗ máy 1500 ngày.</p>
+            <button routerLink="/pricing" class="btn btn-primary w-100 fw-bold py-3 fs-5" style="border-radius: 1rem; background: linear-gradient(90deg, #6366f1, #a855f7); border: none;">Mở Khóa - Chỉ 20k/tháng (Giảm 80%)</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-lg-3 col-md-4 pe-md-3 mb-4 mb-md-0">
+        <!-- Control Panel -->
+        <div class="card border-0 shadow-sm p-4 h-100" style="border-radius: 1.5rem; background: #ffffff;">
+            <h5 class="fw-bold text-primary mb-4"><i class="fas fa-sliders-h"></i> BẢNG ĐIỀU KHIỂN</h5>
+            
+            <div class="mb-4">
+                <label class="form-label fw-bold small text-muted">MÃ CHỨNG KHOÁN (VN)</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0" style="border-radius: 1rem 0 0 1rem;"><i class="fas fa-search text-muted"></i></span>
+                    <input type="text" class="form-control form-control-lg border-start-0 text-uppercase fw-bold" 
+                           [(ngModel)]="symbol" placeholder="VD: FPT" style="border-radius: 0 1rem 1rem 0; letter-spacing: 1px;">
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold small text-muted">CHIẾN LƯỢC KỸ THUẬT</label>
+                <select class="form-select form-select-lg fw-bold" [(ngModel)]="backtestStrategy" style="border-radius: 1rem; color: #4338ca;">
+                    <option value="RSI_SMA">Kết hợp: RSI Oversold & SMA Golden Cross</option>
+                    <option value="MACD">Trend Dài Hạn: MACD Crossover</option>
+                    <option value="MEAN_REVERSION">Bắt Đáy: Giảm >5% dưới đường MA20</option>
+                    <option value="DCA">Đầu Tư Giá Trị: Mua sớm & Hold (Mô phỏng DCA dài hạn)</option>
+                    <option value="TREND_FOLLOWING_PRO">🔥 Huyền Thoại Trend Following (Bảo toàn SMA50)</option>
+                    <option value="SNIPER_SCALPING">🎯 Sniper Scalping: Đánh Ngắn T+ (Tự Động Kỷ Luật)</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold small text-muted">TỪ NGÀY</label>
+                <input type="date" class="form-control form-control-lg" [(ngModel)]="backtestStartDate" style="border-radius: 1rem;">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold small text-muted">ĐẾN NGÀY</label>
+                <input type="date" class="form-control form-control-lg" [(ngModel)]="backtestEndDate" style="border-radius: 1rem;">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold small text-muted">VỐN BẮT ĐẦU (VNĐ)</label>
+                <div class="input-group">
+                    <input type="number" class="form-control form-control-lg fw-bold" [(ngModel)]="backtestCapital" style="border-radius: 1rem 0 0 1rem; border-right: none;" placeholder="Ví dụ: 100000000">
+                    <span class="input-group-text bg-white" style="border-radius: 0 1rem 1rem 0; color: #10b981; font-weight: 800; font-size: 0.9rem;">
+                        ≈ {{backtestCapital | number:'1.0-0'}} đ
+                    </span>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-bold small text-muted">NẠP THÊM ĐỊNH KỲ TỪ LƯƠNG (VNĐ/THÁNG)</label>
+                <div class="input-group">
+                    <input type="number" class="form-control form-control-lg fw-bold" [(ngModel)]="dcaMonthlyAmount" style="border-radius: 1rem 0 0 1rem; border-right: none;" placeholder="Ví dụ: 10000000">
+                    <span class="input-group-text bg-white" style="border-radius: 0 1rem 1rem 0; color: #f59e0b; font-weight: 800; font-size: 0.9rem;">
+                        ≈ {{dcaMonthlyAmount | number:'1.0-0'}} đ
+                    </span>
+                </div>
+                <div class="form-text text-muted small mt-2"><i class="fas fa-info-circle"></i> Tiền sẽ tự động bơm vào sức mua phần mềm mỗi đầu tháng mới. Nhập 0 nếu không nạp.</div>
+            </div>
+
+            <button class="btn btn-primary w-100 py-3 fw-bold shadow-sm mt-3" style="border-radius: 1rem; font-size: 1.1rem; background: linear-gradient(90deg, #6366f1, #a855f7); border: none;"
+                    (click)="fetchDataAndRun()" [disabled]="isLoadingData || isRunningBacktest || !symbol">
+                <span *ngIf="!isLoadingData && !isRunningBacktest"><i class="fas fa-play me-2"></i> CHẠY MÔ PHỎNG</span>
+                <span *ngIf="isLoadingData || isRunningBacktest"><i class="fas fa-spinner fa-spin me-2"></i> ĐANG XỬ LÝ...</span>
+            </button>
+            
+            <div *ngIf="errorMessage" class="alert alert-danger mt-3 small py-2 text-center" style="border-radius: 0.75rem;">
+                <i class="fas fa-exclamation-triangle"></i> {{errorMessage}}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-9 col-md-8 ps-md-2">
+        <div class="card border-0 shadow-sm p-4 h-100" style="border-radius: 1.5rem; background: #ffffff;">
+            <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+                <h4 class="m-0 fw-bold"><i class="fas fa-tv text-primary"></i> BÁO CÁO HIỆU SUẤT TRUY VẾT</h4>
+                <div class="badge bg-light text-dark px-3 py-2 border rounded-pill">
+                    <i class="fas fa-database text-primary"></i> Dữ liệu tải: <span class="fw-bold">{{rawHistoricalData.length}}</span> phiên
+                </div>
+            </div>
+
+            <!-- Pre Run State -->
+            <div *ngIf="!isRunningBacktest && !backtestResult && !isLoadingData" class="text-center py-5 my-5 text-muted">
+                <i class="fas fa-rocket fa-4x mb-3" style="color: #e2e8f0;"></i>
+                <h5>Trạm Giả Lập Hệ Thống Sẵn Sàng</h5>
+                <p>Nhập mã chứng khoán và cấu hình bên trái để bắt đầu mô phỏng giao dịch lịch sử 4 năm.</p>
+            </div>
+
+            <!-- Loader Matrix -->
+            <div *ngIf="isLoadingData || isRunningBacktest" class="text-center py-5 my-3 fade-in">
+                <div class="matrix-loader-container mx-auto" style="height: 120px; width: 500px; max-width: 100%; border-radius: 0.5rem; background: #0f172a; padding: 1.5rem; text-align: left; font-family: monospace;">
+                    <div class="matrix-text-line" *ngIf="isLoadingData" style="color: #10b981;">> Firing API: Fetching ~1500 historical quotes for {{symbol}}... [OK]</div>
+                    <div class="matrix-text-line" *ngIf="isRunningBacktest" style="color: #38bdf8;">> Initializing Simulation Engine... [OK]</div>
+                    <div class="matrix-text-line" *ngIf="isRunningBacktest" style="color: #38bdf8;">> Running {{backtestStrategy}} constraint matrices from {{backtestStartDate}} to {{backtestEndDate}}...</div>
+                    <div class="matrix-text-line" *ngIf="isRunningBacktest" style="color: #fbbf24; animation: blink 1s infinite;">> Calculating Returns & Generating Ledger Entries...</div>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div *ngIf="backtestResult && !isRunningBacktest" class="fade-in">
+                
+                <div class="row g-4 mb-4">
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="bg-light p-4 rounded text-center border h-100">
+                            <div class="small text-muted fw-bold mb-2">TỔNG VỐN ĐẦU TƯ</div>
+                            <div class="fs-3 fw-bold text-dark" style="letter-spacing: -0.5px;">
+                                {{ backtestResult.initialCapital / 1000000 | number:'1.0-1' }} <span class="fs-6 fw-normal text-muted">Tr VNĐ</span>
+                            </div>
+                            <div style="font-size: 0.8rem; color: #94a3b8;" class="mt-1">Trải qua {{backtestResult.period}} phiên giao dịch</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="bg-light p-4 rounded text-center border h-100">
+                            <div class="small text-muted fw-bold mb-2">LỢI NHUẬN THỊ TRƯỜNG</div>
+                            <div class="fs-2 fw-bold" [class.text-success]="backtestResult.buyHoldReturn >= 0" [class.text-danger]="backtestResult.buyHoldReturn < 0">
+                                {{backtestResult.buyHoldReturn > 0 ? '+' : ''}}{{backtestResult.buyHoldReturn | number:'1.1-2'}}%
+                            </div>
+                            <div style="font-size: 0.8rem; color: #94a3b8;">Hành vi Mua và Nắm Giữ</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <!-- Crown Jewel Result -->
+                        <div class="p-4 rounded text-center border shadow position-relative h-100" style="background: #fdf4ff; border-color: #f0abfc !important;">
+                            <i class="fas fa-crown position-absolute top-0 start-0 m-2" style="color: #d946ef;"></i>
+                            <div class="small fw-bold mb-2" style="color: #c026d3;">LỢI NHUẬN RÒNG (AI)</div>
+                            <div class="fs-2 fw-900" [class.text-success]="backtestResult.totalReturn >= 0" [class.text-danger]="backtestResult.totalReturn < 0" style="font-weight: 900;">
+                                {{backtestResult.totalReturn > 0 ? '+' : ''}}{{backtestResult.totalReturn | number:'1.1-2'}}%
+                            </div>
+                            <div style="font-size: 0.85rem; color: #d946ef;" class="fw-bold mt-1">
+                                Thu về: {{ backtestResult.finalCapital / 1000000 | number:'1.0-1' }} Tr VNĐ
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="bg-light p-4 rounded text-center border h-100">
+                            <div class="small text-muted fw-bold mb-2">TỶ LỆ LỆNH WIN</div>
+                            <div class="fs-2 fw-bold text-primary">{{backtestResult.winRate | number:'1.0-0'}}%</div>
+                            <div style="font-size: 0.8rem; color: #94a3b8;">Dựa trên lệnh đã chốt</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thay đổi: Thêm Biểu đồ Biến Động Tài Sản -->
+                <div class="card mb-4 border shadow-sm" style="border-radius: 1rem; border-color: #f1f5f9;">
+                    <div class="card-body">
+                        <h6 class="fw-bold mb-3 d-flex align-items-center" style="color: #64748b;">
+                            <i class="fas fa-chart-area me-2 text-primary"></i> BIỂU ĐỒ BIẾN ĐỘNG TÀI SẢN (EQUITY CURVE)
+                        </h6>
+                        <div style="display: block; height: 300px; width: 100%;">
+                          <canvas baseChart 
+                                  [data]="equityChartData" 
+                                  [options]="equityChartOptions" 
+                                  [type]="equityChartType">
+                          </canvas>
+                        </div>
+                    </div>
+                </div>
+                <!-- Hết phần thay đổi -->
+
+                <h5 class="mb-3 fw-bold text-dark"><i class="fas fa-list-alt text-muted"></i> Sao Kê Giao Dịch Vào Bờ Của Bot</h5>
+                <div class="border rounded shadow-sm overflow-hidden" style="max-height: 500px; overflow-y: auto;">
+                    <table class="table table-hover align-middle m-0" style="font-size: 0.95rem;">
+                        <thead class="table-light sticky-top">
+                            <tr>
+                                <th class="py-3 px-3">Ngày Lệnh</th>
+                                <th>Thao Tác</th>
+                                <th class="text-end">Mức Giá</th>
+                                <th>Phân Tích Bối Cảnh</th>
+                                <th class="text-end">Tạm Tính (VND)</th>
+                                <th class="text-end px-3">Lãi / Lỗ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let t of paginatedTrades; let i = index">
+                                <tr (click)="toggleTradeDetail(i)" style="cursor: pointer;" [class.bg-light]="expandedTradeIndex === i">
+                                    <td class="px-3">
+                                        <i class="fas fa-chevron-right me-2 text-muted" [class.fa-chevron-down]="expandedTradeIndex === i"></i>
+                                        {{t.date}}
+                                    </td>
+                                    <td>
+                                        <span class="badge px-3 py-2 rounded-pill" style="font-size: 0.8rem;" 
+                                            [class.bg-success]="t.type === 'MUA'" 
+                                            [class.bg-danger]="t.type.includes('BÁN')">
+                                            {{t.type}}
+                                        </span>
+                                    </td>
+                                    <td class="text-end fw-bold">{{t.price | number:'1.0-0'}}</td>
+                                    <td style="color: #64748b;">{{t.reason}}</td>
+                                    <td class="text-end font-monospace">{{t.value | number:'1.0-0'}}</td>
+                                    <td class="text-end fw-bold px-3" [class.text-success]="t.profit > 0" [class.text-danger]="t.profit < 0" [class.text-muted]="!t.profit">
+                                        <span *ngIf="t.profit">{{ t.profit > 0 ? '▲ +' : '▼ ' }}{{ t.profit | number:'1.1-2' }}%</span>
+                                        <span *ngIf="!t.profit">---</span>
+                                    </td>
+                                </tr>
+                                <!-- DETAIL ROW -->
+                                <tr *ngIf="expandedTradeIndex === i" class="bg-light">
+                                    <td colspan="6" class="px-4 py-3">
+                                        <div class="border rounded p-3 bg-white shadow-sm">
+                                            <h6 class="fw-bold mb-3 d-flex align-items-center text-primary" style="font-size: 0.85rem;">
+                                                <i class="fas fa-microchip me-2"></i> TRUY XUẤT NHẬT KÝ RA QUYẾT ĐỊNH CỦA AI VÀO NGÀY T-1
+                                            </h6>
+                                            <div class="row g-3" style="font-size: 0.85rem;">
+                                                <div class="col-md-2" *ngIf="t.indicatorsSnap?.rsi">
+                                                    <div class="text-muted mb-1">RSI Hệ Thống</div>
+                                                    <strong [class.text-danger]="t.indicatorsSnap.rsi < 35" [class.text-success]="t.indicatorsSnap.rsi > 70">{{t.indicatorsSnap.rsi | number:'1.1-1'}}</strong>
+                                                </div>
+                                                <div class="col-md-2" *ngIf="t.indicatorsSnap?.sma20">
+                                                    <div class="text-muted mb-1">SMA_20</div>
+                                                    <strong>{{t.indicatorsSnap.sma20 | number:'1.0-0'}}</strong>
+                                                </div>
+                                                <div class="col-md-2" *ngIf="t.indicatorsSnap?.sma50">
+                                                    <div class="text-muted mb-1">SMA_50</div>
+                                                    <strong>{{t.indicatorsSnap.sma50 | number:'1.0-0'}}</strong>
+                                                </div>
+                                                <div class="col-md-3" *ngIf="t.indicatorsSnap?.macd">
+                                                    <div class="text-muted mb-1">MACD / Signal</div>
+                                                    <strong>{{t.indicatorsSnap.macd | number:'1.1-1'}} <span class="text-muted fw-normal">/ {{t.indicatorsSnap.macd_signal | number:'1.1-1'}}</span></strong>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="text-muted mb-1">Mức Giá Đóng Ngày T-1</div>
+                                                    <strong>{{t.indicatorsSnap.close | number:'1.0-0'}} VND</strong>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3 py-2 px-3 bg-light rounded text-muted" style="font-size: 0.8rem; border-left: 3px solid #6366f1;">
+                                                Dựa trên chỉ báo cuối phiên của ngày giao dịch trước đó, hệ thống thoả mãn điều kiện chéo kỹ thuật: <b>{{t.reason}}</b>. Lệnh khớp vào đầu phiên tiếp theo.
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                            <tr *ngIf="!backtestResult.trades || backtestResult.trades.length === 0">
+                                <td colspan="6" class="text-center text-muted py-5 bg-light">
+                                    <i class="fas fa-search-dollar fa-3x mb-3" style="color: #cbd5e1;"></i><br>
+                                    Chiến lược này không sinh ra điểm mua nào lọt khe bộ lọc thời gian khắt khe của bạn.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- PAGINATION CONTROLS -->
+                <div *ngIf="backtestResult.trades && backtestResult.trades.length > 0" class="d-flex justify-content-between align-items-center mt-3">
+                    <div class="small text-muted">
+                        Hiển thị lệnh thứ <strong>{{(currentPage - 1) * pageSize + 1}}</strong> đến <strong>{{(currentPage * pageSize) > backtestResult.trades.length ? backtestResult.trades.length : (currentPage * pageSize)}}</strong> 
+                        trên tổng số <strong>{{backtestResult.trades.length}}</strong> lệnh giao dịch.
+                    </div>
+                    <nav>
+                        <ul class="pagination pagination-sm m-0">
+                            <li class="page-item" [class.disabled]="currentPage === 1">
+                                <a class="page-link" style="cursor: pointer;" (click)="changePage(currentPage - 1)"><i class="fas fa-chevron-left"></i> Mới Hơn</a>
+                            </li>
+                            <li class="page-item disabled">
+                                <span class="page-link fw-bold text-primary" style="background: #f8fafc;">Trang {{currentPage}} / {{totalPages}}</span>
+                            </li>
+                            <li class="page-item" [class.disabled]="currentPage === totalPages || totalPages === 0">
+                                <a class="page-link" style="cursor: pointer;" (click)="changePage(currentPage + 1)">Cũ Hơn <i class="fas fa-chevron-right"></i></a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

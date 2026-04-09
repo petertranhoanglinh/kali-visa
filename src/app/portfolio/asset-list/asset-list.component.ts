@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssetService } from 'src/app/service/asset.service';
 import { AssetModel, AssetType } from 'src/app/model/asset.model';
 import { AuthDetail } from 'src/app/common/util/auth-detail';
@@ -40,11 +40,13 @@ export class AssetListComponent implements OnInit {
   fundListing: any[] = []; // New live list from Fmarket
   filteredListing: any[] = [];
   searchTerm: string = '';
-  currentPage: number = 1;
-  pageSize: number = 12;
+  currentPage: number = 0; // Backend is 0-indexed
+  pageSize: number = 8;
+  totalElements: number = 0;
   showTickerSelector = false;
   activeSelectorTab: 'STOCK' | 'CRYPTO' | 'GOLD' | 'FUND' = 'STOCK';
   selectedTicker: any = null;
+  private refreshTimer: any;
   
   private EXCHANGE_RATE = 25000; // Default fallback
   
@@ -89,15 +91,23 @@ export class AssetListComponent implements OnInit {
     this.loadExchangeRate();
     this.loadAssets();
     this.loadFullListing();
+
+    // Tự động cập nhật giá realtime cho tài khoản PRO (mỗi 60 giây)
+    if (this.isPremium) {
+      this.refreshTimer = setInterval(() => {
+        this.refreshProPrices();
+      }, 60000);
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.refreshTimer) {
+      clearInterval(this.refreshTimer);
+    }
   }
 
   loadFullListing() {
-    this.assetService.getAssetListing().subscribe({
-      next: (res) => {
-        this.fullListing = res;
-        this.filterListing();
-      }
-    });
+    this.filterListing();
 
     this.assetService.getCryptoListing().subscribe({
         next: (res) => {
@@ -105,27 +115,32 @@ export class AssetListComponent implements OnInit {
             if (this.activeSelectorTab === 'CRYPTO') this.filterListing();
         }
     });
+  }
 
-    this.assetService.getAssetListing('FUND').subscribe({
-        next: (res) => {
-            this.fundListing = res;
-            if (this.activeSelectorTab === 'FUND') this.filterListing();
-        }
-    });
+  onSearchChange() {
+    this.currentPage = 0;
+    this.filterListing();
+  }
+
+  changePage(page: number) {
+    this.currentPage = page;
+    this.filterListing();
   }
 
   filterListing() {
-    let list = [];
-    if (this.activeSelectorTab === 'STOCK') {
-      list = this.fullListing.filter(item => 
-        item.symbol.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        item.name.toLowerCase().includes(this.searchTerm.toLowerCase())
-      );
+    if (this.activeSelectorTab === 'STOCK' || this.activeSelectorTab === 'FUND') {
+      this.assetService.getAssetListing(this.activeSelectorTab, this.searchTerm, this.currentPage, this.pageSize).subscribe({
+        next: (res) => {
+          this.filteredListing = res.items;
+          this.totalElements = res.totalElements;
+        }
+      });
     } else if (this.activeSelectorTab === 'CRYPTO') {
-      // Map Binance string symbols to the expected Object format
-      list = this.cryptoListing
+      const list = this.cryptoListing
         .filter(sym => sym.toLowerCase().includes(this.searchTerm.toLowerCase()))
         .map(sym => ({ symbol: sym, name: sym }));
+      this.filteredListing = list.slice(this.currentPage * this.pageSize, (this.currentPage + 1) * this.pageSize);
+      this.totalElements = list.length;
     } else if (this.activeSelectorTab === 'GOLD') {
       this.assetService.getRealtimePrices(['SJC'], ['GOLD']).subscribe(prices => {
         const sjcPrice = prices['SJC'] || 82000000;
@@ -133,26 +148,19 @@ export class AssetListComponent implements OnInit {
             {symbol: 'SJC', name: `Vàng Miếng SJC (${this.formatNumber(sjcPrice)} ₫)`, type: 'AUTO'},
             {symbol: 'Vàng 9999', name: 'Vàng Truyền Thống / Nhẫn (Nhập tay)', type: 'MANUAL'}
         ];
+        this.totalElements = this.filteredListing.length;
       });
-      return; // Async update handled
-    } else if (this.activeSelectorTab === 'FUND') {
-        list = this.fundListing.filter(item => 
-          item.symbol.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-          item.name.toLowerCase().includes(this.searchTerm.toLowerCase())
-        );
     }
-    this.filteredListing = list;
-    this.currentPage = 1;
   }
 
   get paginatedListing() {
-    const start = (this.currentPage - 1) * this.pageSize;
-    return this.filteredListing.slice(start, start + this.pageSize);
+    return this.filteredListing; // Already paginated from server or slice
   }
 
   setSelectorTab(tab: 'STOCK' | 'CRYPTO' | 'GOLD' | 'FUND') {
     this.activeSelectorTab = tab;
     this.searchTerm = '';
+    this.currentPage = 0;
     this.filterListing();
   }
 
@@ -196,7 +204,8 @@ export class AssetListComponent implements OnInit {
         next: (res) => {
           this.assets = res;
           
-          //if (this.userTier === 'BASIC') {
+          if (!this.isPremium) {
+            // BASIC Tier: Dùng giá thủ công từ DB người dùng tự lưu
             this.marketPriceService.getPricesByUser(userId).subscribe({
               next: (prices) => {
                 prices.forEach(p => this.marketPrices.set(p.symbol, p.price));
@@ -204,10 +213,10 @@ export class AssetListComponent implements OnInit {
               },
               error: () => this.groupAssets()
             });
-          //} else {
-            // PRO Tier: Fetch real-time prices directly
-            //this.refreshProPrices();
-         // }
+          } else {
+            // PRO Tier: Fetch giá realtime trực tiếp
+            this.refreshProPrices();
+          }
         },
         error: (err) => {
           this.toastr.error("Failed to load assets");
@@ -278,7 +287,7 @@ export class AssetListComponent implements OnInit {
   }
 
   refreshProPrices() {
-    if (this.userTier === 'BASIC') {
+    if (!this.isPremium) {
       this.groupAssets();
       return;
     }
@@ -391,6 +400,12 @@ export class AssetListComponent implements OnInit {
     const userId = AuthDetail.getLoginedInfo()?.id;
     if (!userId) return;
 
+    // Validate sufficient quantity
+    if (this.selectedGroup && this.newSellAsset.quantity > this.selectedGroup.totalQuantity) {
+      this.toastr.error(`Không đủ số lượng để bán. Bạn chỉ còn ${this.selectedGroup.totalQuantity} ${this.newSellAsset.symbol}.`);
+      return;
+    }
+
     this.newSellAsset.averagePrice = this.parseNumber(this.displaySellPrice);
     // Use the date from the input, or default to now if missing
     if (!this.newSellAsset.purchaseDate) {
@@ -467,6 +482,21 @@ export class AssetListComponent implements OnInit {
           this.toastr.success("Record deleted");
           this.loadAssets();
         }
+      });
+    }
+  }
+
+  deleteAssetGroup(group: GroupedAsset) {
+    const userId = AuthDetail.getLoginedInfo()?.id;
+    if (!userId) return;
+
+    if (confirm(`⚠️ CẢNH BÁO: Hành động này sẽ XÓA VĨNH VIỄN toàn bộ lịch sử giao dịch của mã ${group.symbol} (${group.type}). Bạn có chắc chắn muốn tiếp tục?`)) {
+      this.assetService.deleteAssetGroup(userId, group.symbol, group.type).subscribe({
+        next: () => {
+          this.toastr.success(`Đã xóa sạch dữ liệu của ${group.symbol}`);
+          this.loadAssets();
+        },
+        error: () => this.toastr.error("Lỗi khi xóa nhóm tài sản")
       });
     }
   }

@@ -7,6 +7,8 @@ import { PricingComponent } from './pricing/pricing.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 
 import { AnalyticsComponent } from './analytics/analytics.component';
+import { BacktesterComponent } from './backtester/backtester.component';
+import { ScreenerComponent } from './screener/screener.component';
 import { NewsSummaryComponent } from './news-summary/news-summary.component';
 import { NewsDetailComponent } from './news-detail/news-detail.component';
 import { PrivacyComponent } from './privacy/privacy.component';
@@ -27,6 +29,8 @@ const routes: Routes = [
   { path: 'assets', component: AssetListComponent, canActivate: [AuthGuardService] },
   { path: 'rules', component: AssetRulesComponent, canActivate: [AuthGuardService] },
   { path: 'analytics', component: AnalyticsComponent, canActivate: [AuthGuardService] },
+  { path: 'backtest', component: BacktesterComponent },
+  { path: 'screener', component: ScreenerComponent },
   { path: 'news', component: NewsSummaryComponent },
   { path: 'news/:id', component: NewsDetailComponent },
   { path: 'pricing', component: PricingComponent, canActivate: [AuthGuardService] },

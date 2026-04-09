@@ -37,6 +37,13 @@ export class AssetService {
     });
   }
 
+  deleteAssetGroup(userId: string, symbol: string, type: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/group`, {
+      params: { userId, symbol, type },
+      headers: AuthDetail.getHeaderJwt()
+    });
+  }
+
   validateSymbol(symbol: string): Observable<{isValid: boolean, symbol: string}> {
     return this.http.get<{isValid: boolean, symbol: string}>(`${this.apiUrl}/validate/${symbol}`, {
       headers: AuthDetail.getHeaderJwt()
@@ -50,8 +57,14 @@ export class AssetService {
     });
   }
 
-  getAssetListing(type: string = 'ALL'): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/listing?type=${type}`, {
+  getAssetListing(type: string = 'STOCK', search: string = '', page: number = 0, size: number = 20): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/listing`, {
+      params: { 
+        type: type,
+        search: search,
+        page: page.toString(),
+        size: size.toString()
+      },
       headers: AuthDetail.getHeaderJwt()
     });
   }

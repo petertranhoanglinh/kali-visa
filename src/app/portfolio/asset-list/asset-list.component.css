@@ -71,6 +71,26 @@
 
 .btn-create:hover { background: #4f46e5; transform: translateY(-2px); }
 
+.btn-settings {
+    background: white;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+    padding: 1rem 1.75rem;
+    border-radius: 1rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 0.75rem;
+    width: 100%;
+}
+
+.btn-settings:hover {
+    background: #f8fafc;
+    color: #1e293b;
+    border-color: #cbd5e1;
+}
+
 /* Asset Grid */
 .assets-grid {
     display: flex;
@@ -161,6 +181,20 @@
     color: #94a3b8;
     cursor: pointer;
     padding: 0.5rem;
+}
+
+.btn-group-del {
+    background: transparent;
+    border: none;
+    color: #cbd5e1;
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: all 0.2s;
+}
+
+.btn-group-del:hover {
+    color: #f43f5e;
+    transform: scale(1.1);
 }
 
 /* History Details */

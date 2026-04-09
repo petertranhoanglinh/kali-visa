@@ -22,6 +22,10 @@ export class AnalyticsComponent implements OnInit {
   isPremium: boolean = false;
   errorMessage: string = '';
 
+  // Timeframe state
+  selectedTimeframe: number = 60;
+  allTechnicals: any[] = [];
+
   // Chart Properties
   public priceChartType: ChartType = 'line';
   public priceChartData: ChartData<'line'> = {
@@ -81,9 +85,15 @@ export class AnalyticsComponent implements OnInit {
 
   setTab(tab: string) {
     this.activeTab = tab;
-    const techs = this.analysisResult?.technicals;
-    if (tab === 'TECHNICAL' && techs && techs.length > 0) {
-      setTimeout(() => this.updatePriceChart(techs), 50);
+    if (tab === 'TECHNICAL' && this.allTechnicals && this.allTechnicals.length > 0) {
+      setTimeout(() => this.updatePriceChart(this.allTechnicals), 50);
+    }
+  }
+
+  setTimeframe(days: number) {
+    this.selectedTimeframe = days;
+    if (this.allTechnicals && this.allTechnicals.length > 0) {
+      this.updatePriceChart(this.allTechnicals);
     }
   }
 
@@ -94,15 +104,6 @@ export class AnalyticsComponent implements OnInit {
 
   ngOnInit(): void {
     this.isPremium = CommonUtils.checkPremiumStatus(AuthDetail.getLoginedInfo());
-
-    this.route.queryParams.subscribe(params => {
-      this.ticker = params['ticker'];
-      if (this.ticker) {
-        this.performAnalysis();
-      } else {
-        this.analysisResult = null;
-      }
-    });
   }
 
    performAnalysis() {
@@ -140,16 +141,22 @@ export class AnalyticsComponent implements OnInit {
   }
 
   private updatePriceChart(technicals: any[]) {
-    // Technicals contains Daily history from Python
-    const labels = technicals.map(t => {
+    // Save all technicals on first load
+    if (!this.allTechnicals || this.allTechnicals.length === 0 || this.allTechnicals[0].time !== technicals[0].time) {
+        this.allTechnicals = technicals;
+    }
+
+    const sliced = this.allTechnicals.slice(-this.selectedTimeframe);
+
+    const labels = sliced.map(t => {
       const d = new Date(t.time);
       return isNaN(d.getTime()) ? t.time : d.toLocaleDateString('vi-VN', {day: '2-digit', month: '2-digit'});
     });
     
-    const prices = technicals.map(t => t.close);
-    const sma20 = technicals.map(t => t.sma20);
-    const sma50 = technicals.map(t => t.sma50);
-    const sma200 = technicals.map(t => t.sma200);
+    const prices = sliced.map(t => t.close);
+    const sma20 = sliced.map(t => t.sma20);
+    const sma50 = sliced.map(t => t.sma50);
+    const sma200 = sliced.map(t => t.sma200);
 
     this.priceChartData.labels = labels;
     this.priceChartData.datasets[0].data = prices;
