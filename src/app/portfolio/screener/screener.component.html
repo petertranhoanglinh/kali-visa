@@ -72,9 +72,23 @@
             </button>
             
             <div class="mt-4 p-3 bg-light rounded" style="border: 1px dashed #cbd5e1;">
-                <div class="small fw-bold text-muted mb-1"><i class="far fa-clock"></i> CẬP NHẬT CACHE GẦN NHẤT:</div>
+                <div class="small fw-bold text-muted mb-1"><i class="far fa-clock"></i> CẬP NHẬT GẦN NHẤST (PRO):</div>
                 <div class="fs-5 fw-bold text-dark">{{ lastUpdated || '--:--:--' }}</div>
-                <div class="small text-muted mt-1" style="font-size: 0.75rem;">Dữ liệu quét được làm mới mỗi 1 tiếng chống quả tải máy chủ.</div>
+                <div class="small text-muted mt-1" style="font-size: 0.75rem;">Mỗi phút quét 1 mã mới. Nhập mã bên dưới để quét thủ công.</div>
+            </div>
+
+            <!-- Manual Scanner -->
+            <div class="mt-4">
+                <label class="form-label fw-bold small text-primary"><i class="fas fa-search-plus"></i> QUÉT MÃ TỰ CHỌN</label>
+                <div class="input-group mb-3 shadow-sm border rounded-3 overflow-hidden">
+                    <input type="text" class="form-control border-0 py-3" 
+                           placeholder="Nhập mã (VD: FPT)..." 
+                           [(ngModel)]="customSymbol"
+                           (keyup.enter)="manualScan()">
+                    <button class="btn btn-primary px-3" (click)="manualScan()" [disabled]="isScanning">
+                        <i class="fas fa-satellite" [class.fa-spin]="isScanning"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -143,7 +157,11 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let s of processedSignals" [class.bg-success-subtle]="s.isBuy" [class.bg-danger-subtle]="s.isSell">
+                        <tr *ngFor="let s of processedSignals" 
+                            [class.bg-success-subtle]="s.isBuy" 
+                            [class.bg-danger-subtle]="s.isSell"
+                            (click)="openAnalysis(s.symbol)"
+                            style="cursor: pointer; transition: all 0.2s;">
                             <td class="px-3 fw-bold fs-5 text-primary">
                                 {{s.symbol}}
                                 <div class="text-muted" style="font-size: 0.65rem;">Updated: {{s.lastUpdated | date:'HH:mm'}}</div>
@@ -201,6 +219,67 @@
                 <p>Hệ thống background quét tuần tự chưa ghi nhận tín hiệu cho bộ lọc này. Vui lòng quay lại sau ít phút.</p>
             </div>
             
+        </div>
+    </div>
+</div>
+
+<!-- AI Analysis Modal -->
+<div class="modal fade" id="aiAnalysisModal" tabindex="-1" aria-hidden="true" style="backdrop-filter: blur(5px);">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 1.5rem;">
+            <div class="modal-header border-0 pb-0 pt-4 px-4">
+                <div class="d-flex align-items-center">
+                    <div class="bg-primary-subtle p-3 rounded-4 me-3">
+                        <i class="fas fa-robot text-primary fa-2x"></i>
+                    </div>
+                    <div>
+                        <h3 class="modal-title fw-800 text-dark mb-0">AI ĐÁNH GIÁ: {{selectedSymbol}}</h3>
+                        <p class="text-muted m-0 small">Phân tích chuyên sâu dựa trên dữ liệu thời gian thực</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div *ngIf="isAnalyzing" class="text-center py-5">
+                    <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status"></div>
+                    <h5 class="fw-bold">Gemini AI Đang Phân Tích...</h5>
+                    <p class="text-muted">Quá trình này có thể mất 10-20 giây để hoàn thiện báo cáo chất lượng cao.</p>
+                </div>
+                <div *ngIf="!isAnalyzing && aiReport" class="ai-report-content fade-in">
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-4">
+                            <div class="p-3 rounded-4 bg-light border h-100">
+                                <span class="small text-muted d-block mb-1">TRẠNG THÁI AI</span>
+                                <div class="badge w-100 py-2 fs-6 text-uppercase" 
+                                     [class.bg-success]="aiReport.sentiment === 'BULLISH'"
+                                     [class.bg-danger]="aiReport.sentiment === 'BEARISH'"
+                                     [class.bg-warning]="aiReport.sentiment === 'NEUTRAL'">
+                                    {{aiReport.sentiment}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3 rounded-4 bg-light border h-100">
+                                <span class="small text-muted d-block mb-1">AI SCORE</span>
+                                <div class="fs-3 fw-800 text-primary">{{aiReport.aiScore}}/10</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3 rounded-4 bg-light border h-100">
+                                <span class="small text-muted d-block mb-1">CẬP NHẬT</span>
+                                <div class="fw-bold">{{aiReport.createdAt | date:'dd/MM/yyyy HH:mm'}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 rounded-4 bg-white border shadow-sm">
+                        <h5 class="fw-800 border-bottom pb-3 mb-3"><i class="fas fa-file-alt text-primary"></i> BÁO CÁO PHÂN TÍCH</h5>
+                        <div class="pro-content" [innerHTML]="aiReport.content"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 p-4">
+                <button type="button" class="btn btn-light px-4 fw-bold" data-bs-dismiss="modal" style="border-radius: 1rem;">Đóng</button>
+            </div>
         </div>
     </div>
 </div>

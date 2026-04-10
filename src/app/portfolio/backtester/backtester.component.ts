@@ -85,7 +85,7 @@ export class BacktesterComponent implements OnInit {
     this.currentPage = 1;
     
     // Call Python directly for fast history
-    this.http.get<any>(`http://localhost:8000/api/v3/backtest/data/${this.symbol.toUpperCase()}`).subscribe({
+    this.http.get<any>( `${CommonUtils.PYTHON_URL}/api/v3/backtest/data/${this.symbol.toUpperCase()}`).subscribe({
       next: (res) => {
         if (res.error || !res.data || res.data.length === 0) {
           this.errorMessage = res.error || "Không tìm thấy dữ liệu cho mã CP này.";

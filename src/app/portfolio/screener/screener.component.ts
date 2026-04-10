@@ -3,6 +3,8 @@ import { AuthDetail } from 'src/app/common/util/auth-detail';
 import { CommonUtils } from 'src/app/common/util/common-utils';
 import { MarketSignalService } from 'src/app/service/market-signal.service';
 
+declare var bootstrap: any;
+
 @Component({
   selector: 'app-screener',
   templateUrl: './screener.component.html',
@@ -26,6 +28,13 @@ export class ScreenerComponent implements OnInit {
   size: number = 20;
   totalElements: number = 0;
   totalPages: number = 0;
+
+  // Manual Scan & AI
+  customSymbol: string = '';
+  isScanning: boolean = false;
+  isAnalyzing: boolean = false;
+  selectedSymbol: string = '';
+  aiReport: any = null;
 
   constructor(private marketSignalService: MarketSignalService) {}
 
@@ -103,5 +112,46 @@ export class ScreenerComponent implements OnInit {
 
   get activeSignalsCount() {
     return this.rawSignalsFromJava.filter(s => s.recommendation !== 'CHO').length;
+  }
+
+  manualScan() {
+    if (!this.customSymbol || this.isScanning) return;
+    
+    this.isScanning = true;
+    this.marketSignalService.scanSymbol(this.customSymbol).subscribe({
+      next: (res) => {
+        this.isScanning = false;
+        this.fetchScreenerData(); // Refresh list to see the manual scan result
+        this.customSymbol = '';
+      },
+      error: (err) => {
+        this.isScanning = false;
+        alert("Không thể quét mã này. Vui lòng kiểm tra lại!");
+      }
+    });
+  }
+
+  openAnalysis(symbol: string) {
+    this.selectedSymbol = symbol;
+    this.aiReport = null;
+    this.isAnalyzing = true;
+    
+    // Open Modal
+    const modalEl = document.getElementById('aiAnalysisModal');
+    if (modalEl) {
+      const modal = new bootstrap.Modal(modalEl);
+      modal.show();
+    }
+
+    this.marketSignalService.getAiAnalysis(symbol).subscribe({
+      next: (res) => {
+        this.aiReport = res;
+        this.isAnalyzing = false;
+      },
+      error: (err) => {
+        this.isAnalyzing = false;
+        console.error("AI Analysis Error", err);
+      }
+    });
   }
 }

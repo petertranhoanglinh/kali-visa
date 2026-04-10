@@ -22,5 +22,6 @@ export class CommonUtils {
 
         return hasValidTier && isNotExpired;
     };
+    static PYTHON_URL  : string = "http://localhost:8000"
 
 }
