@@ -48,6 +48,7 @@ export class ScreenerComponent implements OnInit {
   setSignalFilter(filter: string) {
     this.signalFilter = filter;
     this.page = 0; // Reset về trang 1
+    this.customSymbol = ''; // Clear search when changing filter
     this.fetchScreenerData();
   }
 
@@ -121,8 +122,14 @@ export class ScreenerComponent implements OnInit {
     this.marketSignalService.scanSymbol(this.customSymbol).subscribe({
       next: (res) => {
         this.isScanning = false;
-        this.fetchScreenerData(); // Refresh list to see the manual scan result
-        this.customSymbol = '';
+        
+        // Hiển thị chỉ hiển thị mã vừa search/scan
+        this.rawSignalsFromJava = [res];
+        this.totalElements = 1;
+        this.totalPages = 1;
+        this.page = 0;
+        
+        this.filterSignals();
       },
       error: (err) => {
         this.isScanning = false;
@@ -136,11 +143,15 @@ export class ScreenerComponent implements OnInit {
     this.aiReport = null;
     this.isAnalyzing = true;
     
-    // Open Modal
-    const modalEl = document.getElementById('aiAnalysisModal');
-    if (modalEl) {
-      const modal = new bootstrap.Modal(modalEl);
-      modal.show();
+    // Open Modal safely if bootstrap is available in window
+    try {
+      const modalEl = document.getElementById('aiAnalysisModal');
+      if (modalEl && typeof bootstrap !== 'undefined') {
+        const modal = new bootstrap.Modal(modalEl);
+        modal.show();
+      }
+    } catch (e) {
+      console.warn("Bootstrap modal programmatic open failed, relying on HTML attributes.");
     }
 
     this.marketSignalService.getAiAnalysis(symbol).subscribe({

@@ -161,6 +161,7 @@
                             [class.bg-success-subtle]="s.isBuy" 
                             [class.bg-danger-subtle]="s.isSell"
                             (click)="openAnalysis(s.symbol)"
+                            data-bs-toggle="modal" data-bs-target="#aiAnalysisModal"
                             style="cursor: pointer; transition: all 0.2s;">
                             <td class="px-3 fw-bold fs-5 text-primary">
                                 {{s.symbol}}

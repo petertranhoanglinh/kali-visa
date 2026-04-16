@@ -3,6 +3,6 @@ export const environment = {
   keyBetaIzex : "88956aba576362ca65e2d1fcd3e9295a",
 
   production: true,
-  apiUrl: '/api',
+  apiUrl: 'https://api.wealth.io.vn',
   comId : 'webixx'
 };
