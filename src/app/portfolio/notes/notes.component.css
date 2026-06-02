@@ -1,6 +1,6 @@
 .portfolio-container {
-  padding: 2.5rem;
-  max-width: 1200px;
+  padding: 0;
+  max-width: 1400px;
   margin: 0 auto;
   color: #f8fafc;
 }
@@ -256,10 +256,39 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-  .portfolio-container { padding: 1.5rem 1rem; }
+  .portfolio-container { padding: 0; }
+  .title { font-size: 1.8rem; }
   .notes-masonry { columns: 1; }
   .form-footer { flex-direction: column; gap: 15px; align-items: flex-start; }
   .right-actions { width: 100%; }
   .btn-save-note { width: 100%; }
   .note-actions { opacity: 1; } /* Always show actions on mobile */
+}
+
+/* Clear and Readable Vietnamese Typography overrides for Notes Page */
+.portfolio-container,
+.portfolio-container button,
+.portfolio-container input,
+.portfolio-container textarea,
+.note-form-container,
+.note-form-container button,
+.note-form-container input,
+.note-form-container textarea {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.portfolio-container p, 
+.portfolio-container label, 
+.portfolio-container input, 
+.portfolio-container textarea, 
+.portfolio-container button {
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+}
+
+.portfolio-container h2, 
+.portfolio-container h3, 
+.portfolio-container h4 {
+  line-height: 1.35;
+  letter-spacing: -0.02em;
 }

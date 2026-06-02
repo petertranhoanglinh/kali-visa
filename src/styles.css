@@ -84,3 +84,78 @@ body { margin: 0; background-color: #3535be; color: #fff; }
     letter-spacing: 0.3em;
 }
 
+/* ==========================================================================
+   UNIFIED & RESPONSIVE TYPOGRAPHY SYSTEM
+   ========================================================================== */
+
+
+
+/* 2. Unify font-family for all screens listed in the header (inside .app-main-container) and header itself */
+.fintech-header,
+.mobile-menu-container,
+.app-main-container,
+.modal-overlay,
+.toast-container .ngx-toastr,
+.app-main-container button,
+.app-main-container input,
+.app-main-container select,
+.app-main-container textarea {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* 3. Responsive heading and title clamping inside header-listed screens to prevent overflow on mobile */
+@media (max-width: 768px) {
+  .app-main-container h1, 
+  .app-main-container .title,
+  .app-main-container h2,
+  .app-main-container .header-text h2,
+  .app-main-container .lock-content h3 {
+    font-size: 1.75rem !important;
+    line-height: 1.25 !important;
+  }
+  
+  .app-main-container h3,
+  .app-main-container .widget-title,
+  .app-main-container .rule-body h4 {
+    font-size: 1.2rem !important;
+    line-height: 1.3 !important;
+  }
+
+  .app-main-container h4,
+  .app-main-container .legend-info h4 {
+    font-size: 1.05rem !important;
+  }
+  
+  .app-main-container .metric-value {
+    font-size: 1.5rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-main-container h1, 
+  .app-main-container .title,
+  .app-main-container h2,
+  .app-main-container .header-text h2,
+  .app-main-container .lock-content h3 {
+    font-size: 1.45rem !important;
+    line-height: 1.2 !important;
+  }
+  
+  .app-main-container h3,
+  .app-main-container .widget-title,
+  .app-main-container .rule-body h4 {
+    font-size: 1.1rem !important;
+    line-height: 1.25 !important;
+  }
+
+  .app-main-container h4,
+  .app-main-container .legend-info h4 {
+    font-size: 0.95rem !important;
+  }
+  
+  .app-main-container .metric-value {
+    font-size: 1.3rem !important;
+  }
+}
+
+

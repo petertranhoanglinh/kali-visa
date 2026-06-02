@@ -1,5 +1,5 @@
 .assets-page {
-    padding: 2rem;
+    padding: 0;
     max-width: 1400px;
     margin: 0 auto;
 }
@@ -451,7 +451,7 @@
 
 @media (max-width: 768px) {
     .assets-page {
-        padding: 1rem;
+        padding: 0;
     }
 
     .metrics-header {
@@ -596,4 +596,34 @@
         gap: 1rem;
         text-align: center;
     }
+}
+
+/* Clear and Readable Vietnamese Typography overrides for Assets Page */
+.assets-page,
+.assets-page button,
+.assets-page input,
+.assets-page select,
+.modal-overlay,
+.modal-overlay button,
+.modal-overlay input,
+.modal-overlay select {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.assets-page p, 
+.assets-page td, 
+.assets-page th, 
+.assets-page label, 
+.assets-page input, 
+.assets-page select, 
+.assets-page button {
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+}
+
+.assets-page h2, 
+.assets-page h3, 
+.assets-page h4 {
+  line-height: 1.35;
+  letter-spacing: -0.02em;
 }

@@ -293,3 +293,25 @@ h2.negative, .sensitive-data.negative {
   color: #6b7280;
   font-weight: 500;
 }
+
+/* Clear and Readable Vietnamese Typography overrides for Dashboard Page */
+.dashboard-content,
+.dashboard-content button,
+.smart-alert-bar,
+.smart-alert-bar button {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.dashboard-content p, 
+.dashboard-content button {
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+}
+
+.dashboard-content h1, 
+.dashboard-content h2, 
+.dashboard-content h3,
+.dashboard-content h4 {
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+}

@@ -8,11 +8,6 @@
     <div class="article-header">
       <h1>{{ news.title }}</h1>
     </div>
-
-    <div class="article-image" *ngIf="news.imageUrl && isPremium">
-      <img [src]="news.imageUrl" [alt]="news.title">
-    </div>
-
     <div class="article-summary" *ngIf="isPremium">
       {{ news.summary }}
     </div>
