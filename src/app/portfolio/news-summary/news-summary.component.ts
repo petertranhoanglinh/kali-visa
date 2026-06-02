@@ -30,7 +30,7 @@ export class NewsSummaryComponent implements OnInit {
   ngOnInit(): void {
     const user = AuthDetail.getLoginedInfo();
     this.isAdmin = user && user.role === 'ADMIN';
-    this.isPremium = CommonUtils.checkPremiumStatus(user);
+    this.isPremium = true ;//CommonUtils.checkPremiumStatus(user);
     this.loadNews();
   }
 

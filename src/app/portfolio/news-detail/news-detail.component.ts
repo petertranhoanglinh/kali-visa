@@ -34,7 +34,7 @@ export class NewsDetailComponent implements OnInit {
 
   ngOnInit(): void {
     const user = AuthDetail.getLoginedInfo();
-    this.isPremium = CommonUtils.checkPremiumStatus(user);
+    this.isPremium = true//CommonUtils.checkPremiumStatus(user);
     if (user) {
       this.currentUserId = user.id;
       this.currentUserName = user.email || 'Nhà Đầu Tư';

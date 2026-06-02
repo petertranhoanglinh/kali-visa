@@ -1,0 +1,61 @@
+<div class="chat-container" [class.opened]="isOpened">
+  <!-- Floating Button -->
+  <button class="chat-toggle" (click)="toggleChat()" [class.hidden]="isOpened">
+    <i class="fas fa-robot"></i>
+    <span class="chat-badge" *ngIf="unreadCount > 0">{{unreadCount}}</span>
+  </button>
+
+  <!-- Chat Window -->
+  <div class="chat-window" *ngIf="isOpened">
+    <div class="chat-header">
+      <div class="header-info">
+        <div class="bot-avatar">
+          <i class="fas fa-robot"></i>
+          <span class="status-indicator"></span>
+        </div>
+        <div class="bot-details">
+          <h3>TL Wealth Assistant</h3>
+          <p>AI Trading Expert</p>
+        </div>
+      </div>
+      <button class="close-btn" (click)="toggleChat()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="chat-messages" #scrollContainer>
+      <div *ngFor="let msg of messages" [ngClass]="{'message': true, 'user-msg': msg.isUser, 'bot-msg': !msg.isUser}">
+        <div class="msg-content">
+          <div *ngIf="msg.imageUrl" class="msg-image">
+            <img [src]="msg.imageUrl" alt="AI Generated Image" (click)="openImage(msg.imageUrl)">
+          </div>
+          <div class="msg-text" [innerHTML]="msg.text"></div>
+          <div class="msg-time">{{msg.time | date:'HH:mm'}}</div>
+          <div class="msg-actions" *ngIf="!msg.isUser && !msg.liked">
+            <button class="like-btn" (click)="likeAnswer(msg)">
+              <i class="far fa-thumbs-up"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="message bot-msg typing" *ngIf="isTyping">
+        <div class="msg-content">
+          <div class="typing-dots">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-input-area">
+      <input type="text" 
+             [(ngModel)]="userInput" 
+             (keyup.enter)="sendMessage()" 
+             placeholder="Ask me anything about trading..."
+             [disabled]="isTyping">
+      <button (click)="sendMessage()" [disabled]="!userInput.trim() || isTyping">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+</div>

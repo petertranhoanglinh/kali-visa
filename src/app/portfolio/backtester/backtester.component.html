@@ -109,7 +109,7 @@
 
             <!-- Loader Matrix -->
             <div *ngIf="isLoadingData || isRunningBacktest" class="text-center py-5 my-3 fade-in">
-                <div class="matrix-loader-container mx-auto" style="height: 120px; width: 500px; max-width: 100%; border-radius: 0.5rem; background: #0f172a; padding: 1.5rem; text-align: left; font-family: monospace;">
+                <div class="matrix-loader-container mx-auto" style="height: 120px; width: 500px; max-width: 100%; border-radius: 0.5rem; background: #0f172a; padding: 1.5rem; text-align: left">
                     <div class="matrix-text-line" *ngIf="isLoadingData" style="color: #10b981;">> Firing API: Fetching ~1500 historical quotes for {{symbol}}... [OK]</div>
                     <div class="matrix-text-line" *ngIf="isRunningBacktest" style="color: #38bdf8;">> Initializing Simulation Engine... [OK]</div>
                     <div class="matrix-text-line" *ngIf="isRunningBacktest" style="color: #38bdf8;">> Running {{backtestStrategy}} constraint matrices from {{backtestStartDate}} to {{backtestEndDate}}...</div>

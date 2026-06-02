@@ -28,13 +28,6 @@
             <p class="summary">{{ newsItems[0].summary }}</p>
             <div class="meta">
               <span class="time">{{ newsItems[0].createdAt | date:'HH:mm' }}</span>
-              <span class="impact" [attr.data-score]="newsItems[0].aiScore">
-                Impact: {{ newsItems[0].aiScore }}/10
-              </span>
-              <!-- PRO Lock for Featured -->
-              <span *ngIf="!isPremium" class="pro-lock-badge mini">
-                <i class="fas fa-lock"></i> PRO Only
-              </span>
             </div>
           </div>
         </div>
@@ -42,7 +35,6 @@
 
       <!-- 2. Infinite Feed (The rest of items) -->
       <div class="feed-section">
-        <div class="section-title">LATEST CONTENT</div>
         
         <div class="news-feed-grid">
           <div *ngFor="let news of newsItems.slice(1)" class="news-widget-card" [routerLink]="['/news', news.id]">
@@ -55,12 +47,6 @@
               <p class="widget-excerpt" *ngIf="news.summary">{{ news.summary }}</p>
               <div class="widget-footer">
                 <span class="widget-time"><i class="far fa-clock"></i> {{ news.createdAt | date:'HH:mm, dd/MM' }}</span>
-                <span class="widget-impact" *ngIf="news.aiScore">Score: {{ news.aiScore }}</span>
-                
-                <!-- PRO Lock for List Item -->
-                <span *ngIf="!isPremium" class="pro-lock-badge mini">
-                  <i class="fas fa-lock"></i> PRO
-                </span>
               </div>
             </div>
           </div>
@@ -75,17 +61,6 @@
         <div *ngIf="isLastPage && newsItems.length > 0" class="end-of-content">
           <i class="fas fa-check-circle"></i> Bạn đã xem hết tin tức hôm nay.
         </div>
-      </div>
-    </div>
-
-    <!-- RIGHT: Actions -->
-    <div class="sidebar-section">
-
-      <div class="pro-promo-card" *ngIf="!isPremium" style="background: white; border: 2px dashed #6366f1; border-radius: 1rem; padding: 1.5rem; margin-top: 1rem; text-align: center;">
-        <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🚀</div>
-        <h3 style="color: #1e293b; margin: 0 0 0.5rem 0; font-size: 1.05rem; font-weight: 800;">Dòng Chảy Tức Thời PRO</h3>
-        <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 1rem;">Nâng cấp PRO để truy cập hệ thống phân tích tin tức thời gian thực & tín hiệu từ AI.</p>
-        <button routerLink="/pricing" style="background: linear-gradient(90deg, #6366f1, #a855f7); color: white; border: none; padding: 0.6rem 1.25rem; border-radius: 0.75rem; cursor: pointer; font-weight: 700; font-size: 0.85rem; width: 100%;">Nâng cấp ngay - 20k/tháng</button>
       </div>
     </div>
   </div>

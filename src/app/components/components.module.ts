@@ -11,6 +11,9 @@ import { PipeModule } from '../pipe/pipe.module';
 import { CustomDialogComponent } from './custom-dialog/custom-dialog.component';
 import { SliderComponent } from './slider/slider.component';
 import { MessageButtonComponent } from './message-button/message-button.component';
+import { ChatBoxComponent } from './chat-box/chat-box.component';
+import { FormsModule } from '@angular/forms';
+
 @NgModule({
   declarations: [
     TableTemplateComponent,
@@ -21,14 +24,16 @@ import { MessageButtonComponent } from './message-button/message-button.componen
     ProductComponent,
     CustomDialogComponent,
     SliderComponent,
-    MessageButtonComponent
+    MessageButtonComponent,
+    ChatBoxComponent
 
 
   ],
   imports: [
     CommonModule,
     MeterialModule,
-    PipeModule
+    PipeModule,
+    FormsModule
 
   ]
   ,
@@ -39,7 +44,8 @@ import { MessageButtonComponent } from './message-button/message-button.componen
     PopupComponent,
     ProductComponent,
     SliderComponent,
-    MessageButtonComponent
+    MessageButtonComponent,
+    ChatBoxComponent
   ],
 })
 export class ComponentsModule { }

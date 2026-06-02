@@ -217,7 +217,6 @@
 
 .admin-nav::before {
   content: '\f3ed';
-  font-family: 'Font Awesome 5 Free';
   font-weight: 900;
 }
 

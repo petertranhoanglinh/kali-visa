@@ -1,0 +1,29 @@
+<div class="container mt-5">
+    <div class="card shadow-sm border-0 rounded-lg">
+        <div class="card-header bg-primary text-white py-3">
+            <h4 class="mb-0"><i class="fas fa-cogs me-2"></i> CÀI ĐẶT HỆ THỐNG</h4>
+        </div>
+        <div class="card-body p-4">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-4">
+                        <label class="form-label fw-bold text-uppercase small text-muted">Tỷ giá USD/VND</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">1 USD =</span>
+                            <input type="number" class="form-control form-control-lg border-start-0"
+                                [(ngModel)]="exchangeRate" placeholder="Ví dụ: 25450">
+                            <span class="input-group-text bg-light">VND</span>
+                        </div>
+                        <div class="form-text mt-2">Tỷ giá này sẽ được dùng để tính toán toàn bộ tài sản USD sang VND
+                            cho người dùng.</div>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg px-5 text-uppercase fw-bold" (click)="saveRate()"
+                        [disabled]="isLoading">
+                        {{ isLoading ? 'ĐANG LƯU...' : 'LƯU GIÁ TRỊ PRO' }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

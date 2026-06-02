@@ -25,7 +25,7 @@ import { AuthGuardService } from '../service/auth-guard.service';
 import { AdminGuard } from '../service/admin-guard.service';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', component: NewsSummaryComponent },
   { path: 'dashboard', component: PortfolioDashboardComponent, canActivate: [AuthGuardService] },
   { path: 'assets', component: AssetListComponent, canActivate: [AuthGuardService] },
   { path: 'rules', component: AssetRulesComponent, canActivate: [AuthGuardService] },
