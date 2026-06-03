@@ -1,25 +1,91 @@
-/* Cấu hình tổng thể - Font chữ chuẩn báo chí */
+/* --- Cấu trúc tổng thể --- */
 .news-detail-container {
   max-width: 1400px;
   margin: 0 auto;
   padding: 0;
   background: #fff;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: #222;
+  min-height: 100vh;
 }
 
-/* 1. Header: Kiểu phân loại tin và tiêu đề lớn */
+/* --- Layout 2 cột (giống trang danh sách) --- */
+.detail-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+/* --- Sidebar trái --- */
+.detail-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: sticky;
+  top: 100px;
+  height: fit-content;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #333;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #000;
+  padding-bottom: 0.5rem;
+  transition: color 0.2s;
+}
+.back-link:hover { color: #c00; border-color: #c00; }
+
+.widget-title-line {
+  font-size: 0.8rem;
+  font-weight: 900;
+  border-bottom: 2px solid #000;
+  padding-bottom: 0.4rem;
+  margin-bottom: 1rem;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.topic-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+.topic-tag {
+  background: #f4f4f4;
+  color: #333;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.topic-tag:hover { background: #000; color: #fff; }
+
+/* --- Khu vực nội dung chính --- */
+.detail-main {
+  max-width: 780px; /* Giới hạn chiều rộng cho dễ đọc */
+}
+
+/* 1. Header */
 .article-header {
-  margin-bottom: 30px;
+  margin-bottom: 2rem;
 }
 
 .article-header .cat {
-  color: #c00; /* Màu đỏ truyền thống của báo chí VN */
+  color: #c00;
   font-size: 0.85rem;
   font-weight: 700;
   text-transform: uppercase;
   margin-bottom: 12px;
   display: block;
+  letter-spacing: 0.5px;
 }
 
 .article-header h1 {
@@ -27,112 +93,134 @@
   font-size: 2.5rem;
   line-height: 1.2;
   color: #000;
-  margin-bottom: 15px;
-  font-weight: 700;
+  margin: 0 0 1rem 0;
+  font-weight: 800;
   letter-spacing: -0.02em;
 }
 
 .article-header .meta {
-  font-size: 0.9rem;
-  color: #666;
+  font-size: 0.85rem;
+  color: #888;
+  font-weight: 600;
   border-top: 1px solid #eee;
   border-bottom: 1px solid #eee;
   padding: 10px 0;
-  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-/* 2. Sapo (Tóm tắt): Cần đậm và rõ ràng */
+/* 2. Sapo */
 .article-summary {
   font-size: 1.2rem;
   font-weight: 600;
-  line-height: 1.6;
+  line-height: 1.7;
   color: #333;
-  margin-bottom: 30px;
+  margin-bottom: 2rem;
+  text-align: justify;
+  border-left: 4px solid #c00;
+  padding-left: 1.25rem;
+}
+
+/* 3. Thân bài */
+.article-body {
+  font-size: 1.1rem;
+  line-height: 1.85;
+  color: #2b2b2b;
   text-align: justify;
 }
 
-/* 3. Thân bài: Căn đều 2 bên và tạo khoảng cách đoạn */
-.article-body {
-  font-size: 1.15rem;
-  line-height: 1.8;
-  color: #2b2b2b;
-  text-align: justify; /* Căn đều 2 bên là bắt buộc cho báo chí */
+.article-body p {
+  margin-bottom: 1.5rem;
 }
 
-.article-body p { 
-  margin-bottom: 20px; 
-}
-  
-/* Tạo drop-cap (chữ cái đầu dòng) cho bài viết chuyên sâu */
 .article-body p:first-of-type::first-letter {
   font-size: 3.5rem;
   float: left;
   margin-right: 10px;
   line-height: 0.8;
   color: #c00;
+  font-weight: 800;
 }
 
 :host ::ng-deep .article-body img {
   max-width: 100% !important;
   height: auto !important;
   display: block !important;
-  margin: 30px auto !important;
+  margin: 2rem auto !important;
   border-radius: 6px !important;
 }
 
-/* 4. Hình ảnh và chú thích ảnh */
-.article-image {
-  margin: 30px 0;
-  text-align: center;
+/* 4. Footer */
+.article-footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #eee;
 }
 
-:host ::ng-deep .article-image img {
-  max-width: 100% !important;
-  height: auto !important;
-  display: block !important;
-  margin: 30px auto !important;
-  border-radius: 6px !important;
-}
-  
-/* Thêm chú thích ảnh kiểu báo chí */
-.article-image::after {
-  content: "Ảnh minh họa";
-  display: block;
-  margin-top: 8px;
+.source-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   font-size: 0.85rem;
-  font-style: italic;
+  font-weight: 700;
+  color: #2563eb;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.source-link:hover { text-decoration: underline; }
+
+/* 5. Error State */
+.error-state {
+  text-align: center;
+  padding: 5rem 0;
   color: #888;
 }
-
-/* 5. Paywall: Thiết kế lại trông như tin "Premium" */
-.pro-paywall-overlay {
-  background: #fdfdfd;
-  border: 1px solid #ddd;
-  padding: 40px;
-  margin: 40px 0;
-  text-align: center;
-}
-
-.pro-paywall-overlay h2 { 
-  font-size: 1.5rem; 
-  color: #c00; 
-  margin-bottom: 15px; 
-}
-
-.pro-paywall-overlay .btn-upgrade-now {
-  background: #000; /* Thay vì xanh, dùng đen hoặc đỏ tạo sự sang trọng/chuyên nghiệp */
+.error-state .btn-primary {
+  display: inline-block;
+  margin-top: 1.5rem;
+  background: #000;
   color: #fff;
-  padding: 12px 30px;
-  border-radius: 0; /* Bo góc vuông vắn kiểu truyền thống */
+  padding: 0.75rem 1.5rem;
   font-weight: 700;
+  text-decoration: none;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
+/* --- Skeleton Loading --- */
+@keyframes shimmer {
+  0% { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 1200px 100%;
+  animation: shimmer 1.6s infinite linear;
+  border-radius: 4px;
+}
+
+.skeleton-back-btn    { height: 32px; width: 130px; }
+.skeleton-sidebar-title { height: 14px; width: 60%; }
+.skeleton-tag         { height: 28px; width: 72px; border-radius: 2px; }
+.skeleton-cat         { height: 14px; width: 80px; }
+.skeleton-h1          { height: 44px; width: 100%; }
+.skeleton-meta        { height: 38px; width: 100%; }
+.skeleton-img         { width: 100%; aspect-ratio: 16 / 9; border-radius: 4px; }
+.skeleton-line        { height: 16px; width: 100%; }
+
+/* --- Responsive --- */
+@media (max-width: 992px) {
+  .detail-layout { grid-template-columns: 1fr; }
+  .detail-sidebar { display: none; }
+  .detail-main { max-width: 100%; }
+}
 @media (max-width: 768px) {
   .article-header h1 { font-size: 1.75rem; }
-  .article-body { font-size: 1.05rem; }
+  .article-body { font-size: 1rem; }
 }
 @media (max-width: 480px) {
-  .article-header h1 { font-size: 1.45rem; }
-  .article-body { font-size: 0.95rem; }
+  .article-header h1 { font-size: 1.4rem; }
 }

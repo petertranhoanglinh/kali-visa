@@ -5,10 +5,9 @@
             <span class="metric-label">Tổng Giá Trị (VND)</span>
             <h2 class="metric-value">{{ getTotalValueVND() | number:'1.0-0' }}₫</h2>
             <div class="metric-trend"
-                [ngClass]="(getTotalValueVND() - getTotalCostVND()) >= 0 ? 'trend-up' : 'trend-down'">
-                <i class="fas"
-                    [ngClass]="(getTotalValueVND() - getTotalCostVND()) >= 0 ? 'fa-caret-up' : 'fa-caret-down'"></i>
-                {{ (getTotalValueVND() - getTotalCostVND()) / (getTotalCostVND() || 1) | percent:'1.1-2' }}
+                [ngClass]="getTotalProfitLossVND() >= 0 ? 'trend-up' : 'trend-down'">
+                <i class="fas" [ngClass]="getTotalProfitLossVND() >= 0 ? 'fa-caret-up' : 'fa-caret-down'"></i>
+                {{ getTotalProfitLossPercent() | percent:'1.1-2' }}
             </div>
         </div>
         <div class="metric-divider"></div>
@@ -16,6 +15,16 @@
             <span class="metric-label">Vốn Đầu Tư (Active)</span>
             <h2 class="metric-value">{{ getTotalCostVND() | number:'1.0-0' }}₫</h2>
             <span class="metric-subtext">Danh mục: {{ groupedAssets.length }} mã</span>
+        </div>
+        <div class="metric-divider"></div>
+        <div class="metric-item">
+            <span class="metric-label">Lãi / Lỗ tổng</span>
+            <h2 class="metric-value" [ngClass]="getTotalProfitLossVND() >= 0 ? 'text-profit' : 'text-loss'">
+                {{ getTotalProfitLossVND() >= 0 ? '+' : '' }}{{ getTotalProfitLossVND() | number:'1.0-0' }}₫
+            </h2>
+            <span class="metric-subtext" [ngClass]="getTotalProfitLossVND() >= 0 ? 'text-profit' : 'text-loss'">
+                {{ getTotalProfitLossPercent() >= 0 ? '+' : '' }}{{ getTotalProfitLossPercent() | percent:'1.2-2' }}
+            </span>
         </div>
         <div class="metric-divider"></div>
         <div class="metric-item actions">
@@ -28,8 +37,29 @@
         </div>
     </div>
 
+    <!-- Skeleton Loading (lần đầu) -->
+    <div class="assets-grid" *ngIf="isLoading && groupedAssets.length === 0">
+        <div class="asset-card skeleton-card" *ngFor="let i of [1,2,3,4]">
+            <div class="card-main">
+                <div class="asset-info">
+                    <div class="skeleton sk-icon"></div>
+                    <div class="name-meta">
+                        <div class="skeleton sk-title"></div>
+                        <div class="skeleton sk-badge"></div>
+                    </div>
+                </div>
+                <div class="asset-stats">
+                    <div class="stat-group"><div class="skeleton sk-label"></div><div class="skeleton sk-val"></div></div>
+                    <div class="stat-group"><div class="skeleton sk-label"></div><div class="skeleton sk-val" style="width:140px"></div></div>
+                    <div class="stat-group"><div class="skeleton sk-label"></div><div class="skeleton sk-val"></div></div>
+                    <div class="stat-group"><div class="skeleton sk-label"></div><div class="skeleton sk-pl"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Asset Cards Grid -->
-    <div class="assets-grid">
+    <div class="assets-grid" *ngIf="!isLoading || groupedAssets.length > 0">
         <div class="asset-card" *ngFor="let group of groupedAssets" [class.expanded]="group.isExpanded">
             <div class="card-main" (click)="toggleDetail(group)">
                 <div class="asset-info">
@@ -57,20 +87,32 @@
                     <div class="stat-group">
                         <span class="stat-label">Giá vốn / Hiện tại</span>
                         <div class="price-flow">
-                            <span class="p-avg">{{ getCurrencySymbol(group.history[0].currency) }}{{ group.averagePrice
-                                | number:getCurrencyPipe(group.history[0].currency) }}</span>
+                            <span class="p-avg">{{ getCurrencySymbol(group.currency) }}{{ group.averagePrice
+                                | number:getCurrencyPipe(group.currency) }}</span>
                             <i class="fas fa-arrow-right"></i>
                             <span class="p-now"
                                 [ngClass]="(group.marketPrice || 0) >= group.averagePrice ? 'text-up' : 'text-down'">
-                                {{ getCurrencySymbol(group.history[0].currency) }}{{ group.marketPrice |
-                                number:getCurrencyPipe(group.history[0].currency) }}
+                                {{ getCurrencySymbol(group.currency) }}{{ group.marketPrice |
+                                number:getCurrencyPipe(group.currency) }}
                             </span>
                         </div>
                     </div>
                     <div class="stat-group">
                         <span class="stat-label">Thành tiền</span>
-                        <span class="stat-value-big">{{ getCurrencySymbol(group.history[0].currency) }}{{
-                            group.totalValue | number:getCurrencyPipe(group.history[0].currency) }}</span>
+                        <span class="stat-value-big">{{ getCurrencySymbol(group.currency) }}{{
+                            group.totalValue | number:getCurrencyPipe(group.currency) }}</span>
+                    </div>
+                    <!-- CỘT LÃI / LỖ -->
+                    <div class="stat-group" *ngIf="group.type !== 'CASH'">
+                        <span class="stat-label">Lãi / Lỗ</span>
+                        <div class="pl-display" [ngClass]="group.profitLoss >= 0 ? 'pl-profit' : 'pl-loss'">
+                            <span class="pl-amount">
+                                {{ group.profitLoss >= 0 ? '+' : '' }}{{ getCurrencySymbol(group.currency) }}{{ group.profitLoss | number:getCurrencyPipe(group.currency) }}
+                            </span>
+                            <span class="pl-percent">
+                                ({{ group.profitLossPercent >= 0 ? '+' : '' }}{{ group.profitLossPercent | percent:'1.2-2' }})
+                            </span>
+                        </div>
                     </div>
                 </div>
 
@@ -94,30 +136,33 @@
                                 <th>Lệnh</th>
                                 <th>Thời gian</th>
                                 <th>S.Lượng</th>
-                                <th>Giá</th>
-                                <th>Thành tiền</th>
+                                <th>Giá giao dịch</th>
+                                <th>Giá hiện tại</th>
+                                <th>Lãi / Lỗ lệnh</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let record of group.history">
-                                <td><span class="t-badge" [ngClass]="record.isSell ? 't-sell' : 't-buy'">{{
-                                        record.isSell ? 'BÁN' : 'MUA' }}</span></td>
+                                <td><span class="t-badge" [ngClass]="record.isSell ? 't-sell' : 't-buy'">{{ record.isSell ? 'BÁN' : 'MUA' }}</span></td>
                                 <td>{{ record.purchaseDate | date:'dd/MM/yyyy HH:mm' }}</td>
                                 <td>{{ record.quantity | number:'1.0-8' }}</td>
-                                <td>{{ getCurrencySymbol(record.currency) }}{{ record.averagePrice |
-                                    number:getCurrencyPipe(record.currency) }}</td>
-                                <td>{{ getCurrencySymbol(record.currency) }}{{ calculateTotal(record) |
-                                    number:getCurrencyPipe(record.currency) }}</td>
-                                <td><button class="btn-del" (click)="deleteAsset(record.id)"><i
-                                            class="fas fa-trash"></i></button></td>
+                                <td>{{ getCurrencySymbol(record.currency) }}{{ record.averagePrice | number:getCurrencyPipe(record.currency) }}</td>
+                                <td>{{ getCurrencySymbol(record.currency) }}{{ (group.marketPrice || record.averagePrice) | number:getCurrencyPipe(record.currency) }}</td>
+                                <td *ngIf="!record.isSell">
+                                    <span [ngClass]="((group.marketPrice || 0) - record.averagePrice) >= 0 ? 'text-profit' : 'text-loss'">
+                                        {{ ((group.marketPrice || 0) - record.averagePrice) >= 0 ? '+' : '' }}{{ getCurrencySymbol(record.currency) }}{{ ((group.marketPrice || 0) - record.averagePrice) * record.quantity | number:getCurrencyPipe(record.currency) }}
+                                    </span>
+                                </td>
+                                <td *ngIf="record.isSell">—</td>
+                                <td><button class="btn-del" (click)="deleteAsset(record.id)"><i class="fas fa-trash"></i></button></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-    </div>
+    </div><!-- end assets-grid -->
 
     <!-- PRO Promo: Real-time Pricing (20k/month) -->
     <div class="pro-promo-card" *ngIf="!isPremium" style="background: white; border: 2px dashed #6366f1; border-radius: 1rem; padding: 1.5rem; margin-top: 2rem; margin-bottom: 2rem; text-align: center;">

@@ -1,95 +1,136 @@
-import { Component, OnInit, HostListener } from '@angular/core';
-import { NewsService } from 'src/app/service/news.service';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
 import { MarketNews } from 'src/app/model/market-news.model';
 import { ToastrService } from 'ngx-toastr';
 import { AuthDetail } from 'src/app/common/util/auth-detail';
-import { CommonUtils } from 'src/app/common/util/common-utils';
+import { NewsService } from 'src/app/service/news.service';
+
+import {
+  loadNews,
+  loadNextPage,
+  filterByCategory,
+  invalidateNewsCache,
+} from 'src/app/actions/news.actions';
+import {
+  selectNewsItems,
+  selectNewsIsLoading,
+  selectNewsIsLoadingMore,
+  selectNewsIsLastPage,
+  selectNewsCurrentPage,
+  selectNewsCategory,
+} from 'src/app/selectors/news.selector';
 
 @Component({
   selector: 'app-news-summary',
   templateUrl: './news-summary.component.html',
   styleUrls: ['./news-summary.component.css']
 })
-export class NewsSummaryComponent implements OnInit {
+export class NewsSummaryComponent implements OnInit, OnDestroy {
 
-  newsItems: MarketNews[] = [];
-  currentPage: number = 0;
-  pageSize: number = 10;
-  isLastPage: boolean = false;
-  isLoading: boolean = false;
-  isAdmin: boolean = false;
-  isPremium: boolean = false;
-  selectedCategory: string = '';
+  readonly PAGE_SIZE = 10;
+
+  // Streams từ store
+  newsItems$: Observable<MarketNews[]>;
+  isLoading$: Observable<boolean>;
+  isLoadingMore$: Observable<boolean>;
+  isLastPage$: Observable<boolean>;
+
+  // Local state
+  isAdmin = false;
+  isPremium = false;
   today: Date = new Date();
 
+  private currentPage = 0;
+  private selectedCategory = '';
+  private isLastPage = false;
+  private isLoadingMore = false;
+  private destroy$ = new Subject<void>();
+
   constructor(
+    private store: Store,
     private newsService: NewsService,
-    private toastr: ToastrService
-  ) { }
+    private toastr: ToastrService,
+  ) {
+    this.newsItems$      = this.store.select(selectNewsItems);
+    this.isLoading$      = this.store.select(selectNewsIsLoading);
+    this.isLoadingMore$  = this.store.select(selectNewsIsLoadingMore);
+    this.isLastPage$     = this.store.select(selectNewsIsLastPage);
+  }
 
   ngOnInit(): void {
     const user = AuthDetail.getLoginedInfo();
-    this.isAdmin = user && user.role === 'ADMIN';
-    this.isPremium = true ;//CommonUtils.checkPremiumStatus(user);
-    this.loadNews();
+    this.isAdmin   = user && user.role === 'ADMIN';
+    this.isPremium = true; // CommonUtils.checkPremiumStatus(user)
+
+    // Giữ track state cục bộ để dùng trong HostListener
+    this.store.select(selectNewsCurrentPage)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(p => this.currentPage = p);
+
+    this.store.select(selectNewsIsLastPage)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(last => this.isLastPage = last);
+
+    this.store.select(selectNewsIsLoadingMore)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(loading => this.isLoadingMore = loading);
+
+    this.store.select(selectNewsCategory)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(cat => this.selectedCategory = cat);
+
+    // Dispatch load — Effect tự kiểm tra cache
+    this.store.dispatch(loadNews({
+      page: 0,
+      size: this.PAGE_SIZE,
+      category: this.selectedCategory,
+    }));
   }
 
-  loadNews(isNextPage: boolean = false) {
-    if (this.isLoading || (isNextPage && this.isLastPage)) return;
-
-    this.isLoading = true;
-    if (isNextPage) {
-      this.currentPage++;
-    } else {
-      this.currentPage = 0;
-      this.newsItems = [];
-    }
-
-    this.newsService.getNews(this.currentPage, this.pageSize, this.selectedCategory).subscribe({
-      next: (res) => {
-        this.newsItems = [...this.newsItems, ...res.content];
-        this.isLastPage = res.last;
-
-        // --- PRO Limit: Max 10 news items for Non-PRO ---
-        if (!this.isPremium && this.newsItems.length >= 10) {
-          this.isLastPage = true;
-        }
-
-        this.isLoading = false;
-      },
-      error: (err) => {
-        this.toastr.error("Không thể tải tin tức.");
-        this.isLoading = false;
-      }
-    });
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
     const scrollPosition = window.innerHeight + window.scrollY;
     const documentHeight = document.documentElement.scrollHeight;
-    
-    // Trigger when 200px from the bottom
+
     if (scrollPosition >= documentHeight - 200) {
-      if (!this.isLastPage && !this.isLoading) {
-        this.loadNews(true);
+      if (!this.isLastPage && !this.isLoadingMore) {
+        this.store.dispatch(loadNextPage({
+          page: this.currentPage + 1,
+          size: this.PAGE_SIZE,
+          category: this.selectedCategory,
+        }));
       }
     }
   }
 
-  filterByCategory(category: string) {
-    this.selectedCategory = category;
-    this.loadNews();
+  onFilterByCategory(category: string) {
+    if (category === this.selectedCategory) return; // Không reload nếu cùng category
+    this.store.dispatch(filterByCategory({ category, size: this.PAGE_SIZE }));
   }
 
   forceRefresh() {
-    this.toastr.info("Đang yêu cầu AI tổng hợp tin mới...");
+    this.toastr.info('Đang yêu cầu AI tổng hợp tin mới...');
     this.newsService.forceGenerate().subscribe({
       next: () => {
-        this.toastr.success("Đang biên tập tin mới. Vui lòng chờ giây lát rồi tải lại.");
-        setTimeout(() => this.loadNews(), 5000);
+        this.toastr.success('Đang biên tập tin mới. Vui lòng chờ giây lát...');
+        setTimeout(() => {
+          this.store.dispatch(invalidateNewsCache());
+          this.store.dispatch(loadNews({
+            page: 0,
+            size: this.PAGE_SIZE,
+            category: this.selectedCategory,
+          }));
+        }, 5000);
       },
-      error: () => this.toastr.error("Có lỗi xảy ra khi gọi AI.")
+      error: () => this.toastr.error('Có lỗi xảy ra khi gọi AI.')
     });
   }
 }

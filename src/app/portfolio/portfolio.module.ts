@@ -1,10 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgChartsModule } from 'ng2-charts';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
 
 import { PortfolioRoutingModule } from './portfolio-routing.module';
 import { PortfolioDashboardComponent } from './portfolio-dashboard/portfolio-dashboard.component';
 import { AssetListComponent } from './asset-list/asset-list.component';
+import { portfolioReducer, portfolioFeatureKey } from '../reducers/portfolio.reducer';
+import { PortfolioEffect } from '../effects/portfolio.effect';
+import { newsReducer, newsFeatureKey } from '../reducers/news.reducer';
+import { NewsEffect } from '../effects/news.effect';
 import { AssetRulesComponent } from './asset-rules/asset-rules.component';
 import { NewsSummaryComponent } from './news-summary/news-summary.component';
 import { PricingComponent } from './pricing/pricing.component';
@@ -57,7 +63,10 @@ import { FormsModule } from '@angular/forms';
     PortfolioRoutingModule,
     NgChartsModule,
     FormsModule,
-    CKEditorModule
+    CKEditorModule,
+    StoreModule.forFeature(portfolioFeatureKey, portfolioReducer),
+    StoreModule.forFeature(newsFeatureKey, newsReducer),
+    EffectsModule.forFeature([PortfolioEffect, NewsEffect])
   ]
 })
 export class PortfolioModule { }
