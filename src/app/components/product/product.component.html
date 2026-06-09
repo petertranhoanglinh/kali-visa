@@ -4,7 +4,7 @@
     <span *ngIf="product.new" class="badge badge-primary">New</span>
     <span *ngIf="product.sale" class="badge badge-danger">Sale</span>
   </div>
-  <img (click)="handleLink()" [src]="apiUrl + '/' + product.img" class="card-img-top product-image"
+  <img (click)="handleLink()" [src]="product.img ? (product.img.startsWith('/') ? apiUrl + product.img : apiUrl + '/' + product.img) : ''" class="card-img-top product-image"
     alt="New Balance 990v5">
   <div class="card-body">
     <h5 class="card-title">{{ product.name }}</h5>
@@ -30,7 +30,7 @@
   <figure class="product-media">
     <span class="product-label label-sale">Sale</span>
     <a (click)="handleLink()">
-      <img [src]="apiUrl + '/' + product.img" alt="Product image" class="product-image">
+      <img [src]="product.img ? (product.img.startsWith('/') ? apiUrl + product.img : apiUrl + '/' + product.img) : ''" alt="Product image" class="product-image">
     </a>
 
     <div class="product-action-vertical">
