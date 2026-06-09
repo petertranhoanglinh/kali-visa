@@ -20,7 +20,7 @@
                 <button type="button" class="sidebar-tab" [class.active]="activeTab === 'api'" (click)="activeTab = 'api'">
                     <i class="fas fa-key"></i> AI API Keys cá nhân
                 </button>
-                <button type="button" class="sidebar-tab" [class.active]="activeTab === 'friends'" (click)="activeTab = 'friends'; loadFriendsData()">
+                <button type="button" class="sidebar-tab" [class.active]="activeTab === 'friends'" (click)="activeTab = 'friends'">
                     <i class="fas fa-users"></i> Bạn bè
                     <span class="badge bg-danger rounded-pill ms-auto" style="font-size: 0.7rem; padding: 4px 6px;" *ngIf="pendingReceived.length > 0">
                         {{ pendingReceived.length }}

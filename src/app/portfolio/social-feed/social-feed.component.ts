@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { SocialService } from 'src/app/service/social.service';
 import { AuthService } from 'src/app/service/auth.service';
 import { PostModel, CommentModel } from 'src/app/model/social.model';
@@ -8,13 +8,33 @@ import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 import { environment } from 'src/environments/environment';
+import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import {
+  loadFeed,
+  loadMorePosts,
+  prependPost,
+  removePost,
+  updatePostContent,
+  updatePostLikes,
+  addCommentToPost,
+  toggleComments
+} from 'src/app/actions/social.actions';
+import {
+  selectPosts,
+  selectSocialIsLoading,
+  selectSocialIsLoadingMore,
+  selectSocialHasMore,
+  selectSocialCurrentPage,
+  selectSocialFilterMode
+} from 'src/app/selectors/social.selector';
 
 @Component({
   selector: 'app-social-feed',
   templateUrl: './social-feed.component.html',
   styleUrls: ['./social-feed.component.css']
 })
-export class SocialFeedComponent implements OnInit {
+export class SocialFeedComponent implements OnInit, OnDestroy {
 
   @ViewChild('avatarInput') avatarInput!: ElementRef;
   currentUserProfile: any = null;
@@ -24,6 +44,7 @@ export class SocialFeedComponent implements OnInit {
   isPremium: boolean = false;
   highlightedPostId: string | null = null;
   isSinglePostMode: boolean = false;
+  private subscriptions: Subscription[] = [];
 
   onReady(editor: any): void {
     const toolbarElement = editor.ui.view.toolbar.element;
@@ -61,8 +82,13 @@ export class SocialFeedComponent implements OnInit {
     private toastr: ToastrService,
     private route: ActivatedRoute,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private store: Store
   ) { }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(s => s.unsubscribe());
+  }
 
   ngOnInit(): void {
     const user = AuthDetail.getLoginedInfo();
@@ -85,6 +111,26 @@ export class SocialFeedComponent implements OnInit {
         });
       }
     }
+
+    // Subscribe to NgRx Store
+    this.subscriptions.push(
+      this.store.select(selectPosts).subscribe(posts => {
+        if (this.isSinglePostMode) return;
+        this.posts = posts;
+      }),
+      this.store.select(selectSocialIsLoading).subscribe(isLoading => {
+        this.isLoadingPosts = isLoading;
+      }),
+      this.store.select(selectSocialHasMore).subscribe(hasMore => {
+        this.hasMorePosts = hasMore;
+      }),
+      this.store.select(selectSocialCurrentPage).subscribe(page => {
+        this.currentPage = page;
+      }),
+      this.store.select(selectSocialFilterMode).subscribe(mode => {
+        this.filterMode = mode;
+      })
+    );
 
     // Handle Shared Post if present in URL
     this.route.queryParamMap.subscribe(params => {
@@ -143,42 +189,21 @@ export class SocialFeedComponent implements OnInit {
 
   loadFeed(isFirstLoad: boolean = false) {
     if (isFirstLoad) {
-      this.currentPage = 0;
-      this.posts = [];
-      this.hasMorePosts = true;
+      this.store.dispatch(loadFeed({
+        page: 0,
+        size: this.pageSize,
+        filterMode: this.filterMode,
+        userId: this.currentUserId
+      }));
+    } else {
+      if (this.isLoadingPosts || !this.hasMorePosts) return;
+      this.store.dispatch(loadMorePosts({
+        page: this.currentPage + 1,
+        size: this.pageSize,
+        filterMode: this.filterMode,
+        userId: this.currentUserId
+      }));
     }
-    
-    if (this.isLoadingPosts || !this.hasMorePosts) return;
-    
-    this.isLoadingPosts = true;
-
-    const queryAuthorId = this.filterMode === 'MINE' ? this.currentUserId : undefined;
-
-    this.socialService.getAllPosts(this.currentPage, this.pageSize, queryAuthorId).subscribe({
-      next: (res: any) => {
-        let newPosts: PostModel[] = res.content || [];
-        
-        // Filter out the highlighted post to avoid duplicates
-        if (this.highlightedPostId) {
-          newPosts = newPosts.filter(p => p.id !== this.highlightedPostId);
-        }
-
-        this.posts = [...this.posts, ...newPosts];
-        this.hasMorePosts = !res.last; // Spring Data Page returns 'last' boolean flag
-        
-        // --- PRO Limit: Max 10 posts for Non-PRO ---
-        if (!this.isPremium && this.posts.length >= 10) {
-          this.hasMorePosts = false;
-        }
-
-        this.currentPage++;
-        this.isLoadingPosts = false;
-      },
-      error: () => {
-        this.toastr.error("Lỗi khi tải bảng tin!");
-        this.isLoadingPosts = false;
-      }
-    });
   }
 
   get currentUserAvatar(): string {

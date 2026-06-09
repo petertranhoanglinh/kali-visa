@@ -1,17 +1,39 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthService } from 'src/app/service/auth.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { filter, take } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { AuthDetail } from 'src/app/common/util/auth-detail';
 import { SocialService } from 'src/app/service/social.service';
 import { environment } from 'src/environments/environment';
+
+import {
+  loadProfile,
+  updateProfile,
+  loadFriendsData,
+  acceptFriendRequest,
+  declineFriendRequest,
+  cancelSentRequest,
+  unfriend
+} from 'src/app/actions/profile.actions';
+
+import {
+  selectProfileUser,
+  selectIsLoadingProfile,
+  selectIsUpdatingProfile,
+  selectFriendsList,
+  selectPendingReceived,
+  selectPendingSent,
+  selectIsLoadingFriends
+} from 'src/app/selectors/profile.selector';
 
 @Component({
   selector: 'app-user-setting',
   templateUrl: './user-setting.component.html',
   styleUrls: ['./user-setting.component.css']
 })
-export class UserSettingComponent implements OnInit {
-  // User profile details
+export class UserSettingComponent implements OnInit, OnDestroy {
+  // User profile details (local editable copy)
   user: any = {
     username: '',
     email: '',
@@ -24,15 +46,18 @@ export class UserSettingComponent implements OnInit {
     geminiApiKey: '',
     tier: 'BASIC'
   };
+
   apiUrl = environment.apiUrl;
   isLoading = false;
+  isUpdating = false;
   activeTab: 'profile' | 'api' | 'friends' = 'profile';
   showApiKey = false;
 
-  // Friends management state
+  // Friends management state (from store)
   friendsList: any[] = [];
   pendingReceived: any[] = [];
   pendingSent: any[] = [];
+  isLoadingFriends = false;
 
   // Predefined avatar selections (like Reddit avatars)
   avatars = [
@@ -46,44 +71,77 @@ export class UserSettingComponent implements OnInit {
     'https://www.redditstatic.com/avatars/avatar_default_08_D4E815.png'
   ];
 
+  private subscriptions: Subscription[] = [];
+
   constructor(
-    private authService: AuthService,
+    private store: Store,
     private toastr: ToastrService,
     private socialService: SocialService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    this.loadProfile();
-    this.loadFriendsData();
-  }
-
-  loadProfile() {
     const loginInfo = AuthDetail.getLoginedInfo();
     const jwt = loginInfo?.jwt || localStorage.getItem('jwt');
+
     if (!jwt) {
       this.toastr.error('Vui lòng đăng nhập lại');
       return;
     }
 
-    this.isLoading = true;
-    this.authService.getProfile(jwt).subscribe({
-      next: (res) => {
-        if (res && res.code === 200 && res.data) {
-          this.user = { ...this.user, ...res.data };
-          // If avatarUrl is empty, set default
-          if (!this.user.avatarUrl) {
-            this.user.avatarUrl = 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png';
-          }
-        } else {
-          this.toastr.error('Không thể lấy thông tin cá nhân');
+    // Dispatch actions to load data
+    this.store.dispatch(loadProfile({ jwt }));
+    this.store.dispatch(loadFriendsData({ jwt }));
+
+    // Subscribe to profile state
+    this.subscriptions.push(
+      this.store.select(selectProfileUser).subscribe(storeUser => {
+        if (storeUser) {
+          // Sync store user into local editable copy
+          this.user = { ...this.user, ...storeUser };
         }
-        this.isLoading = false;
-      },
-      error: () => {
-        this.toastr.error('Lỗi khi tải thông tin cá nhân');
-        this.isLoading = false;
-      }
-    });
+      })
+    );
+
+    this.subscriptions.push(
+      this.store.select(selectIsLoadingProfile).subscribe(loading => {
+        this.isLoading = loading;
+      })
+    );
+
+    this.subscriptions.push(
+      this.store.select(selectIsUpdatingProfile).subscribe(updating => {
+        this.isUpdating = updating;
+      })
+    );
+
+    // Subscribe to friends state
+    this.subscriptions.push(
+      this.store.select(selectFriendsList).subscribe(list => {
+        this.friendsList = list;
+      })
+    );
+
+    this.subscriptions.push(
+      this.store.select(selectPendingReceived).subscribe(pending => {
+        this.pendingReceived = pending;
+      })
+    );
+
+    this.subscriptions.push(
+      this.store.select(selectPendingSent).subscribe(sent => {
+        this.pendingSent = sent;
+      })
+    );
+
+    this.subscriptions.push(
+      this.store.select(selectIsLoadingFriends).subscribe(loading => {
+        this.isLoadingFriends = loading;
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(s => s.unsubscribe());
   }
 
   saveProfile() {
@@ -93,30 +151,11 @@ export class UserSettingComponent implements OnInit {
       this.toastr.error('Vui lòng đăng nhập');
       return;
     }
-
-    this.isLoading = true;
-
-    this.authService.updateProfile(this.user, jwt).subscribe({
-      next: (res) => {
-        if (res && res.code === 200 && res.data) {
-          this.toastr.success('Cập nhật thông tin thành công!');
-          // Update local loginInfo if needed
-          const updatedUser = { ...loginInfo, ...res.data };
-          localStorage.setItem('loginInfo', JSON.stringify(updatedUser));
-        } else {
-          this.toastr.error(res.msg || 'Không thể cập nhật thông tin');
-        }
-        this.isLoading = false;
-      },
-      error: () => {
-        this.toastr.error('Lỗi kết nối khi cập nhật thông tin');
-        this.isLoading = false;
-      }
-    });
+    this.store.dispatch(updateProfile({ user: this.user, jwt }));
   }
 
   selectAvatar(url: string) {
-    this.user.avatarUrl = url;
+    this.user = { ...this.user, avatarUrl: url };
   }
 
   onAvatarSelected(event: any) {
@@ -127,9 +166,9 @@ export class UserSettingComponent implements OnInit {
         return;
       }
       this.isLoading = true;
-      this.socialService.uploadFile(file , "social").subscribe({
+      this.socialService.uploadFile(file, 'social').subscribe({
         next: (res) => {
-          this.user.avatarUrl = res.url;
+          this.user = { ...this.user, avatarUrl: res.url };
           this.toastr.success('Tải ảnh đại diện thành công!');
           this.isLoading = false;
         },
@@ -141,82 +180,16 @@ export class UserSettingComponent implements OnInit {
     }
   }
 
-  loadFriendsData() {
-    const loginInfo = AuthDetail.getLoginedInfo();
-    const jwt = loginInfo?.jwt || localStorage.getItem('jwt');
-    if (!jwt) return;
-
-    // Load active friends list
-    this.authService.getFriends(jwt).subscribe({
-      next: (res: any) => {
-        if (res && res.code === 200 && res.data) {
-          this.friendsList = res.data;
-        }
-      },
-      error: () => {
-        this.toastr.error('Lỗi khi tải danh sách bạn bè');
-      }
-    });
-
-    // Load pending received requests (from notifications)
-    this.authService.getNotifications(jwt).subscribe({
-      next: (res: any) => {
-        if (res && res.code === 200 && res.data) {
-          this.pendingReceived = res.data.filter((notif: any) => 
-            notif.type === 'FRIEND_REQUEST' && notif.status === 'PENDING'
-          );
-        }
-      },
-      error: () => {
-        this.toastr.error('Lỗi khi tải lời mời kết bạn đã nhận');
-      }
-    });
-
-    // Load pending sent requests
-    this.authService.getSentRequests(jwt).subscribe({
-      next: (res: any) => {
-        if (res && res.code === 200 && res.data) {
-          this.pendingSent = res.data;
-        }
-      },
-      error: () => {
-        this.toastr.error('Lỗi khi tải yêu cầu kết bạn đã gửi');
-      }
-    });
-  }
-
   acceptFriendRequest(notif: any) {
     const jwt = localStorage.getItem('jwt') || AuthDetail.getLoginedInfo()?.jwt;
     if (!jwt) return;
-
-    this.authService.acceptFriendRequest(notif.id, jwt).subscribe({
-      next: (res: any) => {
-        if (res && res.code === 200) {
-          this.toastr.success('Đã đồng ý kết bạn!');
-          this.loadFriendsData();
-        } else {
-          this.toastr.error(res.msg || 'Không thể đồng ý kết bạn.');
-        }
-      },
-      error: () => this.toastr.error('Lỗi khi thực hiện chấp nhận kết bạn.')
-    });
+    this.store.dispatch(acceptFriendRequest({ notificationId: notif.id, jwt }));
   }
 
   declineFriendRequest(notif: any) {
     const jwt = localStorage.getItem('jwt') || AuthDetail.getLoginedInfo()?.jwt;
     if (!jwt) return;
-
-    this.authService.declineFriendRequest(notif.id, jwt).subscribe({
-      next: (res: any) => {
-        if (res && res.code === 200) {
-          this.toastr.info('Đã từ chối kết bạn.');
-          this.loadFriendsData();
-        } else {
-          this.toastr.error(res.msg || 'Không thể từ chối kết bạn.');
-        }
-      },
-      error: () => this.toastr.error('Lỗi khi thực hiện từ chối kết bạn.')
-    });
+    this.store.dispatch(declineFriendRequest({ notificationId: notif.id, jwt }));
   }
 
   cancelSentRequest(item: any) {
@@ -224,17 +197,7 @@ export class UserSettingComponent implements OnInit {
     if (!jwt) return;
 
     if (confirm(`Bạn có chắc chắn muốn hủy yêu cầu kết bạn gửi tới ${item.receiverName || 'người này'}?`)) {
-      this.authService.removeFriend(item.receiverId, jwt).subscribe({
-        next: (res: any) => {
-          if (res && res.code === 200) {
-            this.toastr.info('Đã hủy yêu cầu kết bạn.');
-            this.loadFriendsData();
-          } else {
-            this.toastr.error(res.msg || 'Không thể hủy yêu cầu kết bạn.');
-          }
-        },
-        error: () => this.toastr.error('Lỗi khi hủy yêu cầu kết bạn.')
-      });
+      this.store.dispatch(cancelSentRequest({ receiverId: item.receiverId, jwt }));
     }
   }
 
@@ -244,17 +207,7 @@ export class UserSettingComponent implements OnInit {
 
     const name = this.getDisplayName(friend.firstName, friend.lastName, friend.username);
     if (confirm(`Bạn có chắc chắn muốn hủy kết bạn với ${name}? Hai người sẽ không thể xem bài viết riêng tư hoặc nhắn tin cho nhau.`)) {
-      this.authService.removeFriend(friend.id, jwt).subscribe({
-        next: (res: any) => {
-          if (res && res.code === 200) {
-            this.toastr.success(`Đã hủy kết bạn với ${name}.`);
-            this.loadFriendsData();
-          } else {
-            this.toastr.error(res.msg || 'Không thể hủy kết bạn.');
-          }
-        },
-        error: () => this.toastr.error('Lỗi khi thực hiện hủy kết bạn.')
-      });
+      this.store.dispatch(unfriend({ friendId: friend.id, friendName: name, jwt }));
     }
   }
 
@@ -270,10 +223,11 @@ export class UserSettingComponent implements OnInit {
     return 'Nhà Đầu Tư ẩn danh';
   }
 
-   getFriendShareUrl(): string {
+  getFriendShareUrl(): string {
     if (!this.user || !this.user.id) return '';
     return `${window.location.origin}/profile/${this.user.id}`;
   }
+
   copyText(text: string, successMessage: string = 'Đã sao chép!') {
     if (!text) return;
     if (navigator.clipboard) {
@@ -292,6 +246,7 @@ export class UserSettingComponent implements OnInit {
       this.toastr.success(successMessage);
     }
   }
+
   copyFriendShareUrl() {
     const url = this.getFriendShareUrl();
     this.copyText(url, 'Đã sao chép liên kết kết bạn!');
