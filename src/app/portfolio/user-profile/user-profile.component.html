@@ -1,4 +1,4 @@
-<div class="portfolio-container animate__animated animate__fadeIn" style="max-width: 1000px; margin: 0 auto; padding: 1.5rem 1rem;">
+<div class="portfolio-container animate__animated animate__fadeIn">
   
   <!-- Profile Loader -->
   <div *ngIf="isLoading" class="text-center py-5" style="color: #64748b;">
@@ -25,6 +25,47 @@
 
       <!-- User Posts List (Unlocks when Friends/Self) -->
       <div *ngIf="isSelf || isFriend" class="feed-timeline">
+        
+        <!-- About Me Document Card -->
+        <!-- About Me Document Card (Trading Wiki Style) -->
+        <div class="about-me-card mb-4" *ngIf="targetProfile?.aboutMe || isSelf">
+          <div class="about-me-header d-flex justify-content-between align-items-center">
+            <h3 class="about-me-title m-0">
+              <i class="fas fa-user-tie me-2" style="color: #ff4500;"></i> Hồ sơ & Triết lý giao dịch
+            </h3>
+            <span class="badge-wiki" *ngIf="!isEditing"><i class="fas fa-book-open me-1"></i> Public Wiki</span>
+            <span class="badge-wiki editing" *ngIf="isEditing"><i class="fas fa-edit me-1"></i> Đang chỉnh sửa</span>
+          </div>
+          <div class="about-me-body">
+            <!-- Display about me content -->
+            <div *ngIf="!isEditing" class="about-me-content">
+              <div class="about-me-wrapper" *ngIf="targetProfile?.aboutMe">
+                <p class="about-me-text" style="white-space: pre-wrap; font-size: 0.95rem; line-height: 1.7; color: #1a1a1b; font-family: 'Inter', sans-serif;">{{ targetProfile.aboutMe }}</p>
+              </div>
+              <div class="empty-about-me-state text-center py-4" *ngIf="!targetProfile?.aboutMe && isSelf">
+                <i class="fas fa-file-invoice fa-3x text-muted mb-3"></i>
+                <h5 class="fw-bold text-dark">Thiết kế hồ sơ giao dịch của bạn</h5>
+                <p class="text-muted small px-3">Hãy chia sẻ triết lý giao dịch, các thị trường ưa thích, Robot trade đang chạy và kinh nghiệm đầu tư để người khác biết nhiều hơn về bạn!</p>
+                <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-3 mt-1" style="border: 1px solid #0079d3; color: #0079d3; font-weight: 700;" (click)="startEdit()">
+                  <i class="fas fa-feather-alt me-1"></i> Viết hồ sơ ngay
+                </button>
+              </div>
+            </div>
+            
+            <!-- Edit mode for about me -->
+            <div *ngIf="isEditing && isSelf" class="about-me-edit">
+              <div class="edit-guide-box mb-3 p-3" style="background-color: #f0f7ff; border: 1px solid #cde2ff; border-radius: 8px; font-size: 0.85rem;">
+                <span class="fw-bold text-dark d-block mb-1"><i class="fas fa-info-circle text-primary me-1"></i> Hướng dẫn viết hồ sơ:</span>
+                <span class="text-muted small d-block">Bạn nên chia sẻ:</span>
+                <span class="text-muted d-block">• <strong>Kinh nghiệm đầu tư:</strong> Số năm tham gia, thế mạnh phân tích kỹ thuật hoặc cơ bản.</span>
+                <span class="text-muted d-block">• <strong>Triết lý trading:</strong> Trend-following, Scalping, Swing trade hay tích sản dài hạn.</span>
+                <span class="text-muted d-block">• <strong>Công cụ sử dụng:</strong> Bot Binance, Chỉ báo RSI, MACD, hay các chỉ báo tự chế...</span>
+              </div>
+              <textarea class="form-control about-me-textarea" [(ngModel)]="editAboutMe" rows="12" style="font-size: 0.95rem; line-height: 1.6; border-radius: 8px; padding: 12px;" placeholder="Ví dụ:&#10;Tôi là một Swing Trader có 5 năm kinh nghiệm trong thị trường Crypto.&#10;• Phong cách: Giao dịch theo xu hướng dài hạn.&#10;• Cặp giao dịch: BTC/USDT, ETH/USDT.&#10;• Robot trade: Đang sử dụng bot Grid trading tự động của Binance.&#10;• Triết lý: Luôn đặt quản trị vốn và Stop Loss lên hàng đầu..."></textarea>
+            </div>
+          </div>
+        </div>
+
         <h3 class="section-title">
           <i class="far fa-newspaper me-2"></i> Bài viết của {{ isSelf ? 'bạn' : getDisplayName(targetUser.firstName, targetUser.lastName, targetUser.username) }}
         </h3>
@@ -149,7 +190,7 @@
                 <button class="btn-friendship is-friend" (click)="toggleFriendship()">
                   <i class="fas fa-user-check"></i> Đang Bạn Bè (Hủy)
                 </button>
-                <button class="btn-chat mt-2" [routerLink]="['/chat', userId]">
+                <button class="btn-chat mt-2" (click)="openDirectChat()">
                   <i class="far fa-comment-alt me-1"></i> Nhắn tin trò chuyện
                 </button>
               </ng-container>

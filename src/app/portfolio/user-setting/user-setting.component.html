@@ -20,6 +20,12 @@
                 <button type="button" class="sidebar-tab" [class.active]="activeTab === 'api'" (click)="activeTab = 'api'">
                     <i class="fas fa-key"></i> AI API Keys cá nhân
                 </button>
+                <button type="button" class="sidebar-tab" [class.active]="activeTab === 'friends'" (click)="activeTab = 'friends'; loadFriendsData()">
+                    <i class="fas fa-users"></i> Bạn bè
+                    <span class="badge bg-danger rounded-pill ms-auto" style="font-size: 0.7rem; padding: 4px 6px;" *ngIf="pendingReceived.length > 0">
+                        {{ pendingReceived.length }}
+                    </span>
+                </button>
             </div>
 
             <!-- Content Area -->
@@ -130,8 +136,96 @@
                         </div>
                     </div>
 
+                    <!-- TAB 3: FRIENDS MANAGEMENT -->
+                    <div *ngIf="activeTab === 'friends'" class="animate__animated animate__fadeIn">
+                        
+                        <!-- Panel 1: Pending Received Requests -->
+                        <div class="friends-section mb-4" *ngIf="pendingReceived.length > 0">
+                            <h5 class="section-title-reddit text-danger" style="font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem;">
+                                <i class="fas fa-user-plus me-2"></i> Lời mời kết bạn đã nhận ({{ pendingReceived.length }})
+                            </h5>
+                            <div class="friends-list-container">
+                                <div *ngFor="let notif of pendingReceived" class="friend-card-row">
+                                    <div class="friend-info">
+                                        <img [src]="notif.senderAvatarUrl || 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="friend-avatar" alt="Avatar">
+                                        <div class="friend-details">
+                                            <span class="friend-name">{{ notif.senderName }}</span>
+                                            <span class="friend-handle">u/{{ notif.content.split(' ')[0] }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="friend-actions">
+                                        <button type="button" class="btn-friend-action accept" (click)="acceptFriendRequest(notif)">
+                                            <i class="fas fa-check me-1"></i> Đồng ý
+                                        </button>
+                                        <button type="button" class="btn-friend-action decline" (click)="declineFriendRequest(notif)">
+                                            <i class="fas fa-times me-1"></i> Từ chối
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Panel 2: Friends List -->
+                        <div class="friends-section mb-4">
+                            <h5 class="section-title-reddit" style="font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; color: #1a1a1b;">
+                                <i class="fas fa-user-friends text-primary me-2"></i> Bạn bè đang kết nối ({{ friendsList.length }})
+                            </h5>
+                            <div *ngIf="friendsList.length === 0" class="empty-friends-state py-4 text-center">
+                                <i class="fas fa-user-friends fa-2x text-muted mb-2"></i>
+                                <p class="text-muted mb-0">Chưa có bạn bè nào. Hãy kết nối với các nhà đầu tư khác trên trang thảo luận!</p>
+                            </div>
+                            <div class="friends-list-container" *ngIf="friendsList.length > 0">
+                                <div *ngFor="let friend of friendsList" class="friend-card-row">
+                                    <div class="friend-info">
+                                        <img [src]="friend.avatarUrl || 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="friend-avatar" alt="Avatar">
+                                        <div class="friend-details">
+                                            <a [routerLink]="['/profile', friend.id]" class="friend-name-link">
+                                                {{ getDisplayName(friend.firstName, friend.lastName, friend.username) }}
+                                            </a>
+                                            <span class="friend-handle">u/{{ friend.username || friend.email.split('@')[0] }}</span>
+                                            <p class="friend-bio text-truncate mb-0" style="max-width: 250px;" *ngIf="friend.bio">{{ friend.bio }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="friend-actions">
+                                        <a [routerLink]="['/chat', friend.id]" class="btn-friend-action chat">
+                                            <i class="far fa-comment-alt me-1"></i> Nhắn tin
+                                        </a>
+                                        <button type="button" class="btn-friend-action unfriend" (click)="unfriend(friend)">
+                                            <i class="fas fa-user-minus me-1"></i> Hủy kết bạn
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Panel 3: Pending Sent Requests -->
+                        <div class="friends-section" *ngIf="pendingSent.length > 0">
+                            <h5 class="section-title-reddit text-muted" style="font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem;">
+                                <i class="fas fa-paper-plane me-2"></i> Lời mời kết bạn đã gửi ({{ pendingSent.length }})
+                            </h5>
+                            <div class="friends-list-container">
+                                <div *ngFor="let item of pendingSent" class="friend-card-row">
+                                    <div class="friend-info">
+                                        <img [src]="item.receiverAvatarUrl || 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="friend-avatar" alt="Avatar">
+                                        <div class="friend-details">
+                                            <span class="friend-name">{{ item.receiverName }}</span>
+                                            <span class="friend-handle">u/{{ item.receiverUsername }}</span>
+                                            <span class="friend-time text-muted small"><i class="far fa-clock me-1"></i>{{ item.timestamp | date:'dd/MM/yyyy HH:mm' }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="friend-actions">
+                                        <button type="button" class="btn-friend-action cancel" (click)="cancelSentRequest(item)">
+                                            <i class="fas fa-undo me-1"></i> Hủy yêu cầu
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
                     <!-- Action Button -->
-                    <div class="d-flex justify-content-end mt-5 border-top pt-4">
+                    <div *ngIf="activeTab !== 'friends'" class="d-flex justify-content-end mt-5 border-top pt-4">
                         <button type="submit" class="btn btn-reddit-save" [disabled]="isLoading">
                             <i class="fas fa-save me-2"></i> Lưu cấu hình
                         </button>

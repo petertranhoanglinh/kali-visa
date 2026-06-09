@@ -85,8 +85,9 @@
                              [class.active]="isItemActive(item)"
                              (mousedown)="selectSuggestion(item)"
                              (mouseenter)="hoverSuggestion(item)">
-                            <div class="item-icon-wrapper">
-                                <i class="fas {{ item.icon }}"></i>
+                            <div class="item-icon-wrapper" [class.user-avatar-wrapper]="item.isUser">
+                                <img *ngIf="item.isUser" [src]="item.avatarUrl || 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="search-user-avatar" />
+                                <i *ngIf="!item.isUser" class="fas {{ item.icon }}"></i>
                             </div>
                             <div class="item-details">
                                 <div class="item-title">{{ item.title }}</div>

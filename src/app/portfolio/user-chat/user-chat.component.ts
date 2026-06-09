@@ -65,7 +65,7 @@ export class UserChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     if (this.socketSubscription) {
       this.socketSubscription.unsubscribe();
     }
-    this.chatService.leaveRoom();
+    this.chatService.leaveRoom(this.roomId);
   }
 
   ngAfterViewChecked(): void {
@@ -128,13 +128,30 @@ export class UserChatComponent implements OnInit, OnDestroy, AfterViewChecked {
         // Sync our local list with live messages that belong to this roomId
         const matchingMsgs = liveMsgList.filter((m: any) => m.groupId === this.roomId);
         if (matchingMsgs.length > 0) {
-          // Prevent duplicates by checking if ID is already present
           matchingMsgs.forEach((newMsg: any) => {
-            const exists = this.messageList.some(m => m.timestamp === newMsg.timestamp && m.content === newMsg.content);
-            if (!exists) {
-              this.messageList.push(newMsg);
+            // Find if there is a temporary message sent by us that matches this message
+            const tempMsgIndex = this.messageList.findIndex(m => 
+              m.sender === newMsg.sender && 
+              m.content === newMsg.content && 
+              !m.id && // Temporary messages do not have a Mongo ID
+              Math.abs(new Date(m.timestamp).getTime() - new Date(newMsg.timestamp).getTime()) < 10000
+            );
+
+            if (tempMsgIndex > -1) {
+              // Replace the temporary message with the server-persisted message (has ID and correct timestamp)
+              this.messageList[tempMsgIndex] = newMsg;
+            } else {
+              // Check if the message is already in the list to prevent duplicates
+              const exists = this.messageList.some(m => 
+                m.id === newMsg.id || 
+                (m.content === newMsg.content && new Date(m.timestamp).getTime() === new Date(newMsg.timestamp).getTime())
+              );
+              if (!exists) {
+                this.messageList.push(newMsg);
+              }
             }
           });
+          this.scrollToBottom();
         }
       }
     });

@@ -12,6 +12,7 @@ import { CustomDialogComponent } from './custom-dialog/custom-dialog.component';
 import { SliderComponent } from './slider/slider.component';
 import { MessageButtonComponent } from './message-button/message-button.component';
 import { ChatBoxComponent } from './chat-box/chat-box.component';
+import { FriendChatTabsComponent } from './friend-chat-tabs/friend-chat-tabs.component';
 import { FormsModule } from '@angular/forms';
 
 @NgModule({
@@ -25,16 +26,14 @@ import { FormsModule } from '@angular/forms';
     CustomDialogComponent,
     SliderComponent,
     MessageButtonComponent,
-    ChatBoxComponent
-
-
+    ChatBoxComponent,
+    FriendChatTabsComponent
   ],
   imports: [
     CommonModule,
     MeterialModule,
     PipeModule,
     FormsModule
-
   ]
   ,
   exports:[
@@ -45,7 +44,8 @@ import { FormsModule } from '@angular/forms';
     ProductComponent,
     SliderComponent,
     MessageButtonComponent,
-    ChatBoxComponent
+    ChatBoxComponent,
+    FriendChatTabsComponent
   ],
 })
 export class ComponentsModule { }

@@ -430,7 +430,8 @@ preventDefault(event: Event): void {
       return;
     }
 
-    this.filteredSuggestions = this.searchItems.filter(item => {
+    // 1. Filter local page suggestions
+    const pageSuggestions = this.searchItems.filter(item => {
       if (item.category === 'Quản trị' && !this.isAdmin) {
         return false;
       }
@@ -441,6 +442,57 @@ preventDefault(event: Event): void {
       );
     });
 
+    this.filteredSuggestions = [...pageSuggestions];
+    this.updateGroupedSuggestions();
+    this.isSearchDropdownOpen = true;
+    this.activeSearchIndex = 0;
+
+    // 2. Fetch user suggestions asynchronously
+    if (this.isLogin) {
+      const jwt = localStorage.getItem('jwt') || AuthDetail.getLoginedInfo()?.jwt;
+      if (jwt) {
+        this.authService.searchUsers(query, jwt).subscribe({
+          next: (res: any) => {
+            // Verify if the search query hasn't changed in the meantime
+            if (this.searchQuery.trim().toLowerCase() !== query) return;
+
+            if (res && res.code === 200 && res.data) {
+              const userSuggestions = res.data.map((u: any) => {
+                const displayName = this.getDisplayNameForUser(u);
+                return {
+                  title: displayName,
+                  description: u.username ? `@${u.username}` : u.email,
+                  route: `/profile/${u.id}`,
+                  icon: 'fa-user',
+                  category: 'Người dùng',
+                  isUser: true,
+                  avatarUrl: u.avatarUrl
+                };
+              });
+              
+              // Merge pages and users
+              this.filteredSuggestions = [...pageSuggestions, ...userSuggestions];
+              this.updateGroupedSuggestions();
+            }
+          }
+        });
+      }
+    }
+  }
+
+  getDisplayNameForUser(user: any): string {
+    const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
+    if (fullName) return fullName;
+    if (user.username) {
+      if (user.username.includes('@')) {
+        return user.username.split('@')[0];
+      }
+      return user.username;
+    }
+    return 'Nhà Đầu Tư ẩn danh';
+  }
+
+  updateGroupedSuggestions() {
     this.groupedSuggestions = this.filteredSuggestions.reduce((groups, item) => {
       const category = item.category;
       if (!groups[category]) {
@@ -449,9 +501,6 @@ preventDefault(event: Event): void {
       groups[category].push(item);
       return groups;
     }, {} as { [key: string]: any[] });
-
-    this.isSearchDropdownOpen = true;
-    this.activeSearchIndex = 0;
   }
 
   onSearchFocus() {

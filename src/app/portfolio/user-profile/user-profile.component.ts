@@ -5,6 +5,7 @@ import { SocialService } from 'src/app/service/social.service';
 import { ToastrService } from 'ngx-toastr';
 import { AuthDetail } from 'src/app/common/util/auth-detail';
 import { PostModel } from 'src/app/model/social.model';
+import { ChatTabService } from 'src/app/service/chat-tab.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -29,14 +30,20 @@ export class UserProfileComponent implements OnInit {
   editOccupation: string = '';
   editWebsite: string = '';
   editLocation: string = '';
+  editAboutMe: string = '';
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService,
     private socialService: SocialService,
+    private chatTabService: ChatTabService,
     private toastr: ToastrService
   ) {}
+
+  openDirectChat() {
+    this.chatTabService.openTab(this.userId);
+  }
 
   ngOnInit(): void {
     const loginInfo = AuthDetail.getLoginedInfo();
@@ -75,6 +82,7 @@ export class UserProfileComponent implements OnInit {
             this.editOccupation = this.targetProfile.occupation || '';
             this.editWebsite = this.targetProfile.website || '';
             this.editLocation = this.targetProfile.location || '';
+            this.editAboutMe = this.targetProfile.aboutMe || '';
           }
 
           // Fetch posts if self or friend
@@ -191,7 +199,8 @@ export class UserProfileComponent implements OnInit {
       bio: this.editBio,
       occupation: this.editOccupation,
       website: this.editWebsite,
-      location: this.editLocation
+      location: this.editLocation,
+      aboutMe: this.editAboutMe
     };
 
     this.authService.updateProfileDetails(details, jwt).subscribe({

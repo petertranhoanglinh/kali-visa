@@ -14,7 +14,7 @@ export class WebSocketService {
   private messageSubject: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   private notificationSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private priceSubject: BehaviorSubject<Data> = new BehaviorSubject<Data>({} as Data);
-  private currentRoomSubscription: any; // To hold the current room subscription
+  private roomSubscriptions: Map<string, any> = new Map(); // Store active room subscriptions
   private notificationsSubscription: any; // For header notifications
 
   constructor() {
@@ -36,22 +36,36 @@ export class WebSocketService {
   }
 
   joinRoom(roomId: string) {
-    // If already subscribed to a room, leave it before joining a new one
-    this.leaveRoom();
+    // Check if we are already subscribed to this room to avoid duplicates
+    if (this.roomSubscriptions.has(roomId)) {
+      return;
+    }
 
-    this.currentRoomSubscription = this.stompClient.subscribe(`/topic/${roomId}`, (messages: any) => {
+    const sub = this.stompClient.subscribe(`/topic/${roomId}`, (messages: any) => {
       const messageContent = JSON.parse(messages.body);
       const currentMessage = this.messageSubject.getValue();
       currentMessage.push(messageContent);
       this.messageSubject.next(currentMessage);
     });
+
+    this.roomSubscriptions.set(roomId, sub);
   }
 
-  leaveRoom(): void {
-    if (this.currentRoomSubscription) {
-      this.currentRoomSubscription.unsubscribe(); // Unsubscribe from the current room
-      this.currentRoomSubscription = null; // Clear the subscription reference
-      console.log('Left the room and unsubscribed from messages.');
+  leaveRoom(roomId?: string): void {
+    if (roomId) {
+      const sub = this.roomSubscriptions.get(roomId);
+      if (sub) {
+        sub.unsubscribe();
+        this.roomSubscriptions.delete(roomId);
+        console.log(`Left the room ${roomId} and unsubscribed from messages.`);
+      }
+    } else {
+      // Unsubscribe from all rooms
+      this.roomSubscriptions.forEach((sub, key) => {
+        sub.unsubscribe();
+        console.log(`Left the room ${key} and unsubscribed.`);
+      });
+      this.roomSubscriptions.clear();
     }
   }
 

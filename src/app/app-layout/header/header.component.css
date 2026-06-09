@@ -746,3 +746,16 @@
   gap: 4px;
   font-weight: 700;
 }
+
+/* User Search Suggestions Styling */
+.search-user-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.item-icon-wrapper.user-avatar-wrapper {
+  background-color: transparent !important;
+  padding: 0;
+}

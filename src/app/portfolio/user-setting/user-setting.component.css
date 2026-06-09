@@ -215,3 +215,182 @@
     font-size: 0.8rem;
     display: inline-block;
 }
+
+/* Friends Section Styles */
+.friends-section {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.friends-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.friend-card-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1rem;
+    border-radius: 12px;
+    background-color: #f8fafc;
+    border: 1px solid #f1f5f9;
+    transition: all 0.2s ease;
+}
+
+.friend-card-row:hover {
+    background-color: #f1f5f9;
+    border-color: #e2e8f0;
+}
+
+.friend-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+    min-width: 0; /* allows text truncation inside flex child */
+}
+
+.friend-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    background-color: #e2e8f0;
+}
+
+.friend-details {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.friend-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.friend-name-link {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1e293b;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.friend-name-link:hover {
+    color: #ff4500;
+    text-decoration: underline;
+}
+
+.friend-handle {
+    font-size: 0.8rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.friend-bio {
+    font-size: 0.8rem;
+    color: #475569;
+    margin-top: 0.25rem;
+}
+
+.friend-time {
+    font-size: 0.75rem;
+    margin-top: 0.2rem;
+}
+
+.friend-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-friend-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.45rem 1rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    text-decoration: none !important;
+}
+
+.btn-friend-action.accept {
+    background-color: #22c55e;
+    color: #ffffff;
+}
+
+.btn-friend-action.accept:hover {
+    background-color: #16a34a;
+}
+
+.btn-friend-action.decline {
+    background-color: #ffffff;
+    border-color: #cbd5e1;
+    color: #64748b;
+}
+
+.btn-friend-action.decline:hover {
+    background-color: #f1f5f9;
+    color: #334155;
+    border-color: #94a3b8;
+}
+
+.btn-friend-action.chat {
+    background-color: #0079d3;
+    color: #ffffff;
+}
+
+.btn-friend-action.chat:hover {
+    background-color: #0060a9;
+}
+
+.btn-friend-action.unfriend {
+    background-color: #ffffff;
+    border-color: #e2e8f0;
+    color: #ef4444;
+}
+
+.btn-friend-action.unfriend:hover {
+    background-color: #fef2f2;
+    border-color: #fca5a5;
+}
+
+.btn-friend-action.cancel {
+    background-color: #ffffff;
+    border-color: #cbd5e1;
+    color: #64748b;
+}
+
+.btn-friend-action.cancel:hover {
+    background-color: #fef2f2;
+    border-color: #fca5a5;
+    color: #ef4444;
+}
+
+.empty-friends-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px dashed #cbd5e1;
+    border-radius: 12px;
+    background-color: #fafbfd;
+}
+
+.empty-friends-state p {
+    font-size: 0.88rem;
+    color: #64748b;
+}

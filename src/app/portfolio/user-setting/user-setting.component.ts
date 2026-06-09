@@ -25,8 +25,13 @@ export class UserSettingComponent implements OnInit {
   };
 
   isLoading = false;
-  activeTab: 'profile' | 'api' = 'profile';
+  activeTab: 'profile' | 'api' | 'friends' = 'profile';
   showApiKey = false;
+
+  // Friends management state
+  friendsList: any[] = [];
+  pendingReceived: any[] = [];
+  pendingSent: any[] = [];
 
   // Predefined avatar selections (like Reddit avatars)
   avatars = [
@@ -48,6 +53,7 @@ export class UserSettingComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadProfile();
+    this.loadFriendsData();
   }
 
   loadProfile() {
@@ -132,5 +138,134 @@ export class UserSettingComponent implements OnInit {
         }
       });
     }
+  }
+
+  loadFriendsData() {
+    const loginInfo = AuthDetail.getLoginedInfo();
+    const jwt = loginInfo?.jwt || localStorage.getItem('jwt');
+    if (!jwt) return;
+
+    // Load active friends list
+    this.authService.getFriends(jwt).subscribe({
+      next: (res: any) => {
+        if (res && res.code === 200 && res.data) {
+          this.friendsList = res.data;
+        }
+      },
+      error: () => {
+        this.toastr.error('Lỗi khi tải danh sách bạn bè');
+      }
+    });
+
+    // Load pending received requests (from notifications)
+    this.authService.getNotifications(jwt).subscribe({
+      next: (res: any) => {
+        if (res && res.code === 200 && res.data) {
+          this.pendingReceived = res.data.filter((notif: any) => 
+            notif.type === 'FRIEND_REQUEST' && notif.status === 'PENDING'
+          );
+        }
+      },
+      error: () => {
+        this.toastr.error('Lỗi khi tải lời mời kết bạn đã nhận');
+      }
+    });
+
+    // Load pending sent requests
+    this.authService.getSentRequests(jwt).subscribe({
+      next: (res: any) => {
+        if (res && res.code === 200 && res.data) {
+          this.pendingSent = res.data;
+        }
+      },
+      error: () => {
+        this.toastr.error('Lỗi khi tải yêu cầu kết bạn đã gửi');
+      }
+    });
+  }
+
+  acceptFriendRequest(notif: any) {
+    const jwt = localStorage.getItem('jwt') || AuthDetail.getLoginedInfo()?.jwt;
+    if (!jwt) return;
+
+    this.authService.acceptFriendRequest(notif.id, jwt).subscribe({
+      next: (res: any) => {
+        if (res && res.code === 200) {
+          this.toastr.success('Đã đồng ý kết bạn!');
+          this.loadFriendsData();
+        } else {
+          this.toastr.error(res.msg || 'Không thể đồng ý kết bạn.');
+        }
+      },
+      error: () => this.toastr.error('Lỗi khi thực hiện chấp nhận kết bạn.')
+    });
+  }
+
+  declineFriendRequest(notif: any) {
+    const jwt = localStorage.getItem('jwt') || AuthDetail.getLoginedInfo()?.jwt;
+    if (!jwt) return;
+
+    this.authService.declineFriendRequest(notif.id, jwt).subscribe({
+      next: (res: any) => {
+        if (res && res.code === 200) {
+          this.toastr.info('Đã từ chối kết bạn.');
+          this.loadFriendsData();
+        } else {
+          this.toastr.error(res.msg || 'Không thể từ chối kết bạn.');
+        }
+      },
+      error: () => this.toastr.error('Lỗi khi thực hiện từ chối kết bạn.')
+    });
+  }
+
+  cancelSentRequest(item: any) {
+    const jwt = localStorage.getItem('jwt') || AuthDetail.getLoginedInfo()?.jwt;
+    if (!jwt) return;
+
+    if (confirm(`Bạn có chắc chắn muốn hủy yêu cầu kết bạn gửi tới ${item.receiverName || 'người này'}?`)) {
+      this.authService.removeFriend(item.receiverId, jwt).subscribe({
+        next: (res: any) => {
+          if (res && res.code === 200) {
+            this.toastr.info('Đã hủy yêu cầu kết bạn.');
+            this.loadFriendsData();
+          } else {
+            this.toastr.error(res.msg || 'Không thể hủy yêu cầu kết bạn.');
+          }
+        },
+        error: () => this.toastr.error('Lỗi khi hủy yêu cầu kết bạn.')
+      });
+    }
+  }
+
+  unfriend(friend: any) {
+    const jwt = localStorage.getItem('jwt') || AuthDetail.getLoginedInfo()?.jwt;
+    if (!jwt) return;
+
+    const name = this.getDisplayName(friend.firstName, friend.lastName, friend.username);
+    if (confirm(`Bạn có chắc chắn muốn hủy kết bạn với ${name}? Hai người sẽ không thể xem bài viết riêng tư hoặc nhắn tin cho nhau.`)) {
+      this.authService.removeFriend(friend.id, jwt).subscribe({
+        next: (res: any) => {
+          if (res && res.code === 200) {
+            this.toastr.success(`Đã hủy kết bạn với ${name}.`);
+            this.loadFriendsData();
+          } else {
+            this.toastr.error(res.msg || 'Không thể hủy kết bạn.');
+          }
+        },
+        error: () => this.toastr.error('Lỗi khi thực hiện hủy kết bạn.')
+      });
+    }
+  }
+
+  getDisplayName(firstName?: string, lastName?: string, fallbackName?: string): string {
+    const fullName = `${firstName || ''} ${lastName || ''}`.trim();
+    if (fullName) return fullName;
+    if (fallbackName) {
+      if (fallbackName.includes('@')) {
+        return fallbackName.split('@')[0];
+      }
+      return fallbackName;
+    }
+    return 'Nhà Đầu Tư ẩn danh';
   }
 }

@@ -1,0 +1,89 @@
+<div class="floating-chat-system">
+  <!-- Active Chat Tabs (displayed side-by-side) -->
+  <div class="chat-tabs-container">
+    <div *ngFor="let tab of activeTabs; let i = index" class="chat-tab" [class.minimized]="tab.minimized">
+      
+      <!-- Tab Header -->
+      <div class="tab-header" (click)="toggleMinimize(tab.friendId)">
+        <div class="header-user-info">
+          <div class="avatar-wrap">
+            <img [src]="tab.user.avatarUrl || 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="user-avatar" />
+            <span class="status-indicator online"></span>
+          </div>
+          <span class="user-name">{{ getDisplayName(tab.user.firstName, tab.user.lastName, tab.user.username) }}</span>
+        </div>
+        <div class="header-actions" (click)="$event.stopPropagation()">
+          <button class="btn-action" (click)="toggleMinimize(tab.friendId)" title="Thu nhỏ">
+            <i class="fas" [class.fa-minus]="!tab.minimized" [class.fa-chevron-up]="tab.minimized"></i>
+          </button>
+          <button class="btn-action close" (click)="closeChat(tab.friendId)" title="Đóng">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab Content Area (Hidden if minimized) -->
+      <ng-container *ngIf="!tab.minimized">
+        <!-- Message list -->
+        <div class="tab-messages" #scrollContainer>
+          <div class="messages-inner">
+            <div *ngFor="let msg of tab.messages" class="tab-msg-row" [class.outgoing]="msg.sender === currentUserId" [class.incoming]="msg.sender !== currentUserId">
+              <div class="msg-bubble" [title]="msg.timestamp | date:'dd/MM/yyyy HH:mm'">
+                {{ msg.content }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Composer Footer -->
+        <div class="tab-footer">
+          <input 
+            type="text" 
+            [(ngModel)]="tab.input" 
+            (keyup.enter)="sendMessage(tab)"
+            placeholder="Nhập tin nhắn..." 
+            class="tab-input"
+          />
+          <button class="btn-send" (click)="sendMessage(tab)" [disabled]="!tab.input.trim()">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- Friends List Floating Launcher -->
+  <div class="friend-list-wrapper">
+    <!-- Panel showing list of friends -->
+    <div *ngIf="isFriendListOpen" class="friend-list-panel animate__animated animate__fadeInUp">
+      <div class="panel-header">
+        <span>Bạn bè ({{ friends.length }})</span>
+        <button class="btn-close-panel" (click)="toggleFriendList()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="panel-body">
+        <div *ngIf="friends.length === 0" class="empty-state">
+          <i class="fas fa-user-friends fa-2x text-muted mb-2"></i>
+          <p>Chưa có bạn bè nào.</p>
+        </div>
+        <div *ngFor="let friend of friends" class="friend-item" (click)="openChat(friend.id)">
+          <div class="friend-avatar-wrap">
+            <img [src]="friend.avatarUrl || 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="friend-avatar" />
+            <span class="status-indicator online"></span>
+          </div>
+          <div class="friend-details">
+            <span class="friend-name">{{ getDisplayName(friend.firstName, friend.lastName, friend.username) }}</span>
+            <span class="friend-status text-muted">Trực tuyến</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toggle button -->
+    <button class="btn-launcher" (click)="toggleFriendList()" [class.active]="isFriendListOpen" title="Trò chuyện với bạn bè">
+      <i class="far fa-comment-dots fa-lg"></i>
+      <span class="badge-dot" *ngIf="friends.length > 0"></span>
+    </button>
+  </div>
+</div>

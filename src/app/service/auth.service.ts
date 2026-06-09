@@ -163,6 +163,22 @@ export class AuthService {
     });
     return this._http.post<ResultModel>(url, {}, { headers: headers });
   }
+
+  getSentRequests(jwt: string): Observable<ResultModel> {
+    let url = `${environment.apiUrl}/api/user/friends/requests/sent`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${jwt}`
+    });
+    return this._http.get<ResultModel>(url, { headers: headers });
+  }
+
+  searchUsers(query: string, jwt: string): Observable<ResultModel> {
+    let url = `${environment.apiUrl}/api/user/search?query=${query}`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${jwt}`
+    });
+    return this._http.get<ResultModel>(url, { headers: headers });
+  }
 }
 
 
