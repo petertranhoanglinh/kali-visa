@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { AuthDetail } from 'src/app/common/util/auth-detail';
 import { PostModel } from 'src/app/model/social.model';
 import { ChatTabService } from 'src/app/service/chat-tab.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-user-profile',
@@ -31,6 +32,7 @@ export class UserProfileComponent implements OnInit {
   editWebsite: string = '';
   editLocation: string = '';
   editAboutMe: string = '';
+  apiUrl = environment.apiUrl;
 
   constructor(
     private route: ActivatedRoute,

@@ -13,6 +13,7 @@ export interface PostModel {
   authorFirstName?: string;
   authorLastName?: string;
   authorAvatarUrl?: string;
+  
 }
 
 export interface CommentModel {

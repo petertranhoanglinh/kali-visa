@@ -3,6 +3,7 @@ import { AuthService } from 'src/app/service/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { AuthDetail } from 'src/app/common/util/auth-detail';
 import { SocialService } from 'src/app/service/social.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-user-setting',
@@ -23,7 +24,7 @@ export class UserSettingComponent implements OnInit {
     geminiApiKey: '',
     tier: 'BASIC'
   };
-
+  apiUrl = environment.apiUrl;
   isLoading = false;
   activeTab: 'profile' | 'api' | 'friends' = 'profile';
   showApiKey = false;
@@ -126,7 +127,7 @@ export class UserSettingComponent implements OnInit {
         return;
       }
       this.isLoading = true;
-      this.socialService.uploadFile(file).subscribe({
+      this.socialService.uploadFile(file , "social").subscribe({
         next: (res) => {
           this.user.avatarUrl = res.url;
           this.toastr.success('Tải ảnh đại diện thành công!');
@@ -267,5 +268,32 @@ export class UserSettingComponent implements OnInit {
       return fallbackName;
     }
     return 'Nhà Đầu Tư ẩn danh';
+  }
+
+   getFriendShareUrl(): string {
+    if (!this.user || !this.user.id) return '';
+    return `${window.location.origin}/profile/${this.user.id}`;
+  }
+  copyText(text: string, successMessage: string = 'Đã sao chép!') {
+    if (!text) return;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(() => {
+        this.toastr.success(successMessage);
+      }).catch(() => {
+        this.toastr.error('Lỗi khi sao chép.');
+      });
+    } else {
+      const el = document.createElement('textarea');
+      el.value = text;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      this.toastr.success(successMessage);
+    }
+  }
+  copyFriendShareUrl() {
+    const url = this.getFriendShareUrl();
+    this.copyText(url, 'Đã sao chép liên kết kết bạn!');
   }
 }

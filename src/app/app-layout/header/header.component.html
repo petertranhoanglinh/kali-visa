@@ -86,7 +86,7 @@
                              (mousedown)="selectSuggestion(item)"
                              (mouseenter)="hoverSuggestion(item)">
                             <div class="item-icon-wrapper" [class.user-avatar-wrapper]="item.isUser">
-                                <img *ngIf="item.isUser" [src]="item.avatarUrl || 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="search-user-avatar" />
+                                <img *ngIf="item.isUser" [src]="item.avatarUrl ? apiUrl + item.avatarUrl : 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="search-user-avatar" />
                                 <i *ngIf="!item.isUser" class="fas {{ item.icon }}"></i>
                             </div>
                             <div class="item-details">
@@ -141,7 +141,7 @@
                                  [class.unread]="notif.status === 'UNREAD' || notif.status === 'PENDING'"
                                  (click)="markAsRead(notif)">
                                 <div class="notif-avatar-wrap">
-                                    <img [src]="notif.senderAvatarUrl || 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="notif-avatar" />
+                                    <img [src]="notif.senderAvatarUrl ? apiUrl + notif.senderAvatarUrl :  'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png' " class="notif-avatar" />
                                 </div>
                                 <div class="notif-content-wrap">
                                     <p class="notif-text">{{ notif.content }}</p>

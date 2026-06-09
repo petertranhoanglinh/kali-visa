@@ -7,7 +7,7 @@
       <div class="tab-header" (click)="toggleMinimize(tab.friendId)">
         <div class="header-user-info">
           <div class="avatar-wrap">
-            <img [src]="tab.user.avatarUrl || 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="user-avatar" />
+            <img [src]="tab.user.avatarUrl ? apiUrl+ tab.user.avatarUrl : 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="user-avatar" />
             <span class="status-indicator online"></span>
           </div>
           <span class="user-name">{{ getDisplayName(tab.user.firstName, tab.user.lastName, tab.user.username) }}</span>
@@ -37,8 +37,8 @@
                    [title]="msg.recalled ? 'Tin nhắn đã thu hồi' : (msg.timestamp | date:'dd/MM/yyyy HH:mm')">
                 <!-- Media content (if any) -->
                 <div *ngIf="msg.mediaUrl && !msg.recalled" class="tab-message-media">
-                  <img *ngIf="msg.mediaType === 'IMAGE'" [src]="msg.mediaUrl" class="tab-media-img" alt="Hình ảnh đính kèm" (click)="openImage(msg.mediaUrl)" />
-                  <video *ngIf="msg.mediaType === 'VIDEO'" [src]="msg.mediaUrl" controls class="tab-media-video" preload="metadata"></video>
+                  <img *ngIf="msg.mediaType === 'IMAGE'" [src]="apiUrl + msg.mediaUrl" class="tab-media-img" alt="Hình ảnh đính kèm" (click)="openImage(apiUrl + msg.mediaUrl)" />
+                  <video *ngIf="msg.mediaType === 'VIDEO'" [src]="apiUrl + msg.mediaUrl" controls class="tab-media-video" preload="metadata"></video>
                 </div>
                 <!-- Text content -->
                 <span *ngIf="msg.recalled" class="recalled-text">
@@ -103,7 +103,7 @@
         </div>
         <div *ngFor="let friend of friends" class="friend-item" (click)="openChat(friend.id)">
           <div class="friend-avatar-wrap">
-            <img [src]="friend.avatarUrl || 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="friend-avatar" />
+            <img [src]="friend.avatarUrl  ? apiUrl + friend.avatarUrl : 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="friend-avatar" />
             <span class="status-indicator online"></span>
           </div>
           <div class="friend-details">

@@ -13,7 +13,7 @@
           <i class="fas fa-arrow-left"></i>
         </button>
         <div class="friend-avatar-wrap">
-          <img [src]="friendUser.avatarUrl || 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="friend-avatar" />
+          <img [src]="friendUser.avatarUrl ? apiUrl + friendUser.avatarUrl : 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="friend-avatar" />
           <span class="status-indicator online"></span>
         </div>
         <div class="friend-info">
@@ -32,7 +32,7 @@
     <!-- Message History Area -->
     <div class="chat-messages" #messagesContainer>
       <div class="chat-start-notice">
-        <img [src]="friendUser.avatarUrl || 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="start-avatar" />
+        <img [src]="friendUser.avatarUrl ? apiUrl + friendUser.avatarUrl : 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="start-avatar" />
         <h4>Đây là khởi đầu của cuộc trò chuyện của bạn với {{ getDisplayName(friendUser.firstName, friendUser.lastName, friendUser.username) }}</h4>
         <p>Bảo mật và an toàn. Hãy luôn tôn trọng người khác khi trò chuyện.</p>
       </div>
@@ -40,7 +40,7 @@
       <div *ngFor="let msg of messageList" class="message-row" [class.outgoing]="msg.sender === currentUserId" [class.incoming]="msg.sender !== currentUserId">
         <!-- Avatar for incoming messages -->
         <div *ngIf="msg.sender !== currentUserId" class="msg-avatar-wrap">
-          <img [src]="friendUser.avatarUrl || 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="msg-avatar" />
+          <img [src]=" friendUser.avatarUrl ? apiUrl + friendUser.avatarUrl : 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="msg-avatar" />
         </div>
 
         <div class="message-bubble-wrap">
@@ -50,8 +50,8 @@
                [title]="msg.recalled ? 'Tin nhắn đã thu hồi' : 'Click chuột phải để thu hồi'">
             <!-- Media content (if any) -->
             <div *ngIf="msg.mediaUrl && !msg.recalled" class="message-media">
-              <img *ngIf="msg.mediaType === 'IMAGE'" [src]="msg.mediaUrl" class="chat-media-img" alt="Hình ảnh đính kèm" />
-              <video *ngIf="msg.mediaType === 'VIDEO'" [src]="msg.mediaUrl" controls class="chat-media-video" preload="metadata"></video>
+              <img *ngIf="msg.mediaType === 'IMAGE'" [src]="apiUrl +  msg.mediaUrl" class="chat-media-img" alt="Hình ảnh đính kèm" />
+              <video *ngIf="msg.mediaType === 'VIDEO'" [src]="apiUrl + msg.mediaUrl" controls class="chat-media-video" preload="metadata"></video>
             </div>
             <!-- Text content -->
             <div *ngIf="msg.recalled" class="message-text recalled-text">

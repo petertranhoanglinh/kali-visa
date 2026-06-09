@@ -7,6 +7,7 @@ import { CommonUtils } from 'src/app/common/util/common-utils';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-social-feed',
@@ -27,8 +28,6 @@ export class SocialFeedComponent implements OnInit {
   onReady(editor: any): void {
     const toolbarElement = editor.ui.view.toolbar.element;
     const editableElement = editor.ui.getEditableElement();
-
-    // Thêm toolbar vào DOM (Decoupled layout)
     editableElement.parentElement.insertBefore(toolbarElement, editableElement);
   }
   
@@ -55,6 +54,7 @@ export class SocialFeedComponent implements OnInit {
 
   // Comments
   newCommentContent: { [postId: string]: string } = {};
+  apiUrl = environment.apiUrl
 
   constructor(
     private socialService: SocialService,
@@ -211,7 +211,7 @@ export class SocialFeedComponent implements OnInit {
         return;
       }
       this.isUploading = true;
-      this.socialService.uploadFile(file).subscribe({
+      this.socialService.uploadFile(file, "user").subscribe({
         next: (res) => {
           if (!this.currentUserProfile) {
             this.currentUserProfile = {
@@ -301,7 +301,7 @@ export class SocialFeedComponent implements OnInit {
     this.isUploading = true;
 
     if (this.selectedFile) {
-      this.socialService.uploadFile(this.selectedFile).subscribe({
+      this.socialService.uploadFile(this.selectedFile, "post").subscribe({
         next: (res) => {
           this.createPostCall(res.url, res.type as any);
         },

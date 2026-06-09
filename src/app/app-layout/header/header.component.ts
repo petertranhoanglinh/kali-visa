@@ -17,6 +17,7 @@ import { CartService } from 'src/app/service/cart-service.service';
 import { AuthService } from 'src/app/service/auth.service';
 import { WebSocketService } from 'src/app/service/web-socket-service.service';
 import { ToastrService } from 'ngx-toastr';
+import { environment } from 'src/environments/environment';
 
 declare var mobileInit: any;  // Khai báo jQuery
 @Component({
@@ -37,6 +38,7 @@ export class HeaderComponent implements OnInit {
   unreadCount = 0;
   notifications: any[] = [];
   isNotificationDropdownOpen = false;
+  apiUrl = environment.apiUrl;
 
   @ViewChild('searchInputRef') searchInputRef!: ElementRef;
 

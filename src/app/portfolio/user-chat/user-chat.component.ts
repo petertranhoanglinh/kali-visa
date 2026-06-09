@@ -8,6 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 import { AuthDetail } from 'src/app/common/util/auth-detail';
 import { Subscription } from 'rxjs';
 import { UserChatMessage } from 'src/app/model/userChatMessage.model';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-user-chat',
@@ -42,6 +43,7 @@ export class UserChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   selectedFile: File | null = null;
   previewUrl: string | ArrayBuffer | null = null;
   previewType: 'IMAGE' | 'VIDEO' | 'NONE' = 'NONE';
+  apiUrl= environment.apiUrl;
 
   constructor(
     private route: ActivatedRoute,
@@ -267,7 +269,7 @@ export class UserChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.isUploading = true;
 
     if (this.selectedFile) {
-      this.socialService.uploadFile(this.selectedFile).subscribe({
+      this.socialService.uploadFile(this.selectedFile, "chat").subscribe({
         next: (res) => {
           this.submitMessage(res.url, res.type);
         },

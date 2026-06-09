@@ -37,7 +37,33 @@
                         <div class="row">
                             <!-- Left: Form fields -->
                             <div class="col-lg-8">
+                                <!-- Share Profile & ID Card -->
+                                <div class="share-profile-card p-3 mb-4">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-6 mb-3 mb-md-0">
+                                            <div class="d-flex align-items-center gap-2 mb-1">
+                                                <span class="share-label"><i class="fas fa-id-badge text-primary me-1"></i> ID Tài khoản:</span>
+                                                <code class="user-id-code" style="cursor: pointer;" (click)="copyText(user.id, 'Đã sao chép ID!')" title="Click để sao chép">{{ user.id }}</code>
+                                                <button type="button" class="btn btn-copy-icon" (click)="copyText(user.id, 'Đã sao chép ID!')" title="Sao chép ID">
+                                                    <i class="far fa-copy"></i>
+                                                </button>
+                                            </div>
+                                            <div class="small text-muted">Mã số tài khoản định danh duy nhất của bạn.</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <span class="share-label mb-1 d-block"><i class="fas fa-share-alt text-success me-1"></i> Liên kết kết bạn (Share URL):</span>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control form-control-reddit-sm" [value]="getFriendShareUrl()" readonly>
+                                                <button class="btn btn-reddit-share shadow-none" type="button" (click)="copyFriendShareUrl()">
+                                                    <i class="far fa-copy me-1"></i> Sao chép
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="row">
+
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label-reddit">Họ (Last Name)</label>
                                         <input type="text" class="form-control form-control-reddit w-100" 
@@ -84,17 +110,8 @@
                             <!-- Right: Avatar Editor -->
                             <div class="col-lg-4 mt-4 mt-lg-0">
                                 <div class="profile-avatar-box">
-                                    <img [src]="user.avatarUrl" alt="Avatar" class="avatar-circle-large mb-3">
+                                    <img [src]="apiUrl +  user.avatarUrl" alt="Avatar" class="avatar-circle-large mb-3">
                                     <span class="fw-bold text-dark small">Chọn ảnh đại diện của bạn</span>
-                                    
-                                    <div class="avatar-picker-grid">
-                                        <button type="button" *ngFor="let avatar of avatars" 
-                                                class="avatar-option-btn" 
-                                                [class.selected]="user.avatarUrl === avatar"
-                                                (click)="selectAvatar(avatar)">
-                                            <img [src]="avatar" class="avatar-option-img" alt="Avatar option">
-                                        </button>
-                                    </div>
 
                                     <div class="mt-3 w-100">
                                         <label for="avatar-upload-input" class="btn btn-outline-primary btn-sm w-100 text-uppercase fw-bold" style="border-radius: 9999px; font-size: 0.75rem; padding: 6px 12px; cursor: pointer; border: 1px solid #0079d3; color: #0079d3; display: flex; align-items: center; justify-content: center; gap: 6px;">
@@ -147,7 +164,7 @@
                             <div class="friends-list-container">
                                 <div *ngFor="let notif of pendingReceived" class="friend-card-row">
                                     <div class="friend-info">
-                                        <img [src]="notif.senderAvatarUrl || 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="friend-avatar" alt="Avatar">
+                                        <img [src]="notif.senderAvatarUrl ? apiUrl + notif.senderAvatarUrl : 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="friend-avatar" alt="Avatar">
                                         <div class="friend-details">
                                             <span class="friend-name">{{ notif.senderName }}</span>
                                             <span class="friend-handle">u/{{ notif.content.split(' ')[0] }}</span>
@@ -177,7 +194,7 @@
                             <div class="friends-list-container" *ngIf="friendsList.length > 0">
                                 <div *ngFor="let friend of friendsList" class="friend-card-row">
                                     <div class="friend-info">
-                                        <img [src]="friend.avatarUrl || 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="friend-avatar" alt="Avatar">
+                                        <img [src]="friend.avatarUrl ? apiUrl + friend.avatarUrl : 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="friend-avatar" alt="Avatar">
                                         <div class="friend-details">
                                             <a [routerLink]="['/profile', friend.id]" class="friend-name-link">
                                                 {{ getDisplayName(friend.firstName, friend.lastName, friend.username) }}
@@ -206,7 +223,7 @@
                             <div class="friends-list-container">
                                 <div *ngFor="let item of pendingSent" class="friend-card-row">
                                     <div class="friend-info">
-                                        <img [src]="item.receiverAvatarUrl || 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="friend-avatar" alt="Avatar">
+                                        <img [src]="item.receiverAvatarUrl ? apiUrl + item.receiverAvatarUrl : 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="friend-avatar" alt="Avatar">
                                         <div class="friend-details">
                                             <span class="friend-name">{{ item.receiverName }}</span>
                                             <span class="friend-handle">u/{{ item.receiverUsername }}</span>

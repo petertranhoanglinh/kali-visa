@@ -78,7 +78,7 @@
         <div *ngFor="let post of posts" class="post-card">
           <div class="post-header">
             <div class="avatar-wrapper">
-              <img [src]="post.authorAvatarUrl || 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="avatar-img" />
+              <img [src]="post.authorAvatarUrl ? post.authorAvatarUrl : 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="avatar-img" />
             </div>
             <div style="flex: 1;">
               <div class="post-meta-line">
@@ -121,7 +121,7 @@
         
         <!-- Avatar Placement -->
         <div class="profile-avatar-container">
-          <img [src]="targetUser.avatarUrl || 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="profile-avatar-img" />
+          <img [src]="targetUser.avatarUrl ? apiUrl + targetUser.avatarUrl : 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="profile-avatar-img" />
         </div>
 
         <div class="user-card-body">

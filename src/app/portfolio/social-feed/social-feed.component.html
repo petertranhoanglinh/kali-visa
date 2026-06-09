@@ -19,7 +19,7 @@
         <div class="card-body">
           <div class="composer-header">
             <div class="avatar-container hide-mobile" (click)="triggerAvatarUpload()">
-              <img [src]="currentUserAvatar" class="avatar-img clickable-avatar" title="Click để đổi ảnh đại diện" />
+              <img [src]="apiUrl +  currentUserAvatar" class="avatar-img clickable-avatar" title="Click để đổi ảnh đại diện" />
               <div class="avatar-overlay">
                 <i class="fas fa-camera"></i>
               </div>
@@ -68,7 +68,7 @@
           
           <div class="post-header">
             <div class="avatar-wrapper" [routerLink]="['/profile', post.authorId]" style="cursor: pointer;">
-              <img [src]="post.authorAvatarUrl || 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="avatar-img" />
+              <img [src]="post.authorAvatarUrl  ? apiUrl + post.authorAvatarUrl : 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="avatar-img" />
             </div>
             <div style="flex: 1;">
               <div class="post-meta-line">
@@ -132,8 +132,8 @@
           </div>
 
           <div class="media-content" *ngIf="post.mediaUrl && post.mediaType !== 'NONE'">
-            <img *ngIf="post.mediaType === 'IMAGE'" [src]="post.mediaUrl" class="post-media" alt="Post Image" loading="lazy">
-            <video *ngIf="post.mediaType === 'VIDEO'" [src]="post.mediaUrl" controls class="post-media" preload="metadata"></video>
+            <img *ngIf="post.mediaType === 'IMAGE'" [src]="apiUrl +  post.mediaUrl" class="post-media" alt="Post Image" loading="lazy">
+            <video *ngIf="post.mediaType === 'VIDEO'" [src]="apiUrl + post.mediaUrl" controls class="post-media" preload="metadata"></video>
           </div>
 
           <!-- Stats -->
@@ -162,7 +162,7 @@
             <div class="comment-list" *ngIf="post.comments && post.comments.length > 0">
               <div *ngFor="let c of post.comments" class="comment-item">
                 <div class="avatar-wrapper small" [routerLink]="['/profile', c.authorId]" style="cursor: pointer;">
-                  <img [src]="c.authorAvatarUrl || 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="avatar-img small" />
+                  <img [src]=" c.authorAvatarUrl ? apiUrl + c.authorAvatarUrl : 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="avatar-img small" />
                 </div>
                 <div>
                   <div class="comment-bubble">
@@ -176,7 +176,7 @@
 
             <div class="comment-composer">
               <div class="avatar-wrapper small">
-                <img [src]="currentUserAvatar" class="avatar-img small" />
+                <img [src]="apiUrl +  currentUserAvatar" class="avatar-img small" />
               </div>
               <div class="comment-input-wrap">
                 <input type="text" [(ngModel)]="newCommentContent[post.id!]" placeholder="Viết bình luận công khai..." (keyup.enter)="submitComment(post)" class="comment-input">

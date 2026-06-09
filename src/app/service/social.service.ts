@@ -60,9 +60,10 @@ export class SocialService {
   }
 
   // UPLOAD
-  uploadFile(file: File): Observable<{url: string, type: string}> {
+  uploadFile(file: File , path:string): Observable<{url: string, type: string}> {
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('path', path );
     
     // Must NOT define Content-Type so browser sets 'multipart/form-data' with boundaries
     const headers = { 

@@ -8,6 +8,7 @@ import { AuthDetail } from 'src/app/common/util/auth-detail';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { UserChatMessage } from 'src/app/model/userChatMessage.model';
+import { environment } from 'src/environments/environment';
 
 interface ChatTab {
   friendId: string;
@@ -43,6 +44,7 @@ export class FriendChatTabsComponent implements OnInit, OnDestroy, AfterViewChec
     messageId: '',
     friendId: ''
   };
+  apiUrl = environment.apiUrl;
   
   private socketSubscription!: Subscription;
   private tabOpenSubscription!: Subscription;
@@ -303,7 +305,7 @@ export class FriendChatTabsComponent implements OnInit, OnDestroy, AfterViewChec
     tab.isUploading = true;
 
     if (tab.selectedFile) {
-      this.socialService.uploadFile(tab.selectedFile).subscribe({
+      this.socialService.uploadFile(tab.selectedFile , "chat").subscribe({
         next: (res) => {
           this.submitMessage(tab, res.url, res.type);
         },
