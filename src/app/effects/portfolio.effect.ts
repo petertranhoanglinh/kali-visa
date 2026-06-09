@@ -79,13 +79,13 @@ export class PortfolioEffect {
     return forkJoin({
       assets: this.assetService.getAssetsByUser(userId),
       marketPrices: this.marketPriceService.getPricesByUser(userId),
-      config: this.configService.getConfig('USD_VND_RATE'),
+      exchangeRateRes: this.assetService.getExchangeRate(),
     }).pipe(
-      map(({ assets, marketPrices, config }) =>
+      map(({ assets, marketPrices, exchangeRateRes }) =>
         loadPortfolioDataSuccess({
           assets,
           marketPrices,
-          exchangeRate: config?.configValue ? Number(config.configValue) : 25000,
+          exchangeRate: exchangeRateRes?.rate || 25000,
         })
       ),
       catchError(err =>

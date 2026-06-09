@@ -74,4 +74,10 @@ export class AssetService {
       headers: AuthDetail.getHeaderJwt()
     });
   }
+
+  getExchangeRate(): Observable<{rate: number}> {
+    return this.http.get<{rate: number}>(`${this.apiUrl}/exchange-rate`, {
+      headers: AuthDetail.getHeaderJwt()
+    });
+  }
 }

@@ -21,6 +21,9 @@ import { AdminSettingComponent } from './admin-setting/admin-setting.component';
 import { AdminNewsComponent } from './admin-news/admin-news.component';
 import { AdminPostsComponent } from './admin-posts/admin-posts.component';
 import { AdminUsersComponent } from './admin-users/admin-users.component';
+import { UserSettingComponent } from './user-setting/user-setting.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { UserChatComponent } from './user-chat/user-chat.component';
 import { AuthGuardService } from '../service/auth-guard.service';
 import { AdminGuard } from '../service/admin-guard.service';
 
@@ -39,6 +42,9 @@ const routes: Routes = [
   { path: 'price-settings', component: PriceSettingsComponent, canActivate: [AuthGuardService] },
   { path: 'notes', component: NotesComponent, canActivate: [AuthGuardService] },
   { path: 'social', component: SocialFeedComponent, canActivate: [AuthGuardService] },
+  { path: 'setting', component: UserSettingComponent, canActivate: [AuthGuardService] },
+  { path: 'profile/:id', component: UserProfileComponent, canActivate: [AuthGuardService] },
+  { path: 'chat/:userId', component: UserChatComponent, canActivate: [AuthGuardService] },
   { path: 'privacy', component: PrivacyComponent },
   { 
     path: 'admin', 

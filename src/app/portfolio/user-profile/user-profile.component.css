@@ -1,0 +1,278 @@
+.profile-layout {
+  display: grid;
+  grid-template-columns: 2.2fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.profile-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.profile-sidebar {
+  position: sticky;
+  top: 90px;
+}
+
+/* Reddit User Card */
+.reddit-user-card {
+  background: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: none;
+}
+
+.card-banner {
+  height: 94px;
+  background-color: #33a8ff; /* Standard Reddit theme banner color */
+}
+
+.profile-avatar-container {
+  margin-top: -42px;
+  margin-left: 16px;
+  position: relative;
+  display: inline-block;
+}
+
+.profile-avatar-img {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  border: 4px solid #ffffff;
+  object-fit: cover;
+  background-color: #ffffff;
+}
+
+.user-card-body {
+  padding: 12px 16px 20px 16px;
+}
+
+.display-name {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #1a1a1b;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.reddit-handle {
+  font-size: 0.85rem;
+  color: #7c7c7c;
+  display: block;
+  margin-top: 2px;
+}
+
+.bio-text {
+  font-size: 0.9rem;
+  color: #1a1a1b;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.details-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #576f76;
+  font-size: 0.85rem;
+}
+
+.detail-item i {
+  color: #878a8c;
+  width: 16px;
+  text-align: center;
+}
+
+.detail-item a {
+  color: #0079d3;
+  text-decoration: none;
+}
+
+.detail-item a:hover {
+  text-decoration: underline;
+}
+
+/* Buttons */
+.btn-edit-profile,
+.btn-account-settings,
+.btn-friendship,
+.btn-chat {
+  width: 100%;
+  padding: 6px 16px;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-edit-profile {
+  background: #ffffff;
+  border: 1px solid #ff4500;
+  color: #ff4500;
+}
+.btn-edit-profile:hover {
+  background: #ff45001a;
+}
+
+.btn-account-settings {
+  background: #f6f7f8;
+  border: 1px solid #edeff1;
+  color: #1a1a1b;
+}
+.btn-account-settings:hover {
+  background: #e3e4e6;
+}
+
+.btn-friendship {
+  background: #ff4500;
+  border: none;
+  color: #ffffff;
+}
+.btn-friendship:hover {
+  background: #e03d00;
+}
+
+.btn-friendship.is-friend {
+  background: #ffffff;
+  border: 1px solid #878a8c;
+  color: #878a8c;
+}
+.btn-friendship.is-friend:hover {
+  background: #fee2e2;
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.btn-chat {
+  background: #0079d3;
+  border: none;
+  color: #ffffff;
+}
+.btn-chat:hover {
+  background: #0060a9;
+}
+
+/* Locked Profile Card */
+.locked-profile-card {
+  text-align: center;
+  padding: 3rem 2rem;
+  border: 1px dashed #ccc;
+  border-radius: 4px;
+  background: #ffffff;
+}
+
+.lock-icon-wrap {
+  color: #878a8c;
+  margin-bottom: 1.5rem;
+}
+
+.locked-profile-card h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #1a1a1b;
+  margin-bottom: 0.5rem;
+}
+
+.locked-profile-card p {
+  color: #576f76;
+  font-size: 0.95rem;
+  max-width: 420px;
+  margin: 0 auto 1.5rem auto;
+  line-height: 1.6;
+}
+
+.btn-connect {
+  background: #ff4500;
+  color: white;
+  border: none;
+  padding: 8px 24px;
+  border-radius: 9999px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-connect:hover {
+  background: #e03d00;
+}
+
+/* Timeline posts */
+.section-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #1a1a1b;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.empty-posts-card {
+  text-align: center;
+  padding: 2.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #878a8c;
+}
+
+.empty-posts-card p {
+  margin-top: 10px;
+  font-size: 0.95rem;
+}
+
+/* Form Styles */
+.form-label {
+  color: #576f76;
+}
+
+.form-control {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.form-control:focus {
+  border-color: #ff4500;
+  box-shadow: 0 0 0 1px #ff4500;
+  outline: none;
+}
+
+@media (max-width: 768px) {
+  .profile-layout {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .profile-sidebar {
+    position: static;
+    order: -1; /* Sidebar goes top on mobile */
+  }
+}
+
+.btn-friendship.pending-sent {
+  background: #f6f7f8;
+  border: 1px solid #edeff1;
+  color: #7c7c7c;
+}
+.btn-friendship.pending-sent:hover {
+  background: #fee2e2;
+  border-color: #ef4444;
+  color: #ef4444;
+}

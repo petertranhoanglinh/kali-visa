@@ -1,0 +1,217 @@
+/* Reddit-style User Settings CSS */
+
+.user-settings-container {
+    padding: 2.5rem 1.5rem;
+    background: radial-gradient(circle at 50% 0%, rgba(255, 69, 0, 0.03) 0%, rgba(255, 255, 255, 0) 70%);
+    border-radius: 24px;
+    margin-top: 1rem;
+}
+
+.reddit-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+}
+
+/* Header styling */
+.reddit-header {
+    border-bottom: 1px solid #f1f5f9;
+    padding: 2rem 2.5rem;
+}
+
+.reddit-title {
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: #1a1a1b;
+}
+
+.reddit-subtitle {
+    font-size: 0.88rem;
+    color: #7c7c7c;
+}
+
+/* Sidebar navigation */
+.reddit-sidebar {
+    padding: 1.5rem;
+    border-right: 1px solid #f1f5f9;
+}
+
+.sidebar-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 0.85rem 1.25rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #57606a;
+    text-align: left;
+    transition: all 0.2s ease;
+    margin-bottom: 0.5rem;
+}
+
+.sidebar-tab:hover {
+    background-color: #f6f8fa;
+    color: #1a1a1b;
+}
+
+.sidebar-tab.active {
+    background-color: #f6f8fa;
+    color: #ff4500; /* Reddit Orange */
+}
+
+/* Form inputs styling */
+.form-label-reddit {
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #1a1a1b;
+    margin-bottom: 0.4rem;
+}
+
+.form-control-reddit {
+    border: 1px solid #ccc;
+    border-radius: 9999px; /* Rounded pill style */
+    padding: 0.65rem 1.2rem;
+    font-size: 0.95rem;
+    color: #1c1c1c;
+    background-color: #f6f7f8;
+    transition: all 0.2s ease;
+}
+
+.form-control-reddit:focus {
+    background-color: #ffffff;
+    border-color: #0079d3; /* Reddit Blue */
+    box-shadow: none;
+    outline: none;
+}
+
+.form-textarea-reddit {
+    border: 1px solid #ccc;
+    border-radius: 16px;
+    padding: 0.8rem 1.2rem;
+    font-size: 0.95rem;
+    background-color: #f6f7f8;
+}
+
+.form-textarea-reddit:focus {
+    background-color: #ffffff;
+    border-color: #0079d3;
+    outline: none;
+}
+
+/* Avatar profile section */
+.profile-avatar-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem;
+    background: #f6f8fa;
+    border-radius: 16px;
+    border: 1px dashed #d0d7de;
+    text-align: center;
+}
+
+.avatar-circle-large {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    border: 4px solid #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    object-fit: cover;
+    background-color: #dae0e6;
+}
+
+.avatar-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    margin-top: 1rem;
+    width: 100%;
+}
+
+.avatar-option-btn {
+    border: 2px solid transparent;
+    background: none;
+    padding: 0.2rem;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: center;
+}
+
+.avatar-option-btn:hover {
+    transform: scale(1.15);
+}
+
+.avatar-option-btn.selected {
+    border-color: #ff4500;
+}
+
+.avatar-option-img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Action button style */
+.btn-reddit-save {
+    background-color: #ff4500; /* Reddit orange */
+    color: #ffffff;
+    font-weight: 700;
+    border: none;
+    padding: 0.75rem 2.5rem;
+    border-radius: 9999px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(255, 69, 0, 0.2);
+}
+
+.btn-reddit-save:hover {
+    background-color: #e03d00;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(255, 69, 0, 0.3);
+}
+
+.btn-reddit-save:disabled {
+    background-color: #ccc;
+    color: #7c7c7c;
+    box-shadow: none;
+    transform: none;
+    cursor: not-allowed;
+}
+
+/* API Info Card */
+.api-info-card {
+    background-color: #f0f8ff;
+    border: 1px solid #b0c4de;
+    border-radius: 16px;
+    padding: 1.25rem;
+    color: #2f4f4f;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.api-badge {
+    background-color: #ff4500;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-right: 0.5rem;
+}
+
+.badge-tier {
+    background-color: #0079d3;
+    color: white;
+    font-weight: 700;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    display: inline-block;
+}

@@ -1,5 +1,6 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { SocialService } from 'src/app/service/social.service';
+import { AuthService } from 'src/app/service/auth.service';
 import { PostModel, CommentModel } from 'src/app/model/social.model';
 import { AuthDetail } from 'src/app/common/util/auth-detail';
 import { CommonUtils } from 'src/app/common/util/common-utils';
@@ -13,6 +14,9 @@ import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
   styleUrls: ['./social-feed.component.css']
 })
 export class SocialFeedComponent implements OnInit {
+
+  @ViewChild('avatarInput') avatarInput!: ElementRef;
+  currentUserProfile: any = null;
 
   public Editor: any = (DecoupledEditor as any).default || DecoupledEditor;
   posts: PostModel[] = [];
@@ -56,7 +60,8 @@ export class SocialFeedComponent implements OnInit {
     private socialService: SocialService,
     private toastr: ToastrService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -65,6 +70,20 @@ export class SocialFeedComponent implements OnInit {
     if (user) {
       this.currentUserId = user.id;
       this.currentUserName = user.email || 'Nhà Đầu Tư ẩn danh';
+      
+      const jwt = user.jwt || localStorage.getItem('jwt');
+      if (jwt) {
+        this.authService.getProfile(jwt).subscribe({
+          next: (res) => {
+            if (res && res.code === 200 && res.data) {
+              this.currentUserProfile = res.data;
+              if (res.data.firstName || res.data.lastName) {
+                this.currentUserName = `${res.data.firstName || ''} ${res.data.lastName || ''}`.trim() || this.currentUserName;
+              }
+            }
+          }
+        });
+      }
     }
 
     // Handle Shared Post if present in URL
@@ -160,6 +179,78 @@ export class SocialFeedComponent implements OnInit {
         this.isLoadingPosts = false;
       }
     });
+  }
+
+  get currentUserAvatar(): string {
+    return this.currentUserProfile?.avatarUrl || 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png';
+  }
+
+  getDisplayName(firstName?: string, lastName?: string, fallbackName?: string): string {
+    const fullName = `${firstName || ''} ${lastName || ''}`.trim();
+    if (fullName) return fullName;
+    if (fallbackName) {
+      if (fallbackName.includes('@')) {
+        return fallbackName.split('@')[0];
+      }
+      return fallbackName;
+    }
+    return 'Nhà Đầu Tư ẩn danh';
+  }
+
+  triggerAvatarUpload() {
+    if (this.avatarInput) {
+      this.avatarInput.nativeElement.click();
+    }
+  }
+
+  onAvatarSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      if (file.size > 10 * 1024 * 1024) {
+        this.toastr.warning('Ảnh đại diện không được lớn hơn 10MB');
+        return;
+      }
+      this.isUploading = true;
+      this.socialService.uploadFile(file).subscribe({
+        next: (res) => {
+          if (!this.currentUserProfile) {
+            this.currentUserProfile = {
+              firstName: '',
+              lastName: '',
+              avatarUrl: res.url
+            };
+          } else {
+            this.currentUserProfile.avatarUrl = res.url;
+          }
+          
+          const jwt = AuthDetail.getLoginedInfo()?.jwt || localStorage.getItem('jwt');
+          if (jwt) {
+            this.authService.updateProfile(this.currentUserProfile, jwt).subscribe({
+              next: (profileRes) => {
+                if (profileRes && profileRes.code === 200) {
+                  this.toastr.success('Cập nhật ảnh đại diện thành công!');
+                  this.loadFeed(true);
+                } else {
+                  this.toastr.error('Lỗi khi cập nhật ảnh đại diện vào tài khoản.');
+                }
+                this.isUploading = false;
+              },
+              error: () => {
+                this.toastr.error('Lỗi kết nối khi lưu ảnh đại diện.');
+                this.isUploading = false;
+              }
+            });
+          } else {
+            this.toastr.warning('Vui lòng đăng nhập để lưu ảnh đại diện.');
+            this.isUploading = false;
+          }
+        },
+        error: (err) => {
+          this.toastr.error('Lỗi tải ảnh đại diện: ' + (err.error?.error || 'Unknown'));
+          this.isUploading = false;
+        }
+      });
+    }
   }
 
   onFileSelected(event: any) {

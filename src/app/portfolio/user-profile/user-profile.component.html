@@ -1,0 +1,185 @@
+<div class="portfolio-container animate__animated animate__fadeIn" style="max-width: 1000px; margin: 0 auto; padding: 1.5rem 1rem;">
+  
+  <!-- Profile Loader -->
+  <div *ngIf="isLoading" class="text-center py-5" style="color: #64748b;">
+    <i class="fas fa-circle-notch fa-spin fa-2x"></i>
+    <p class="mt-2">Đang tải thông tin cá nhân...</p>
+  </div>
+
+  <div *ngIf="!isLoading && targetUser" class="profile-layout">
+    
+    <!-- Left column: User Posts Timeline (Only if Friend or Self) -->
+    <div class="profile-main">
+      
+      <!-- Locked Profile Notice for Non-friends -->
+      <div *ngIf="!isSelf && !isFriend" class="locked-profile-card">
+        <div class="lock-icon-wrap">
+          <i class="fas fa-lock fa-3x"></i>
+        </div>
+        <h3>Tài khoản riêng tư</h3>
+        <p>Bạn cần phải kết bạn với người này để xem chi tiết thông tin và các bài viết thảo luận của họ.</p>
+        <button class="btn-connect" (click)="toggleFriendship()">
+          <i class="fas fa-user-plus me-1"></i> Kết bạn ngay
+        </button>
+      </div>
+
+      <!-- User Posts List (Unlocks when Friends/Self) -->
+      <div *ngIf="isSelf || isFriend" class="feed-timeline">
+        <h3 class="section-title">
+          <i class="far fa-newspaper me-2"></i> Bài viết của {{ isSelf ? 'bạn' : getDisplayName(targetUser.firstName, targetUser.lastName, targetUser.username) }}
+        </h3>
+        
+        <div *ngIf="posts.length === 0" class="empty-posts-card">
+          <i class="fas fa-feather-alt fa-2x"></i>
+          <p>Chưa đăng bài thảo luận nào.</p>
+        </div>
+
+        <div *ngFor="let post of posts" class="post-card">
+          <div class="post-header">
+            <div class="avatar-wrapper">
+              <img [src]="post.authorAvatarUrl || 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="avatar-img" />
+            </div>
+            <div style="flex: 1;">
+              <div class="post-meta-line">
+                <span class="subreddit-name">c/TL_Community</span>
+                <span class="meta-dot">•</span>
+                <span class="post-author-link">Đăng bởi u/{{ getDisplayName(post.authorFirstName, post.authorLastName, post.authorName) }}</span>
+                <span class="meta-dot">•</span>
+                <span class="post-time">{{ post.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="post-content">
+            <div class="text-content-wrapper">
+              <div class="text-content" [innerHTML]="post.content"></div>
+            </div>
+          </div>
+
+          <div class="media-content" *ngIf="post.mediaUrl && post.mediaType !== 'NONE'">
+            <img *ngIf="post.mediaType === 'IMAGE'" [src]="post.mediaUrl" class="post-media" alt="Post Image" loading="lazy">
+            <video *ngIf="post.mediaType === 'VIDEO'" [src]="post.mediaUrl" controls class="post-media" preload="metadata"></video>
+          </div>
+
+          <div class="post-stats" *ngIf="post.likes?.length || post.comments?.length">
+            <span *ngIf="post.likes?.length"><i class="fas fa-arrow-up" style="color: #ff4500"></i> {{ post.likes?.length }} Upvotes</span>
+            <span *ngIf="post.comments?.length" style="margin-left: auto;">{{ post.comments?.length }} bình luận</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right column: Reddit Profile Info Card -->
+    <div class="profile-sidebar">
+      
+      <!-- User Card -->
+      <div class="reddit-user-card">
+        
+        <!-- Header Banner Color -->
+        <div class="card-banner"></div>
+        
+        <!-- Avatar Placement -->
+        <div class="profile-avatar-container">
+          <img [src]="targetUser.avatarUrl || 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="profile-avatar-img" />
+        </div>
+
+        <div class="user-card-body">
+          <h2 class="display-name">{{ getDisplayName(targetUser.firstName, targetUser.lastName, targetUser.username) }}</h2>
+          <span class="reddit-handle">u/{{ targetUser.username || targetUser.email.split('@')[0] }}</span>
+
+          <!-- Bio display -->
+          <div *ngIf="!isEditing" class="bio-display mt-3">
+            <p class="bio-text">{{ targetProfile?.bio || 'Chưa thiết lập mô tả cá nhân.' }}</p>
+            
+            <div class="details-list" *ngIf="isSelf || isFriend">
+              <div class="detail-item" *ngIf="targetProfile?.occupation">
+                <i class="fas fa-briefcase"></i> <span>{{ targetProfile.occupation }}</span>
+              </div>
+              <div class="detail-item" *ngIf="targetProfile?.location">
+                <i class="fas fa-map-marker-alt"></i> <span>{{ targetProfile.location }}</span>
+              </div>
+              <div class="detail-item" *ngIf="targetProfile?.website">
+                <i class="fas fa-link"></i> <a [href]="targetProfile.website" target="_blank">{{ targetProfile.website }}</a>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-envelope"></i> <span>{{ targetUser.email }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bio Editing Form (Only if self) -->
+          <div *ngIf="isEditing && isSelf" class="bio-edit-form mt-3">
+            <div class="mb-2">
+              <label class="form-label small fw-bold">Mô tả cá nhân</label>
+              <textarea class="form-control" [(ngModel)]="editBio" rows="3" placeholder="Viết giới thiệu ngắn về bạn..."></textarea>
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-bold">Nghề nghiệp</label>
+              <input type="text" class="form-control form-control-sm" [(ngModel)]="editOccupation" placeholder="Nghề nghiệp..." />
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-bold">Địa điểm</label>
+              <input type="text" class="form-control form-control-sm" [(ngModel)]="editLocation" placeholder="Địa điểm..." />
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-bold">Website</label>
+              <input type="text" class="form-control form-control-sm" [(ngModel)]="editWebsite" placeholder="https://..." />
+            </div>
+            <div class="d-flex gap-2">
+              <button class="btn btn-secondary btn-sm flex-fill fw-bold" (click)="cancelEdit()">Hủy</button>
+              <button class="btn btn-primary btn-sm flex-fill fw-bold" (click)="saveProfileDetails()">Lưu</button>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-buttons mt-3" *ngIf="!isEditing">
+            
+            <!-- Edit/Setting option if Self -->
+            <button *ngIf="isSelf" class="btn-edit-profile" (click)="startEdit()">
+              <i class="fas fa-pencil-alt me-1"></i> Sửa trang cá nhân
+            </button>
+            <button *ngIf="isSelf" class="btn-account-settings mt-2" routerLink="/setting">
+              <i class="fas fa-cog me-1"></i> Cài đặt tài khoản
+            </button>
+
+            <!-- Friend / Chat actions if another user -->
+            <ng-container *ngIf="!isSelf">
+              <!-- Case: FRIENDS -->
+              <ng-container *ngIf="relationshipStatus === 'FRIENDS'">
+                <button class="btn-friendship is-friend" (click)="toggleFriendship()">
+                  <i class="fas fa-user-check"></i> Đang Bạn Bè (Hủy)
+                </button>
+                <button class="btn-chat mt-2" [routerLink]="['/chat', userId]">
+                  <i class="far fa-comment-alt me-1"></i> Nhắn tin trò chuyện
+                </button>
+              </ng-container>
+
+              <!-- Case: PENDING_SENT -->
+              <button *ngIf="relationshipStatus === 'PENDING_SENT'" class="btn-friendship pending-sent" (click)="toggleFriendship()">
+                <i class="fas fa-user-clock"></i> Đã gửi yêu cầu (Hủy)
+              </button>
+
+              <!-- Case: PENDING_RECEIVED -->
+              <div *ngIf="relationshipStatus === 'PENDING_RECEIVED'" class="d-flex flex-column gap-2">
+                <button class="btn-friendship accept-btn" (click)="toggleFriendship()">
+                  <i class="fas fa-user-plus"></i> Đồng ý kết bạn
+                </button>
+                <button class="btn-account-settings decline-btn" (click)="declineFriendRequest()">
+                  <i class="fas fa-user-times"></i> Từ chối
+                </button>
+              </div>
+
+              <!-- Case: NONE -->
+              <button *ngIf="relationshipStatus === 'NONE'" class="btn-friendship" (click)="toggleFriendship()">
+                <i class="fas fa-user-plus"></i> Kết bạn
+              </button>
+            </ng-container>
+            
+          </div>
+        </div>
+      </div>
+      
+    </div>
+    
+  </div>
+</div>

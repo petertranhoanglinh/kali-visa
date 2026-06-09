@@ -1,29 +1,159 @@
-<div class="container mt-5">
-    <div class="card shadow-sm border-0 rounded-lg">
-        <div class="card-header bg-primary text-white py-3">
-            <h4 class="mb-0"><i class="fas fa-cogs me-2"></i> CÀI ĐẶT HỆ THỐNG</h4>
+<div class="container settings-container">
+    <div class="card premium-card border-0">
+        <!-- Header Gradient -->
+        <div class="card-header card-header-gradient d-flex align-items-center justify-content-between">
+            <div>
+                <h3 class="mb-0 header-title"><i class="fas fa-sliders-h me-2"></i> THIẾT LẬP HỆ THỐNG</h3>
+                <p class="mb-0 header-subtitle">Quản trị các thông số vận hành và hạn mức tài khoản toàn bộ ứng dụng</p>
+            </div>
+            <div *ngIf="isLoading" class="spinner-border text-light loading-pulse" role="status" style="width: 1.5rem; height: 1.5rem;">
+                <span class="visually-hidden">Loading...</span>
+            </div>
         </div>
-        <div class="card-body p-4">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group mb-4">
-                        <label class="form-label fw-bold text-uppercase small text-muted">Tỷ giá USD/VND</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0">1 USD =</span>
-                            <input type="number" class="form-control form-control-lg border-start-0"
-                                [(ngModel)]="exchangeRate" placeholder="Ví dụ: 25450">
-                            <span class="input-group-text bg-light">VND</span>
+
+        <div class="card-body p-4 p-md-5">
+            <form (ngSubmit)="saveSettings()">
+                
+                <!-- SECTION 1: FINANCIAL CONFIGURATIONS -->
+                <div class="setting-detail-card mb-4">
+                    <h5 class="setting-title"><i class="fas fa-coins text-primary"></i> 1. Cấu hình Tài chính & Giá cả</h5>
+                    <div class="row mt-3">
+                        <!-- USD RATE -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label-custom">Tỷ giá USD/VND (Nhập tay)</label>
+                            <div class="input-group-custom">
+                                <span class="input-addon-left">1 USD =</span>
+                                <input type="number" class="form-control form-control-custom" 
+                                       [(ngModel)]="exchangeRate" name="exchangeRate"
+                                       placeholder="Ví dụ: 25400">
+                                <span class="input-addon-right">VND</span>
+                            </div>
+                            <div class="form-text text-muted mt-2 small">
+                                Tỷ giá cố định dùng để chuyển đổi tài sản USD sang VND cho toàn hệ thống.
+                            </div>
                         </div>
-                        <div class="form-text mt-2">Tỷ giá này sẽ được dùng để tính toán toàn bộ tài sản USD sang VND
-                            cho người dùng.</div>
+
+                        <!-- PREMIUM COST -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label-custom">Phí Premium Hàng Tháng</label>
+                            <div class="input-group-custom">
+                                <input type="number" class="form-control form-control-custom" 
+                                       [(ngModel)]="premiumCost" name="premiumCost"
+                                       placeholder="Ví dụ: 199000">
+                                <span class="input-addon-right">VND / Tháng</span>
+                            </div>
+                            <div class="form-text text-muted mt-2 small">
+                                Phí hiển thị tại màn nâng cấp tài khoản Premium cho người dùng.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: TIER LIMITS -->
+                <div class="setting-detail-card mb-4">
+                    <h5 class="setting-title"><i class="fas fa-user-shield text-warning"></i> 2. Hạn mức Tài khoản Basic</h5>
+                    <div class="row mt-3">
+                        <!-- MAX ASSETS -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label-custom">Số lượng tài sản tối đa</label>
+                            <div class="input-group-custom">
+                                <input type="number" class="form-control form-control-custom" 
+                                       [(ngModel)]="maxAssetsBasic" name="maxAssetsBasic"
+                                       placeholder="Ví dụ: 10">
+                                <span class="input-addon-right">Mã tài sản</span>
+                            </div>
+                            <div class="form-text text-muted mt-2 small">
+                                Giới hạn số lượng danh mục/mã tài sản một tài khoản miễn phí được thêm.
+                            </div>
+                        </div>
+
+                        <!-- DAILY AI LIMIT -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label-custom">Số lượt phân tích AI mỗi ngày</label>
+                            <div class="input-group-custom">
+                                <input type="number" class="form-control form-control-custom" 
+                                       [(ngModel)]="aiLimitBasic" name="aiLimitBasic"
+                                       placeholder="Ví dụ: 3">
+                                <span class="input-addon-right">Lượt / Ngày</span>
+                            </div>
+                            <div class="form-text text-muted mt-2 small">
+                                Giới hạn số lượt dùng AI phân tích phân tích mã cổ phiếu/crypto hàng ngày cho gói Basic.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 3: SYSTEM & ALERTS -->
+                <div class="setting-detail-card mb-4">
+                    <h5 class="setting-title"><i class="fas fa-server text-danger"></i> 3. Vận hành & Cảnh báo</h5>
+                    
+                    <div class="row mt-3">
+                        <!-- TELEGRAM SWITCH -->
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label-custom">Thông báo biến động qua Telegram</label>
+                            <div class="toggle-switch-wrapper mt-2">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" [checked]="telegramAlertEnabled === 'ON'" 
+                                           (change)="telegramAlertEnabled = telegramAlertEnabled === 'ON' ? 'OFF' : 'ON'">
+                                    <span class="slider-switch" style="background-color: #cbd5e1; transition: .4s;"></span>
+                                </label>
+                                <span class="status-label" [class.inactive]="telegramAlertEnabled === 'OFF'" style="color: #10b981; font-weight: 700;">
+                                    {{ telegramAlertEnabled === 'ON' ? 'ĐANG BẬT CẢNH BÁO' : 'ĐANG TẮT CẢNH BÁO' }}
+                                </span>
+                            </div>
+                            <div class="form-text text-muted mt-2 small">
+                                Tự động gửi cảnh báo biến động tài sản qua Telegram Bot của người dùng.
+                            </div>
+                        </div>
+
+                        <!-- MAINTENANCE SWITCH -->
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label-custom">Chế độ bảo trì hệ thống</label>
+                            <div class="toggle-switch-wrapper mt-2">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" [checked]="maintenanceMode === 'ON'" 
+                                           (change)="maintenanceMode = maintenanceMode === 'ON' ? 'OFF' : 'ON'">
+                                    <span class="slider-switch"></span>
+                                </label>
+                                <span class="status-label" [class.active]="maintenanceMode === 'ON'" [class.inactive]="maintenanceMode === 'OFF'">
+                                    {{ maintenanceMode === 'ON' ? 'ĐANG BẬT BẢO TRÌ' : 'HỆ THỐNG HOẠT ĐỘNG BÌNH THƯỜNG' }}
+                                </span>
+                            </div>
+                            <div class="form-text text-muted mt-2 small">
+                                Chặn quyền truy cập các tính năng giao dịch khi hệ thống nâng cấp.
+                            </div>
+                        </div>
                     </div>
 
-                    <button class="btn btn-primary btn-lg px-5 text-uppercase fw-bold" (click)="saveRate()"
-                        [disabled]="isLoading">
-                        {{ isLoading ? 'ĐANG LƯU...' : 'LƯU GIÁ TRỊ PRO' }}
+                    <!-- MAINTENANCE MESSAGE -->
+                    <div class="mb-2">
+                        <label class="form-label-custom">Thông điệp khi bảo trì</label>
+                        <textarea class="form-control form-control-custom w-100" rows="3"
+                                  [(ngModel)]="maintenanceMessage" name="maintenanceMessage"
+                                  placeholder="Nhập thông báo hiển thị cho người dùng khi bảo trì..."></textarea>
+                    </div>
+                </div>
+
+                <!-- SECTION 4: AI & API KEYS -->
+                <div class="setting-detail-card mb-4">
+                    <h5 class="setting-title"><i class="fas fa-brain text-info"></i> 4. Cấu hình AI & API Keys xoay vòng</h5>
+                    <p class="text-info-custom mb-3">Lưu trữ nhiều Gemini API Keys để hệ thống xoay vòng ngẫu nhiên. Việc này giúp phân phối hạn mức (Rate limit) và hạn chế tình trạng cạn kiệt tài nguyên Token trên một Key duy nhất.</p>
+                    
+                    <div class="mb-2">
+                        <label class="form-label-custom">Danh sách Gemini API Keys (Mỗi dòng một Key hoặc phân tách bởi dấu phẩy)</label>
+                        <textarea class="form-control form-control-custom w-100" rows="4"
+                                  [(ngModel)]="geminiApiKeys" name="geminiApiKeys"
+                                  placeholder="Nhập danh sách API Keys tại đây..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <div class="d-flex justify-content-end mt-5 border-top pt-4">
+                    <button type="submit" class="btn btn-save-gradient btn-lg" [disabled]="isLoading">
+                        <i class="fas fa-check-circle"></i> {{ isLoading ? 'ĐANG LƯU...' : 'LƯU CẤU HÌNH HỆ THỐNG' }}
                     </button>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </div>

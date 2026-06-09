@@ -30,6 +30,9 @@ import { AdminSettingComponent } from './admin-setting/admin-setting.component';
 import { AdminNewsComponent } from './admin-news/admin-news.component';
 import { AdminPostsComponent } from './admin-posts/admin-posts.component';
 import { AdminUsersComponent } from './admin-users/admin-users.component';
+import { UserSettingComponent } from './user-setting/user-setting.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { UserChatComponent } from './user-chat/user-chat.component';
 
 
 import { FormsModule } from '@angular/forms';
@@ -56,7 +59,10 @@ import { FormsModule } from '@angular/forms';
     AdminSettingComponent,
     AdminNewsComponent,
     AdminPostsComponent,
-    AdminUsersComponent
+    AdminUsersComponent,
+    UserSettingComponent,
+    UserProfileComponent,
+    UserChatComponent
   ],
   imports: [
     CommonModule,

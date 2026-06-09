@@ -4,5 +4,4 @@ export interface ChatMessage{
     image:any,
     flag:boolean,
     message_side:string;
-
 }

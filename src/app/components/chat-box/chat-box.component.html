@@ -1,4 +1,6 @@
-<div class="chat-container" [class.opened]="isOpened">
+<div class="chat-backdrop" *ngIf="isOpened && isExpanded" (click)="toggleExpand()"></div>
+
+<div class="chat-container" [class.opened]="isOpened" [class.expanded]="isExpanded">
   <!-- Floating Button -->
   <button class="chat-toggle" (click)="toggleChat()" [class.hidden]="isOpened">
     <i class="fas fa-robot"></i>
@@ -18,9 +20,14 @@
           <p>AI Trading Expert</p>
         </div>
       </div>
-      <button class="close-btn" (click)="toggleChat()">
-        <i class="fas fa-times"></i>
-      </button>
+      <div class="header-actions">
+        <button class="expand-btn" (click)="toggleExpand()" [title]="isExpanded ? 'Thu nhỏ' : 'Mở rộng'">
+          <i class="fas" [ngClass]="isExpanded ? 'fa-compress-alt' : 'fa-expand-alt'"></i>
+        </button>
+        <button class="close-btn" (click)="toggleChat()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
     </div>
 
     <div class="chat-messages" #scrollContainer>
@@ -31,11 +38,6 @@
           </div>
           <div class="msg-text" [innerHTML]="msg.text"></div>
           <div class="msg-time">{{msg.time | date:'HH:mm'}}</div>
-          <div class="msg-actions" *ngIf="!msg.isUser && !msg.liked">
-            <button class="like-btn" (click)="likeAnswer(msg)">
-              <i class="far fa-thumbs-up"></i>
-            </button>
-          </div>
         </div>
       </div>
       <div class="message bot-msg typing" *ngIf="isTyping">

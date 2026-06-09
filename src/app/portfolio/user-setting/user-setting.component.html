@@ -1,0 +1,144 @@
+<div class="container user-settings-container">
+    <div class="card reddit-card border-0">
+        <!-- Header -->
+        <div class="reddit-header d-flex justify-content-between align-items-center">
+            <div>
+                <h3 class="mb-0 reddit-title"><i class="fas fa-user-cog text-primary me-2"></i> Thiết lập tài khoản</h3>
+                <p class="mb-0 reddit-subtitle">Quản lý hồ sơ công khai, avatar hiển thị và cài đặt API Keys AI cá nhân</p>
+            </div>
+            <div>
+                <span class="badge-tier">Gói: {{ user.tier }}</span>
+            </div>
+        </div>
+
+        <div class="row g-0">
+            <!-- Sidebar Navigation -->
+            <div class="col-md-3 reddit-sidebar">
+                <button type="button" class="sidebar-tab" [class.active]="activeTab === 'profile'" (click)="activeTab = 'profile'">
+                    <i class="fas fa-user-circle"></i> Thông tin cá nhân
+                </button>
+                <button type="button" class="sidebar-tab" [class.active]="activeTab === 'api'" (click)="activeTab = 'api'">
+                    <i class="fas fa-key"></i> AI API Keys cá nhân
+                </button>
+            </div>
+
+            <!-- Content Area -->
+            <div class="col-md-9 p-4 p-md-5">
+                <form (ngSubmit)="saveProfile()">
+                    
+                    <!-- TAB 1: PROFILE SETTINGS -->
+                    <div *ngIf="activeTab === 'profile'" class="animate__animated animate__fadeIn">
+                        <div class="row">
+                            <!-- Left: Form fields -->
+                            <div class="col-lg-8">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label-reddit">Họ (Last Name)</label>
+                                        <input type="text" class="form-control form-control-reddit w-100" 
+                                               [(ngModel)]="user.lastName" name="lastName" placeholder="Nhập họ">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label-reddit">Tên (First Name)</label>
+                                        <input type="text" class="form-control form-control-reddit w-100" 
+                                               [(ngModel)]="user.firstName" name="firstName" placeholder="Nhập tên">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label-reddit">Tên đăng nhập (Username)</label>
+                                    <input type="text" class="form-control form-control-reddit w-100" 
+                                           [value]="user.username" disabled style="background-color: #eaeff2; color: #57606a;">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label-reddit">Địa chỉ Email</label>
+                                    <input type="email" class="form-control form-control-reddit w-100" 
+                                           [value]="user.email" disabled style="background-color: #eaeff2; color: #57606a;">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label-reddit">Số điện thoại</label>
+                                    <input type="text" class="form-control form-control-reddit w-100" 
+                                           [(ngModel)]="user.phoneNumber" name="phoneNumber" placeholder="Nhập số điện thoại">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label-reddit">Địa chỉ liên hệ</label>
+                                    <input type="text" class="form-control form-control-reddit w-100" 
+                                           [(ngModel)]="user.address" name="address" placeholder="Nhập địa chỉ">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label-reddit">Giới thiệu bản thân (Bio)</label>
+                                    <textarea class="form-control form-textarea-reddit w-100" rows="3" 
+                                              [(ngModel)]="user.bio" name="bio" placeholder="Hãy viết gì đó về bạn..."></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Right: Avatar Editor -->
+                            <div class="col-lg-4 mt-4 mt-lg-0">
+                                <div class="profile-avatar-box">
+                                    <img [src]="user.avatarUrl" alt="Avatar" class="avatar-circle-large mb-3">
+                                    <span class="fw-bold text-dark small">Chọn ảnh đại diện của bạn</span>
+                                    
+                                    <div class="avatar-picker-grid">
+                                        <button type="button" *ngFor="let avatar of avatars" 
+                                                class="avatar-option-btn" 
+                                                [class.selected]="user.avatarUrl === avatar"
+                                                (click)="selectAvatar(avatar)">
+                                            <img [src]="avatar" class="avatar-option-img" alt="Avatar option">
+                                        </button>
+                                    </div>
+
+                                    <div class="mt-3 w-100">
+                                        <label for="avatar-upload-input" class="btn btn-outline-primary btn-sm w-100 text-uppercase fw-bold" style="border-radius: 9999px; font-size: 0.75rem; padding: 6px 12px; cursor: pointer; border: 1px solid #0079d3; color: #0079d3; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                                            <i class="fas fa-upload"></i> Tải ảnh từ máy
+                                        </label>
+                                        <input id="avatar-upload-input" type="file" accept="image/*" style="display: none;" (change)="onAvatarSelected($event)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: AI API KEYS -->
+                    <div *ngIf="activeTab === 'api'" class="animate__animated animate__fadeIn">
+                        <div class="api-info-card mb-4 d-flex align-items-start gap-3">
+                            <span class="api-badge mt-1">Hữu ích</span>
+                            <div>
+                                <h6 class="fw-bold text-dark mb-1">Tại sao nên dùng API Key cá nhân?</h6>
+                                <p class="mb-0 text-muted small">Mỗi tài khoản miễn phí chỉ được cấp hạn mức gọi AI nhất định hàng ngày. Bằng cách sử dụng API Key Google Gemini của riêng bạn, bạn có thể thực hiện số lượt phân tích danh mục, phân tích kỹ thuật mã tài sản hoàn toàn không giới hạn và hoàn toàn miễn phí!</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label-reddit">Gemini API Key của bạn</label>
+                            <div class="input-group">
+                                <input [type]="showApiKey ? 'text' : 'password'" 
+                                       class="form-control form-control-reddit" 
+                                       [(ngModel)]="user.geminiApiKey" name="geminiApiKey" 
+                                       placeholder="Dán Gemini API Key của bạn vào đây (AIzaSy...)">
+                                <button class="btn btn-outline-secondary" type="button" 
+                                        style="border-radius: 0 9999px 9999px 0; border: 1px solid #ccc; border-left: none; padding-right: 1.25rem;"
+                                        (click)="showApiKey = !showApiKey">
+                                    <i class="fas" [class.fa-eye]="!showApiKey" [class.fa-eye-slash]="showApiKey"></i>
+                                </button>
+                            </div>
+                            <div class="form-text text-muted mt-2 small">
+                                Chúng tôi cam kết bảo mật 100% API Key của bạn. Key chỉ được dùng trực tiếp khi tài khoản của bạn yêu cầu phân tích AI.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Button -->
+                    <div class="d-flex justify-content-end mt-5 border-top pt-4">
+                        <button type="submit" class="btn btn-reddit-save" [disabled]="isLoading">
+                            <i class="fas fa-save me-2"></i> Lưu cấu hình
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

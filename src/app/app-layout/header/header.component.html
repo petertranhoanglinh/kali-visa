@@ -4,67 +4,217 @@
             <a routerLink="/" routerLinkActive="active" class="pro-logo">
                 <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHJ4PSIxNCIgZmlsbD0iIzRmNDZlNSIvPjxwYXRoIGQ9Ik0xOCAxOEg0NlYyNEgzNVY1MEgyOVYyNEgxOFYxOFoiIGZpbGw9IndoaXRlIi8+PHBhdGggZD0iTTQ2IDQ0SDI5VjUwSDQ2VjQ0WiIgZmlsbD0iI2ZiYmYyNCIvPjwvc3ZnPg==" 
                      alt="T'L Wealth Logo" class="brand-logo-img">
-                <div class="logo-text">
+                <div class="logo-text hidden-tablet">
                     <span class="brand-name">T'L WEALTH</span>
                 </div>
             </a>
+
+            <div class="nav-dropdown-container">
+                <button class="nav-dropdown-btn" (click)="toggleNavDropdown($event)">
+                    <span class="selected-nav-info">
+                        <i class="fas {{ getActiveMenuIcon() }} nav-icon-prefix"></i>
+                        <span class="nav-label-text">{{ getActiveMenuLabel() }}</span>
+                    </span>
+                    <i class="fas fa-chevron-down nav-chevron"></i>
+                </button>
+                
+                <div class="nav-dropdown-menu" *ngIf="isNavDropdownOpen">
+                    <div class="menu-section-title" *ngIf="!isAdminSection">TÍNH NĂNG CHÍNH</div>
+                    <ul class="nav-menu-list" *ngIf="!isAdminSection">
+                        <ng-container *ngFor="let item of searchItems">
+                            <li *ngIf="item.category !== 'Quản trị' && item.category !== 'Tài khoản'">
+                                <a [routerLink]="item.route" routerLinkActive="active" (click)="isNavDropdownOpen = false">
+                                    <i class="fas {{ item.icon }}"></i> {{ item.title }}
+                                </a>
+                            </li>
+                        </ng-container>
+                        
+                        <li *ngIf="isAdmin">
+                            <a routerLink="/admin" class="admin-entry-nav" (click)="isNavDropdownOpen = false">
+                                <i class="fas fa-user-shield"></i> Quản Trị
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="menu-section-title" *ngIf="isAdminSection">CHẾ ĐỘ QUẢN TRỊ</div>
+                    <ul class="nav-menu-list admin-mode" *ngIf="isAdminSection">
+                        <ng-container *ngFor="let item of searchItems">
+                            <li *ngIf="item.category === 'Quản trị'">
+                                <a [routerLink]="item.route" routerLinkActive="active" (click)="isNavDropdownOpen = false">
+                                    <i class="fas {{ item.icon }}"></i> {{ item.title }}
+                                </a>
+                            </li>
+                        </ng-container>
+                        
+                        <li class="exit-admin">
+                            <a routerLink="/dashboard" (click)="isNavDropdownOpen = false" class="highlight-nav">
+                                <i class="fas fa-sign-out-alt"></i> Thoát quản trị
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
         
-        <nav class="header-nav">
-            <!-- USER MENU -->
-            <ul class="nav-menu" *ngIf="!isAdminSection">
-                <li><a routerLink="/dashboard" routerLinkActive="active">Tổng Quan</a></li>
-                <li><a routerLink="/assets" routerLinkActive="active">Danh Mục</a></li>
-                <li><a routerLink="/news" routerLinkActive="active">Tin Tức AI</a></li>
-                <li><a routerLink="/rules" routerLinkActive="active">Quy Tắc</a></li>
-                <li><a routerLink="/social" routerLinkActive="active">Cộng Đồng</a></li>
-                <!-- <li><a [routerLink]="['/analytics']" [queryParams]="{ ticker: 'FPT' }" routerLinkActive="active">Phân Tích AI</a></li>
-                <li><a routerLink="/screener" routerLinkActive="active">Tín Hiệu VN30 <span style="font-size: 0.7em; background: #fbbf24; color: black; padding: 2px 6px; border-radius: 4px; margin-left:4px; vertical-align: top; font-weight: 800;">PRO</span></a></li>
-                <li><a routerLink="/backtest" routerLinkActive="active">Chiến Lược AI <span style="font-size: 0.7em; background: #fbbf24; color: black; padding: 2px 6px; border-radius: 4px; margin-left:4px; vertical-align: top; font-weight: 800;">PRO</span></a></li>
-                <li><a routerLink="/pricing" class="highlight-nav" routerLinkActive="active">Nâng Cấp Gói</a></li> -->
-                <li *ngIf="isAdmin"><a routerLink="/admin" class="admin-entry-nav">Quản trị <i class="fas fa-user-shield"></i></a></li>
-            </ul>
+        <div class="header-middle">
+            <div class="search-bar-wrapper" [class.focused]="isSearchFocused">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" 
+                       class="search-input" 
+                       placeholder="Tìm kiếm tính năng... (Ctrl+K)" 
+                       [(ngModel)]="searchQuery" 
+                       (input)="onSearchInput($event)"
+                       (focus)="onSearchFocus()"
+                       (blur)="onSearchBlur()"
+                       (keydown)="onSearchKeyDown($event)"
+                       #searchInputRef>
+                <button class="clear-search-btn" *ngIf="searchQuery" (click)="clearSearch()">
+                    <i class="fas fa-times-circle"></i>
+                </button>
+                <div class="search-shortcut hidden-mobile" *ngIf="!searchQuery && !isSearchFocused">
+                    <span>Ctrl K</span>
+                </div>
+            </div>
 
-            <!-- ADMIN MENU -->
-            <ul class="nav-menu admin-mode" *ngIf="isAdminSection">
-                <li class="admin-label">CHẾ ĐỘ QUẢN TRỊ</li>
-                <li><a routerLink="/admin/upgrade" routerLinkActive="active">Duyệt Nâng Cấp</a></li>
-                <li><a routerLink="/admin/news" routerLinkActive="active">Quản Lý News</a></li>
-                <li><a routerLink="/admin/posts" routerLinkActive="active">Quản Lý Post</a></li>
-                <li><a routerLink="/admin/users" routerLinkActive="active">Quản Lý User</a></li>
-                <li class="exit-admin"><a routerLink="/dashboard" class="highlight-nav"><i class="fas fa-sign-out-alt"></i> Thoát quản trị</a></li>
-        </ul>
-        </nav>
+            <div class="search-suggestions-dropdown" *ngIf="isSearchDropdownOpen && filteredSuggestions.length > 0">
+                <div class="suggestions-container">
+                    <div class="suggestion-group" *ngFor="let group of groupedSuggestions | keyvalue">
+                        <div class="suggestion-group-title">{{ group.key }}</div>
+                        <div class="suggestion-item" 
+                             *ngFor="let item of group.value; let idx = index"
+                             [class.active]="isItemActive(item)"
+                             (mousedown)="selectSuggestion(item)"
+                             (mouseenter)="hoverSuggestion(item)">
+                            <div class="item-icon-wrapper">
+                                <i class="fas {{ item.icon }}"></i>
+                            </div>
+                            <div class="item-details">
+                                <div class="item-title">{{ item.title }}</div>
+                                <div class="item-desc">{{ item.description }}</div>
+                            </div>
+                            <div class="item-arrow">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="search-suggestions-footer">
+                    <span>Dùng <kbd>↑</kbd><kbd>↓</kbd> để di chuyển, <kbd>Enter</kbd> để chọn, <kbd>Esc</kbd> để đóng</span>
+                </div>
+            </div>
+            <div class="search-suggestions-dropdown empty-results" *ngIf="isSearchDropdownOpen && filteredSuggestions.length === 0 && searchQuery">
+                <div class="empty-message">
+                    <i class="fas fa-search-minus empty-icon"></i>
+                    <p>Không tìm thấy tính năng nào phù hợp cho "<strong>{{ searchQuery }}</strong>"</p>
+                </div>
+            </div>
+        </div>
 
         <div class="header-right">
-            <div class="user-action" *ngIf="isLogin">
-                <button class="btn-logout" (click)="logOut()"><i class="fas fa-sign-out-alt"></i></button>
+            <div class="user-profile-menu" *ngIf="isLogin">
+                <span class="user-greeting hidden-mobile">{{ wellcome }}</span>
+                <a [routerLink]="['/profile', currentUserId]" class="btn-setting-circle" title="Trang cá nhân">
+                    <i class="fas fa-user"></i>
+                </a>
+                
+                <!-- Hộp thông báo Bell -->
+                <div class="notification-dropdown-wrap" style="position: relative; margin-left: 8px;">
+                    <button class="btn-setting-circle" (click)="toggleNotificationDropdown($event)" title="Thông báo" [class.active]="isNotificationDropdownOpen">
+                        <i class="far fa-bell"></i>
+                        <span class="notif-badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+                    </button>
+                    
+                    <!-- Dropdown Panel -->
+                    <div class="notif-dropdown-panel" *ngIf="isNotificationDropdownOpen">
+                        <div class="notif-header">
+                            <span>Thông báo mới</span>
+                        </div>
+                        <div class="notif-body">
+                            <div *ngIf="notifications.length === 0" class="notif-empty">
+                                <i class="far fa-bell-slash" style="font-size: 2rem; color: #878a8c; margin-bottom: 8px;"></i>
+                                <p>Bạn chưa có thông báo nào.</p>
+                            </div>
+                            
+                            <div *ngFor="let notif of notifications" 
+                                 class="notif-item" 
+                                 [class.unread]="notif.status === 'UNREAD' || notif.status === 'PENDING'"
+                                 (click)="markAsRead(notif)">
+                                <div class="notif-avatar-wrap">
+                                    <img [src]="notif.senderAvatarUrl || 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="notif-avatar" />
+                                </div>
+                                <div class="notif-content-wrap">
+                                    <p class="notif-text">{{ notif.content }}</p>
+                                    <span class="notif-time">{{ notif.timestamp | date:'dd/MM/yyyy HH:mm' }}</span>
+                                    
+                                    <!-- Interactive buttons for pending friend requests -->
+                                    <div class="notif-actions mt-2" *ngIf="notif.type === 'FRIEND_REQUEST' && notif.status === 'PENDING'">
+                                        <button class="btn-notif-accept" (click)="acceptRequest($event, notif)">Đồng ý</button>
+                                        <button class="btn-notif-decline" (click)="declineRequest($event, notif)">Từ chối</button>
+                                    </div>
+                                    <div class="notif-action-status mt-1" *ngIf="notif.type === 'FRIEND_REQUEST' && notif.status === 'ACCEPTED'">
+                                        <span class="text-success small"><i class="fas fa-check-circle me-1"></i> Đã đồng ý kết bạn</span>
+                                    </div>
+                                    <div class="notif-action-status mt-1" *ngIf="notif.type === 'FRIEND_REQUEST' && notif.status === 'DECLINED'">
+                                        <span class="text-muted small"><i class="fas fa-times-circle me-1"></i> Đã từ chối</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <a routerLink="/setting" class="btn-setting-circle" title="Cài đặt tài khoản" style="margin-left: 8px;">
+                    <i class="fas fa-cog"></i>
+                </a>
+                <button class="btn-logout-circle" (click)="logOut()" title="Đăng xuất" style="margin-left: 8px;">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
             </div>
             <div class="auth-buttons" *ngIf="!isLogin">
-                <a routerLink="/login" class="btn-login-outline hidden-mobile">Đăng Nhập</a>
+                <a routerLink="/login" class="btn-login-reddit">Đăng Nhập</a>
             </div>
             
-            <!-- Mobile Menu Toggle Button -->
             <button class="hamburger-btn" (click)="isMobileMenuOpen = !isMobileMenuOpen">
                 <i class="fas" [class.fa-bars]="!isMobileMenuOpen" [class.fa-times]="isMobileMenuOpen"></i>
             </button>
         </div>
     </div>
     
-    <!-- Mobile Menu Overlay -->
     <div class="mobile-menu-overlay" *ngIf="isMobileMenuOpen" (click)="isMobileMenuOpen = false"></div>
     <div class="mobile-menu-container" [class.open]="isMobileMenuOpen">
         <nav class="mobile-nav">
-            <!-- USER MOBILE MENU -->
             <ng-container *ngIf="!isAdminSection">
-                <a routerLink="/dashboard" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-chart-pie"></i> Tổng Quan</a>
-                <a routerLink="/assets" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-wallet"></i> Danh Mục</a>
-                <a routerLink="/news" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-newspaper"></i> Tin Tức AI</a>
-                <a routerLink="/rules" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-bolt"></i> Quy Tắc</a>
-                <a routerLink="/social" routerLinkActive="active" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-globe-asia"></i> Cộng Đồng</a>
+                <ng-container *ngFor="let item of searchItems">
+                    <a *ngIf="item.category !== 'Quản trị' && item.category !== 'Tài khoản'"
+                       [routerLink]="item.route" 
+                       routerLinkActive="active" 
+                       (click)="isMobileMenuOpen = false" 
+                       class="mobile-link">
+                         <i class="fas {{ item.icon }}"></i> {{ item.title }}
+                    </a>
+                </ng-container>
             </ng-container>
+
+            <ng-container *ngIf="isAdminSection">
+                <ng-container *ngFor="let item of searchItems">
+                    <a *ngIf="item.category === 'Quản trị'"
+                       [routerLink]="item.route" 
+                       routerLinkActive="active" 
+                       (click)="isMobileMenuOpen = false" 
+                       class="mobile-link">
+                        <i class="fas {{ item.icon }}"></i> {{ item.title }}
+                    </a>
+                </ng-container>
+                <a routerLink="/dashboard" (click)="isMobileMenuOpen = false" class="mobile-link">
+                    <i class="fas fa-sign-out-alt"></i> Thoát quản trị
+                </a>
+            </ng-container>
+
             <hr class="mobile-divider" *ngIf="!isLogin">
             <a *ngIf="!isLogin" routerLink="/login" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-sign-in-alt"></i> Đăng Nhập</a>
+            <a *ngIf="isLogin" [routerLink]="['/profile', currentUserId]" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-user"></i> Trang cá nhân</a>
+            <a *ngIf="isLogin" routerLink="/setting" (click)="isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-cog"></i> Cài đặt tài khoản</a>
+            <a *ngIf="isLogin" (click)="logOut(); isMobileMenuOpen = false" class="mobile-link"><i class="fas fa-sign-out-alt"></i> Đăng Xuất</a>
         </nav>
     </div>
 </header>

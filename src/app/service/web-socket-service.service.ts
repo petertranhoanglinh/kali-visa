@@ -11,17 +11,18 @@ import { environment } from 'src/environments/environment';
 })
 export class WebSocketService {
   private stompClient: any;
-  private messageSubject: BehaviorSubject<ChatMessage[]> = new BehaviorSubject<ChatMessage[]>([]);
+  private messageSubject: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+  private notificationSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private priceSubject: BehaviorSubject<Data> = new BehaviorSubject<Data>({} as Data);
   private currentRoomSubscription: any; // To hold the current room subscription
+  private notificationsSubscription: any; // For header notifications
 
   constructor() {
     this.initConnenctionSocket();
   }
 
   initConnenctionSocket() {
-    //const url = '//localhost:8888/ws';
-    const url = environment.apiUrl + "/" + "ws";
+    const url = environment.apiUrl + "/ws-chat";
     const socket = new SockJS(url);
     this.stompClient = Stomp.over(socket);
 
@@ -54,12 +55,41 @@ export class WebSocketService {
     }
   }
 
-  sendMessage(roomId: string, chatMessage: ChatMessage) {
+  sendMessage(roomId: string, chatMessage: any) {
     this.stompClient.send(`/app/chat/${roomId}`, {}, JSON.stringify(chatMessage));
   }
 
   getMessageSubject() {
     return this.messageSubject.asObservable();
+  }
+
+  subscribeToNotifications(userId: string) {
+    if (this.notificationsSubscription) {
+      this.notificationsSubscription.unsubscribe();
+      this.notificationsSubscription = null;
+    }
+
+    const trySubscribe = () => {
+      if (this.stompClient && this.stompClient.connected) {
+        this.notificationsSubscription = this.stompClient.subscribe(`/topic/notifications/${userId}`, (msg: any) => {
+          try {
+            const notif = JSON.parse(msg.body);
+            this.notificationSubject.next(notif);
+          } catch (e) {
+            console.error('Error parsing notification:', e);
+          }
+        });
+        console.log('Subscribed to notifications for user:', userId);
+      } else {
+        setTimeout(trySubscribe, 1000);
+      }
+    };
+
+    trySubscribe();
+  }
+
+  getNotificationSubject() {
+    return this.notificationSubject.asObservable();
   }
 
   public getPriceUpdates() {

@@ -3,6 +3,34 @@
   bottom: 20px;
   right: 20px;
   z-index: 1000;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chat-container.expanded {
+  bottom: 5vh;
+  right: 50%;
+  transform: translateX(50%);
+  width: 90vw;
+  max-width: 1000px;
+  height: 90vh;
+  z-index: 1001;
+}
+
+.chat-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(8px);
+  z-index: 999;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .chat-toggle {
@@ -54,6 +82,13 @@
   flex-direction: column;
   overflow: hidden;
   animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chat-container.expanded .chat-window {
+  width: 100%;
+  height: 100%;
+  border-radius: 24px;
 }
 
 @keyframes slideUp {
@@ -110,18 +145,36 @@
   opacity: 0.8;
 }
 
-.close-btn {
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.expand-btn, .close-btn {
   background: none;
   border: none;
   color: white;
   font-size: 20px;
   cursor: pointer;
-  opacity: 0.7;
-  transition: opacity 0.2s;
+  opacity: 0.75;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
 }
 
-.close-btn:hover {
+.expand-btn {
+  font-size: 16px;
+}
+
+.expand-btn:hover, .close-btn:hover {
   opacity: 1;
+  background: rgba(255, 255, 255, 0.15);
+  transform: scale(1.1);
 }
 
 .chat-messages {
@@ -183,6 +236,38 @@
 
 .msg-text li {
   margin-bottom: 5px;
+}
+
+/* LaTeX / KaTeX rendering styles */
+.msg-text .katex-display {
+  margin: 10px 0;
+  padding: 4px 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+}
+
+.msg-text .katex {
+  font-size: 1.05em;
+  text-rendering: auto;
+}
+
+.math-block-fallback {
+  background: #f1f5f9;
+  border-radius: 6px;
+  padding: 8px;
+  margin: 8px 0;
+  font-size: 13px;
+  white-space: pre-wrap;
+  font-family: monospace;
+}
+
+.math-inline-fallback {
+  background: #f1f5f9;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 13px;
+  font-family: monospace;
 }
 
 .msg-image {

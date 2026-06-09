@@ -80,6 +80,9 @@
 .create-post-card {
   margin-bottom: 2rem;
   margin-inline: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #ffffff;
 }
 
 .card-body { padding: 1.2rem 1.5rem; }
@@ -93,18 +96,17 @@
 
 .ck-editor-container {
   flex: 1;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
+  background: #f6f7f8;
+  border: 1px solid #edeff1;
+  border-radius: 4px;
   overflow: hidden;
-  transition: all 0.2s;
-  box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+  transition: all 0.2s ease-in-out;
 }
 
 .ck-editor-container:focus-within {
-  border-color: #3b82f6;
+  border-color: #ff4500;
   background: #ffffff;
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 1px #ff4500;
 }
 
 :host ::v-deep .ck-editor__editable {
@@ -178,33 +180,33 @@
 }
 
 .btn-attach {
-  color: #10b981;
+  color: #878a8c;
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 0.6rem 1.2rem;
-  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
   transition: all 0.2s;
 }
-.btn-attach:hover:not(.disabled) { background: #ecfdf5; }
+.btn-attach:hover:not(.disabled) { background: #f6f7f8; color: #1a1a1b; }
 .btn-attach.disabled { opacity: 0.5; cursor: not-allowed; }
 
 .btn-post {
-  background: #2563eb;
+  background: #ff4500;
   color: #fff;
   border: none;
-  padding: 0.6rem 1.8rem;
-  border-radius: 8px;
+  padding: 0.4rem 1.8rem;
+  border-radius: 9999px;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.95rem;
   cursor: pointer;
   transition: background 0.2s;
 }
-.btn-post:hover:not(:disabled) { background: #1d4ed8; }
-.btn-post:disabled { background: #94a3b8; cursor: not-allowed; }
+.btn-post:hover:not(:disabled) { background: #e03d00; }
+.btn-post:disabled { background: #e2e8f0; color: #787c7e; cursor: not-allowed; }
 
 /* Post Cards */
 .post-card {
@@ -680,11 +682,10 @@
 
 /* 1. Desktop Grid Setup */
 .social-layout {
-  display: grid;
-  grid-template-columns: 2.2fr 1fr;
-  gap: 2rem;
-  margin-top: 2rem;
-  align-items: start;
+  display: block;
+  max-width: 740px;
+  margin: 1.5rem auto;
+  padding: 0 1rem;
 }
 
 .social-main {
@@ -899,5 +900,186 @@
   }
   .social-sidebar {
     display: none; /* Hide sidebar on mobile/tablet */
+  }
+}
+
+/* ==========================================================================
+   REDDIT-STYLE REDESIGN AND AVATAR OVERRIDES
+   ========================================================================== */
+
+/* Upvote Action Button Styling */
+.btn-action.btn-upvote:hover {
+  background: #ff45001a;
+  color: #ff4500;
+}
+
+.btn-action.btn-upvote i {
+  transition: transform 0.2s ease-in-out;
+}
+
+.btn-action.btn-upvote:hover i {
+  transform: translateY(-2px);
+}
+
+.btn-action.btn-upvote.upvoted {
+  color: #ff4500 !important;
+}
+
+/* Avatar Containers and Upload Styles */
+.avatar-container {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid #e2e8f0;
+  transition: all 0.2s ease-in-out;
+  background-color: #f8fafc;
+  flex-shrink: 0;
+}
+
+.avatar-container:hover {
+  border-color: #ff4500;
+  box-shadow: 0 0 8px rgba(255, 69, 0, 0.2);
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 50%;
+}
+
+.avatar-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+  font-size: 0.9rem;
+}
+
+.avatar-container:hover .avatar-overlay {
+  opacity: 1;
+}
+
+.clickable-avatar {
+  cursor: pointer;
+}
+
+.avatar-wrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  background: #f1f5f9;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-wrapper.small {
+  width: 36px;
+  height: 36px;
+}
+
+.avatar-img.small {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Reddit-Style Post Header Meta */
+.post-meta-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: #576f76;
+}
+
+.subreddit-name {
+  font-weight: 700;
+  color: #1a1a1b;
+  cursor: pointer;
+}
+
+.subreddit-name:hover {
+  text-decoration: underline;
+}
+
+.post-author-link {
+  color: #787c7e;
+  cursor: pointer;
+}
+
+.post-author-link:hover {
+  text-decoration: underline;
+  color: #1a1a1b;
+}
+
+.meta-dot {
+  color: #787c7e;
+  font-size: 0.6rem;
+}
+
+.post-time {
+  color: #787c7e;
+}
+
+/* Reddit Card styling overrides */
+.post-card {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #ffffff;
+  transition: border-color 0.15s ease;
+}
+
+.post-card:hover {
+  border-color: #878a8c;
+}
+
+/* Comments details */
+.comment-bubble {
+  background: #f6f7f8;
+  border: 1px solid #edeff1;
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+
+.comment-author {
+  color: #1c1c1c;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.comment-text {
+  color: #1a1a1b;
+  margin-top: 4px;
+}
+
+.comment-time {
+  margin-left: 0;
+  color: #787c7e;
+  font-size: 0.75rem;
+}
+
+/* Mobile responsive improvements */
+@media (max-width: 768px) {
+  .avatar-container {
+    width: 36px;
+    height: 36px;
   }
 }

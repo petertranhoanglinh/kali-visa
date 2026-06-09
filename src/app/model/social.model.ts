@@ -10,6 +10,9 @@ export interface PostModel {
   comments?: CommentModel[]; // For frontend convenience
   showComments?: boolean;    // For UI toggle
   isExpanded?: boolean;      // For content truncation toggle
+  authorFirstName?: string;
+  authorLastName?: string;
+  authorAvatarUrl?: string;
 }
 
 export interface CommentModel {
@@ -19,4 +22,7 @@ export interface CommentModel {
   authorName: string;
   content: string;
   createdAt?: string;
+  authorFirstName?: string;
+  authorLastName?: string;
+  authorAvatarUrl?: string;
 }

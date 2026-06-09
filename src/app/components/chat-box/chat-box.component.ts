@@ -20,10 +20,11 @@ export class ChatBoxComponent implements OnInit, AfterViewChecked {
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
 
   isOpened = false;
+  isExpanded = false;
   userInput = '';
   messages: Message[] = [
     {
-      text: 'Xin chào! Tôi là <strong>TL Weakth Assistant</strong>. Tôi có thể giúp gì cho bạn về <em>đầu tư</em> và <em>giao dịch</em> hôm nay?',
+      text: 'Xin chào! Tôi là <strong>TL Wealth Assistant</strong>. Tôi có thể giúp gì cho bạn về <em>đầu tư</em> và <em>giao dịch</em> hôm nay?',
       isUser: false,
       time: new Date()
     }
@@ -49,7 +50,14 @@ export class ChatBoxComponent implements OnInit, AfterViewChecked {
     if (this.isOpened) {
       this.unreadCount = 0;
       setTimeout(() => this.scrollToBottom(), 100);
+    } else {
+      this.isExpanded = false;
     }
+  }
+
+  toggleExpand() {
+    this.isExpanded = !this.isExpanded;
+    setTimeout(() => this.scrollToBottom(), 100);
   }
 
   sendMessage() {
@@ -147,7 +155,34 @@ export class ChatBoxComponent implements OnInit, AfterViewChecked {
   formatMarkdown(text: string): string {
     if (!text) return '';
 
-    let html = text
+    // Extract block and inline math formulas to protect them from markdown formatting
+    const mathBlocks: { type: 'block' | 'inline'; formula: string; placeholder: string }[] = [];
+    
+    // 1. Extract block math $$...$$
+    let processedText = text.replace(/\$\$([\s\S]+?)\$\$/g, (match, formula) => {
+      const placeholder = `__MATH_BLOCK_PLACEHOLDER_${mathBlocks.length}__`;
+      mathBlocks.push({
+        type: 'block',
+        formula: formula.trim(),
+        placeholder
+      });
+      return placeholder;
+    });
+
+    // 2. Extract inline math $...$
+    // Using a regex that doesn't trigger on regular dollar amounts like $100 (expects no whitespace immediately inside $)
+    processedText = processedText.replace(/\$(?!\s)([^\$\n]+?)(?<!\s)\$/g, (match, formula) => {
+      const placeholder = `__MATH_INLINE_PLACEHOLDER_${mathBlocks.length}__`;
+      mathBlocks.push({
+        type: 'inline',
+        formula: formula.trim(),
+        placeholder
+      });
+      return placeholder;
+    });
+
+    // 3. Format standard markdown elements
+    let html = processedText
       // Bold
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
       // Italic
@@ -157,9 +192,36 @@ export class ChatBoxComponent implements OnInit, AfterViewChecked {
       .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
       // Numbered Lists
       .replace(/^\s*\d+\.\s+(.*)$/gm, '<li>$1</li>')
-      .replace(/(<li>.*<\/li>)/s, '<ol>$1</ol>') // This is a bit simplistic but works for single lists
+      .replace(/(<li>.*<\/li>)/s, '<ol>$1</ol>')
       // Line breaks
       .replace(/\n/g, '<br>');
+
+    // 4. Render math using KaTeX and replace placeholders
+    const hasKatex = typeof (window as any).katex !== 'undefined';
+
+    mathBlocks.forEach(item => {
+      let rendered = '';
+      if (hasKatex) {
+        try {
+          rendered = (window as any).katex.renderToString(item.formula, {
+            displayMode: item.type === 'block',
+            throwOnError: false
+          });
+        } catch (e) {
+          console.error('KaTeX rendering error:', e);
+          rendered = item.type === 'block' ? `$$${item.formula}$$` : `$${item.formula}$`;
+        }
+      } else {
+        // Fallback styling if KaTeX script fails to load
+        rendered = item.type === 'block' 
+          ? `<div class="math-block-fallback" style="text-align: center; margin: 10px 0; font-family: monospace; overflow-x: auto;">$$${item.formula}$$</div>`
+          : `<code class="math-inline-fallback">$${item.formula}$</code>`;
+      }
+      // Replace the placeholder. Since formula can contain special characters (like $),
+      // we use a replacement function instead of passing a string directly to replace()
+      // to avoid replacement pattern interpolation (e.g. $&, $', $`).
+      html = html.replace(item.placeholder, () => rendered);
+    });
 
     return html;
   }
