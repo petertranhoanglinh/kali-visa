@@ -40,5 +40,17 @@ export class MessageService {
     });
   }
 
+  recallMessage(messageId: string): Observable<any> {
+    const header : HttpHeaders = AuthDetail.getHeaderJwt();
+    return this._http.post<any>(environment.apiUrl + `/api/messages/${messageId}/recall`, {}, {
+      headers: header
+    });
+  }
 
+  clearChatHistory(friendId: string): Observable<any> {
+    const header : HttpHeaders = AuthDetail.getHeaderJwt();
+    return this._http.post<any>(environment.apiUrl + `/api/messages/clear/${friendId}`, {}, {
+      headers: header
+    });
+  }
 }

@@ -21,7 +21,10 @@
           <div class="friend-status">Trực tuyến</div>
         </div>
       </div>
-      <div class="header-right">
+      <div class="header-right" style="display: flex; align-items: center; gap: 10px;">
+        <button class="btn-clear-chat" (click)="clearChat()" title="Xóa toàn bộ lịch sử trò chuyện cả 2 bên">
+          <i class="far fa-trash-alt me-1"></i> Xóa lịch sử
+        </button>
         <a [routerLink]="['/profile', friendId]" class="btn-view-profile">Xem trang cá nhân</a>
       </div>
     </div>
@@ -41,18 +44,31 @@
         </div>
 
         <div class="message-bubble-wrap">
-          <div class="message-bubble">
+          <div class="message-bubble" 
+               [class.recalled]="msg.recalled" 
+               (contextmenu)="onMessageContextMenu($event, msg)" 
+               [title]="msg.recalled ? 'Tin nhắn đã thu hồi' : 'Click chuột phải để thu hồi'">
             <!-- Media content (if any) -->
-            <div *ngIf="msg.mediaUrl" class="message-media">
+            <div *ngIf="msg.mediaUrl && !msg.recalled" class="message-media">
               <img *ngIf="msg.mediaType === 'IMAGE'" [src]="msg.mediaUrl" class="chat-media-img" alt="Hình ảnh đính kèm" />
               <video *ngIf="msg.mediaType === 'VIDEO'" [src]="msg.mediaUrl" controls class="chat-media-video" preload="metadata"></video>
             </div>
             <!-- Text content -->
-            <div *ngIf="msg.content" class="message-text">{{ msg.content }}</div>
+            <div *ngIf="msg.recalled" class="message-text recalled-text">
+              <i class="fas fa-undo-alt me-1"></i> Tin nhắn đã bị thu hồi
+            </div>
+            <div *ngIf="msg.content && !msg.recalled" class="message-text">{{ msg.content }}</div>
           </div>
           <span class="message-time">{{ msg.timestamp | date:'HH:mm' }}</span>
         </div>
       </div>
+    </div>
+
+    <!-- Custom Context Menu for Recall -->
+    <div *ngIf="contextMenu.visible" class="custom-context-menu" [style.left.px]="contextMenu.x" [style.top.px]="contextMenu.y">
+      <button class="menu-item text-danger" (click)="recallSelectedMessage()">
+        <i class="fas fa-undo me-2"></i> Thu hồi tin nhắn
+      </button>
     </div>
 
     <!-- File Preview (when attachment is pending upload) -->

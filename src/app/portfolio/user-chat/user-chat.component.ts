@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewChecked, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth.service';
 import { MessageService } from 'src/app/service/message.service';
@@ -29,6 +29,14 @@ export class UserChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   messageInput: string = '';
   messageList: any[] = [];
   private socketSubscription!: Subscription;
+
+  // Context Menu for Recall
+  contextMenu = {
+    visible: false,
+    x: 0,
+    y: 0,
+    messageId: ''
+  };
 
   // Media Attachment
   selectedFile: File | null = null;
@@ -129,6 +137,12 @@ export class UserChatComponent implements OnInit, OnDestroy, AfterViewChecked {
         const matchingMsgs = liveMsgList.filter((m: any) => m.groupId === this.roomId);
         if (matchingMsgs.length > 0) {
           matchingMsgs.forEach((newMsg: any) => {
+            // Check for clear chat message
+            if (newMsg.mediaType === 'SYSTEM' && newMsg.content === 'CLEAR_CHAT') {
+              this.messageList = [];
+              return;
+            }
+
             // Find if there is a temporary message sent by us that matches this message
             const tempMsgIndex = this.messageList.findIndex(m => 
               m.sender === newMsg.sender && 
@@ -141,13 +155,20 @@ export class UserChatComponent implements OnInit, OnDestroy, AfterViewChecked {
               // Replace the temporary message with the server-persisted message (has ID and correct timestamp)
               this.messageList[tempMsgIndex] = newMsg;
             } else {
-              // Check if the message is already in the list to prevent duplicates
-              const exists = this.messageList.some(m => 
-                m.id === newMsg.id || 
-                (m.content === newMsg.content && new Date(m.timestamp).getTime() === new Date(newMsg.timestamp).getTime())
-              );
-              if (!exists) {
-                this.messageList.push(newMsg);
+              // Check if the message is already in the list by ID
+              const existingIndex = this.messageList.findIndex(m => m.id === newMsg.id);
+              if (existingIndex > -1) {
+                // Update properties in-place (e.g. for recall)
+                this.messageList[existingIndex] = { ...this.messageList[existingIndex], ...newMsg };
+              } else {
+                // Prevent duplicate by checking content and timestamp just in case
+                const exists = this.messageList.some(m => 
+                  m.content === newMsg.content && 
+                  new Date(m.timestamp).getTime() === new Date(newMsg.timestamp).getTime()
+                );
+                if (!exists) {
+                  this.messageList.push(newMsg);
+                }
               }
             }
           });
@@ -155,6 +176,56 @@ export class UserChatComponent implements OnInit, OnDestroy, AfterViewChecked {
         }
       }
     });
+  }
+
+  onMessageContextMenu(event: MouseEvent, msg: any) {
+    if (msg.sender !== this.currentUserId || msg.recalled) {
+      return;
+    }
+    event.preventDefault();
+    this.contextMenu.visible = true;
+    this.contextMenu.x = event.clientX;
+    this.contextMenu.y = event.clientY;
+    this.contextMenu.messageId = msg.id;
+  }
+
+  @HostListener('document:click')
+  closeContextMenu() {
+    this.contextMenu.visible = false;
+  }
+
+  recallSelectedMessage() {
+    if (!this.contextMenu.messageId) return;
+
+    this.messageService.recallMessage(this.contextMenu.messageId).subscribe({
+      next: (updatedMsg: any) => {
+        this.toastr.success('Đã thu hồi tin nhắn.');
+        // Update local list instantly
+        const idx = this.messageList.findIndex(m => m.id === updatedMsg.id);
+        if (idx > -1) {
+          this.messageList[idx] = updatedMsg;
+        }
+        this.closeContextMenu();
+      },
+      error: () => {
+        this.toastr.error('Lỗi khi thu hồi tin nhắn.');
+        this.closeContextMenu();
+      }
+    });
+  }
+
+  clearChat() {
+    if (confirm('Bạn có chắc chắn muốn xóa toàn bộ lịch sử trò chuyện cả 2 bên? Hành động này sẽ xóa vĩnh viễn tin nhắn.')) {
+      this.messageService.clearChatHistory(this.friendId).subscribe({
+        next: () => {
+          this.toastr.success('Đã xóa toàn bộ lịch sử trò chuyện.');
+          this.messageList = [];
+        },
+        error: () => {
+          this.toastr.error('Lỗi khi xóa lịch sử trò chuyện.');
+        }
+      });
+    }
   }
 
   onFileSelected(event: any) {

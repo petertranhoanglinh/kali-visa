@@ -13,6 +13,9 @@
           <span class="user-name">{{ getDisplayName(tab.user.firstName, tab.user.lastName, tab.user.username) }}</span>
         </div>
         <div class="header-actions" (click)="$event.stopPropagation()">
+          <button class="btn-action text-danger" (click)="clearChat(tab.friendId)" title="Xóa lịch sử trò chuyện cả 2 bên">
+            <i class="far fa-trash-alt"></i>
+          </button>
           <button class="btn-action" (click)="toggleMinimize(tab.friendId)" title="Thu nhỏ">
             <i class="fas" [class.fa-minus]="!tab.minimized" [class.fa-chevron-up]="tab.minimized"></i>
           </button>
@@ -28,24 +31,55 @@
         <div class="tab-messages" #scrollContainer>
           <div class="messages-inner">
             <div *ngFor="let msg of tab.messages" class="tab-msg-row" [class.outgoing]="msg.sender === currentUserId" [class.incoming]="msg.sender !== currentUserId">
-              <div class="msg-bubble" [title]="msg.timestamp | date:'dd/MM/yyyy HH:mm'">
-                {{ msg.content }}
+              <div class="msg-bubble" 
+                   [class.recalled]="msg.recalled" 
+                   (contextmenu)="onMessageContextMenu($event, msg, tab)"
+                   [title]="msg.recalled ? 'Tin nhắn đã thu hồi' : (msg.timestamp | date:'dd/MM/yyyy HH:mm')">
+                <!-- Media content (if any) -->
+                <div *ngIf="msg.mediaUrl && !msg.recalled" class="tab-message-media">
+                  <img *ngIf="msg.mediaType === 'IMAGE'" [src]="msg.mediaUrl" class="tab-media-img" alt="Hình ảnh đính kèm" (click)="openImage(msg.mediaUrl)" />
+                  <video *ngIf="msg.mediaType === 'VIDEO'" [src]="msg.mediaUrl" controls class="tab-media-video" preload="metadata"></video>
+                </div>
+                <!-- Text content -->
+                <span *ngIf="msg.recalled" class="recalled-text">
+                  <i class="fas fa-undo-alt me-1"></i> Tin nhắn đã bị thu hồi
+                </span>
+                <span *ngIf="!msg.recalled && msg.content">{{ msg.content }}</span>
               </div>
             </div>
           </div>
         </div>
 
+        <!-- File Preview (when attachment is pending upload) -->
+        <div *ngIf="tab.selectedFile" class="tab-attachment-preview">
+          <div class="tab-preview-card">
+            <img *ngIf="tab.previewType === 'IMAGE'" [src]="tab.previewUrl" class="tab-preview-thumb" />
+            <video *ngIf="tab.previewType === 'VIDEO'" [src]="tab.previewUrl" class="tab-preview-thumb" muted></video>
+            <button class="btn-clear-preview" (click)="clearAttachment(tab)">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+
         <!-- Composer Footer -->
         <div class="tab-footer">
+          <input type="file" #fileInput (change)="onFileSelected($event, tab)" accept="image/*,video/*" style="display: none;" />
+          
+          <button type="button" class="btn-attach" (click)="fileInput.click()" [disabled]="tab.isUploading" title="Đính kèm ảnh/video">
+            <i class="far fa-image"></i>
+          </button>
+          
           <input 
             type="text" 
             [(ngModel)]="tab.input" 
             (keyup.enter)="sendMessage(tab)"
             placeholder="Nhập tin nhắn..." 
             class="tab-input"
+            [disabled]="tab.isUploading"
           />
-          <button class="btn-send" (click)="sendMessage(tab)" [disabled]="!tab.input.trim()">
-            <i class="fas fa-paper-plane"></i>
+          <button class="btn-send" (click)="sendMessage(tab)" [disabled]="(!tab.input.trim() && !tab.selectedFile) || tab.isUploading">
+            <i *ngIf="!tab.isUploading" class="fas fa-paper-plane"></i>
+            <i *ngIf="tab.isUploading" class="fas fa-circle-notch fa-spin"></i>
           </button>
         </div>
       </ng-container>
@@ -84,6 +118,13 @@
     <button class="btn-launcher" (click)="toggleFriendList()" [class.active]="isFriendListOpen" title="Trò chuyện với bạn bè">
       <i class="far fa-comment-dots fa-lg"></i>
       <span class="badge-dot" *ngIf="friends.length > 0"></span>
+    </button>
+  </div>
+
+  <!-- Custom Context Menu for Recall -->
+  <div *ngIf="contextMenu.visible" class="custom-context-menu" [style.left.px]="contextMenu.x" [style.top.px]="contextMenu.y">
+    <button class="menu-item text-danger" (click)="recallSelectedMessage()">
+      <i class="fas fa-undo me-2"></i> Thu hồi tin nhắn
     </button>
   </div>
 </div>

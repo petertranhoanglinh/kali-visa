@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy, ViewChildren, QueryList, ElementRef, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChildren, QueryList, ElementRef, AfterViewChecked, HostListener } from '@angular/core';
 import { AuthService } from 'src/app/service/auth.service';
 import { MessageService } from 'src/app/service/message.service';
 import { WebSocketService } from 'src/app/service/web-socket-service.service';
 import { ChatTabService } from 'src/app/service/chat-tab.service';
+import { SocialService } from 'src/app/service/social.service';
 import { AuthDetail } from 'src/app/common/util/auth-detail';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
@@ -15,6 +16,10 @@ interface ChatTab {
   minimized: boolean;
   input: string;
   roomId: string;
+  selectedFile: File | null;
+  previewUrl: string | ArrayBuffer | null;
+  previewType: 'IMAGE' | 'VIDEO' | 'NONE';
+  isUploading: boolean;
 }
 
 @Component({
@@ -29,6 +34,15 @@ export class FriendChatTabsComponent implements OnInit, OnDestroy, AfterViewChec
   friends: any[] = [];
   activeTabs: ChatTab[] = [];
   isFriendListOpen: boolean = false;
+
+  // Context Menu for message recall
+  contextMenu = {
+    visible: false,
+    x: 0,
+    y: 0,
+    messageId: '',
+    friendId: ''
+  };
   
   private socketSubscription!: Subscription;
   private tabOpenSubscription!: Subscription;
@@ -38,6 +52,7 @@ export class FriendChatTabsComponent implements OnInit, OnDestroy, AfterViewChec
     private messageService: MessageService,
     private chatService: WebSocketService,
     private chatTabService: ChatTabService,
+    private socialService: SocialService,
     private toastr: ToastrService
   ) {}
 
@@ -140,7 +155,11 @@ export class FriendChatTabsComponent implements OnInit, OnDestroy, AfterViewChec
       messages: [],
       minimized: false,
       input: '',
-      roomId: roomId
+      roomId: roomId,
+      selectedFile: null,
+      previewUrl: null,
+      previewType: 'NONE',
+      isUploading: false
     };
 
     this.activeTabs.push(newTab);
@@ -183,6 +202,12 @@ export class FriendChatTabsComponent implements OnInit, OnDestroy, AfterViewChec
           const matchingMsgs = liveMsgList.filter((m: any) => m.groupId === tab.roomId);
           if (matchingMsgs.length > 0) {
             matchingMsgs.forEach((newMsg: any) => {
+              // Check for clear chat message
+              if (newMsg.mediaType === 'SYSTEM' && newMsg.content === 'CLEAR_CHAT') {
+                tab.messages = [];
+                return;
+              }
+
               // Deduplicate and replace temp message
               const tempIndex = tab.messages.findIndex(m =>
                 m.sender === newMsg.sender &&
@@ -194,13 +219,18 @@ export class FriendChatTabsComponent implements OnInit, OnDestroy, AfterViewChec
               if (tempIndex > -1) {
                 tab.messages[tempIndex] = newMsg;
               } else {
-                const exists = tab.messages.some(m =>
-                  m.id === newMsg.id ||
-                  (m.content === newMsg.content && new Date(m.timestamp).getTime() === new Date(newMsg.timestamp).getTime())
-                );
-                if (!exists) {
-                  tab.messages.push(newMsg);
-                  setTimeout(() => this.scrollToBottom(tab.friendId), 50);
+                const existingIndex = tab.messages.findIndex(m => m.id === newMsg.id);
+                if (existingIndex > -1) {
+                  // Update message properties in-place (e.g. for recall)
+                  tab.messages[existingIndex] = { ...tab.messages[existingIndex], ...newMsg };
+                } else {
+                  const exists = tab.messages.some(m =>
+                    m.content === newMsg.content && new Date(m.timestamp).getTime() === new Date(newMsg.timestamp).getTime()
+                  );
+                  if (!exists) {
+                    tab.messages.push(newMsg);
+                    setTimeout(() => this.scrollToBottom(tab.friendId), 50);
+                  }
                 }
               }
             });
@@ -210,15 +240,90 @@ export class FriendChatTabsComponent implements OnInit, OnDestroy, AfterViewChec
     });
   }
 
-  sendMessage(tab: ChatTab) {
-    if (!tab.input.trim()) return;
+  onMessageContextMenu(event: MouseEvent, msg: any, tab: ChatTab) {
+    if (msg.sender !== this.currentUserId || msg.recalled) {
+      return;
+    }
+    event.preventDefault();
+    this.contextMenu.visible = true;
+    this.contextMenu.x = event.clientX;
+    this.contextMenu.y = event.clientY;
+    this.contextMenu.messageId = msg.id;
+    this.contextMenu.friendId = tab.friendId;
+  }
 
+  @HostListener('document:click')
+  closeContextMenu() {
+    this.contextMenu.visible = false;
+  }
+
+  recallSelectedMessage() {
+    if (!this.contextMenu.messageId) return;
+
+    this.messageService.recallMessage(this.contextMenu.messageId).subscribe({
+      next: (updatedMsg: any) => {
+        this.toastr.success('Đã thu hồi tin nhắn.');
+        // Update local list instantly
+        const tab = this.activeTabs.find(t => t.friendId === this.contextMenu.friendId);
+        if (tab) {
+          const idx = tab.messages.findIndex(m => m.id === updatedMsg.id);
+          if (idx > -1) {
+            tab.messages[idx] = updatedMsg;
+          }
+        }
+        this.closeContextMenu();
+      },
+      error: () => {
+        this.toastr.error('Lỗi khi thu hồi tin nhắn.');
+        this.closeContextMenu();
+      }
+    });
+  }
+
+  clearChat(friendId: string) {
+    if (confirm('Bạn có chắc chắn muốn xóa toàn bộ lịch sử trò chuyện cả 2 bên? Hành động này sẽ xóa vĩnh viễn tin nhắn.')) {
+      this.messageService.clearChatHistory(friendId).subscribe({
+        next: () => {
+          this.toastr.success('Đã xóa toàn bộ lịch sử trò chuyện.');
+          const tab = this.activeTabs.find(t => t.friendId === friendId);
+          if (tab) {
+            tab.messages = [];
+          }
+        },
+        error: () => {
+          this.toastr.error('Lỗi khi xóa lịch sử trò chuyện.');
+        }
+      });
+    }
+  }
+
+  sendMessage(tab: ChatTab) {
+    if (!tab.input.trim() && !tab.selectedFile) return;
+
+    tab.isUploading = true;
+
+    if (tab.selectedFile) {
+      this.socialService.uploadFile(tab.selectedFile).subscribe({
+        next: (res) => {
+          this.submitMessage(tab, res.url, res.type);
+        },
+        error: (err) => {
+          this.toastr.error('Lỗi khi tải tệp đính kèm lên.');
+          tab.isUploading = false;
+        }
+      });
+    } else {
+      this.submitMessage(tab, '', 'NONE');
+    }
+  }
+
+  submitMessage(tab: ChatTab, mediaUrl: string, mediaType: string) {
     const chatMessage = {
       content: tab.input,
       sender: this.currentUserId,
       groupId: tab.roomId,
-      mediaUrl: '',
-      mediaType: 'NONE',
+      mediaUrl: mediaUrl,
+      mediaType: mediaType,
       timestamp: new Date()
     } as UserChatMessage;
 
@@ -232,7 +337,46 @@ export class FriendChatTabsComponent implements OnInit, OnDestroy, AfterViewChec
     }
 
     tab.input = '';
+    this.clearAttachment(tab);
+    tab.isUploading = false;
     setTimeout(() => this.scrollToBottom(tab.friendId), 50);
+  }
+
+  onFileSelected(event: any, tab: ChatTab) {
+    const file: File = event.target.files[0];
+    if (file) {
+      if (file.size > 50 * 1024 * 1024) {
+        this.toastr.warning('Dung lượng tệp tối đa là 50MB');
+        return;
+      }
+      tab.selectedFile = file;
+
+      if (file.type.startsWith('image/')) {
+        tab.previewType = 'IMAGE';
+      } else if (file.type.startsWith('video/')) {
+        tab.previewType = 'VIDEO';
+      } else {
+        tab.previewType = 'NONE';
+        this.toastr.warning('Chỉ hỗ trợ hình ảnh hoặc video ngắn.');
+        tab.selectedFile = null;
+        return;
+      }
+
+      // Generate preview URL
+      const reader = new FileReader();
+      reader.onload = e => tab.previewUrl = reader.result;
+      reader.readAsDataURL(file);
+    }
+  }
+
+  clearAttachment(tab: ChatTab) {
+    tab.selectedFile = null;
+    tab.previewUrl = null;
+    tab.previewType = 'NONE';
+  }
+
+  openImage(url: string) {
+    window.open(url, '_blank');
   }
 
   toggleFriendList() {

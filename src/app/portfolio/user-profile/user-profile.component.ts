@@ -226,4 +226,23 @@ export class UserProfileComponent implements OnInit {
     }
     return 'Nhà Đầu Tư ẩn danh';
   }
+
+  copyUserId(userId: string) {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(userId).then(() => {
+        this.toastr.success('Đã sao chép ID người dùng vào bộ nhớ tạm!');
+      }).catch(() => {
+        this.toastr.error('Lỗi khi sao chép ID.');
+      });
+    } else {
+      // Fallback
+      const el = document.createElement('textarea');
+      el.value = userId;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      this.toastr.success('Đã sao chép ID người dùng vào bộ nhớ tạm!');
+    }
+  }
 }

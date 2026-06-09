@@ -10,8 +10,11 @@
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-.floating-chat-system * {
-  pointer-events: auto; /* Re-enable pointer events for widgets */
+.chat-tab,
+.friend-list-panel,
+.btn-launcher,
+.custom-context-menu {
+  pointer-events: auto; /* Re-enable pointer events for active interactive elements only */
 }
 
 /* Chat Tabs Container */
@@ -412,4 +415,134 @@
     right: 0;
     left: 0;
   }
+}
+
+/* Recalled Messages inside Tabs */
+.msg-bubble.recalled {
+  background-color: #e3e6e8 !important;
+  color: #7c7c7c !important;
+  border: 1px solid #d3d6d8 !important;
+  font-style: italic;
+}
+
+.recalled-text {
+  color: #7c7c7c;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Custom Context Menu */
+.custom-context-menu {
+  position: fixed;
+  background-color: #ffffff;
+  border: 1px solid #edeff1;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  padding: 4px 0;
+  min-width: 150px;
+}
+
+.custom-context-menu .menu-item {
+  width: 100%;
+  padding: 8px 12px;
+  text-align: left;
+  background: none;
+  border: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.2s;
+}
+
+.custom-context-menu .menu-item:hover {
+  background-color: #f6f7f8;
+}
+
+.custom-context-menu .menu-item.text-danger {
+  color: #ef4444;
+}
+
+.custom-context-menu .menu-item.text-danger:hover {
+  background-color: #fee2e2;
+}
+
+/* Tab Media Attachments & Previews */
+.btn-attach {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  color: #878a8c;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.btn-attach:hover:not([disabled]) {
+  color: #0079d3;
+  background-color: #f6f7f8;
+}
+
+.btn-attach[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tab-message-media {
+  margin-bottom: 4px;
+  border-radius: 6px;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.tab-media-img {
+  max-width: 180px;
+  max-height: 150px;
+  object-fit: cover;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.tab-media-img:hover {
+  transform: scale(1.02);
+}
+
+.tab-media-video {
+  max-width: 180px;
+  max-height: 150px;
+  border-radius: 6px;
+  background-color: #000;
+}
+
+.tab-attachment-preview {
+  padding: 6px 10px;
+  background-color: #ffffff;
+  border-top: 1px solid #dae0e6;
+}
+
+.tab-preview-card {
+  position: relative;
+  display: inline-block;
+  background-color: #f6f7f8;
+  border: 1px solid #dae0e6;
+  border-radius: 6px;
+  padding: 4px;
+}
+
+.tab-preview-thumb {
+  width: 45px;
+  height: 45px;
+  object-fit: cover;
+  border-radius: 4px;
+  background-color: #000;
+  display: block;
 }
