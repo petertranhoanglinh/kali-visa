@@ -44,7 +44,7 @@ export class HeaderComponent implements OnInit {
 
   searchItems = [
     { title: 'Tổng Quan', description: 'Xem tổng quan tài sản, lợi nhuận và biến động danh mục', route: '/dashboard', icon: 'fa-chart-pie', category: 'Tính năng chính' },
-    { title: 'Danh Mục', description: 'Quản lý tài sản, thêm mới giao dịch và theo dõi số dư', route: '/assets', icon: 'fa-wallet', category: 'Tính năng chính' },
+    { title: 'Danh Mục', description: 'Quản lý tài sản, thêm mới giao dịch và theo dõi số dư', route: '/category', icon: 'fa-wallet', category: 'Tính năng chính' },
     { title: 'Tin Tức', description: 'Cập nhật tin tức thị trường và tóm tắt phân tích bằng AI', route: '/news', icon: 'fa-newspaper', category: 'Tính năng chính' },
     { title: 'Quy Tắc', description: 'Thiết lập quy tắc giao dịch và cảnh báo thị trường', route: '/rules', icon: 'fa-bolt', category: 'Tính năng chính' },
     { title: 'Cộng Đồng', description: 'Thảo luận, chia sẻ bài viết và ý tưởng đầu tư', route: '/social', icon: 'fa-globe-asia', category: 'Tính năng chính' },
@@ -383,7 +383,7 @@ preventDefault(event: Event): void {
     }
 
     if (currentUrl === '/dashboard') return 'Tổng Quan';
-    if (currentUrl === '/assets') return 'Danh Mục';
+    if (currentUrl === '/category') return 'Danh Mục';
     if (currentUrl === '/news') return 'Tin Tức AI';
     if (currentUrl === '/rules') return 'Quy Tắc';
     if (currentUrl === '/social') return 'Cộng Đồng';
@@ -408,7 +408,7 @@ preventDefault(event: Event): void {
     }
 
     if (currentUrl === '/dashboard') return 'fa-chart-pie';
-    if (currentUrl === '/assets') return 'fa-wallet';
+    if (currentUrl === '/category') return 'fa-wallet';
     if (currentUrl === '/news') return 'fa-newspaper';
     if (currentUrl === '/rules') return 'fa-bolt';
     if (currentUrl === '/social') return 'fa-globe-asia';
