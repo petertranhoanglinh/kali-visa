@@ -98,8 +98,8 @@
           </div>
 
           <div class="media-content" *ngIf="post.mediaUrl && post.mediaType !== 'NONE'">
-            <img *ngIf="post.mediaType === 'IMAGE'" [src]="post.mediaUrl" class="post-media" alt="Post Image" loading="lazy">
-            <video *ngIf="post.mediaType === 'VIDEO'" [src]="post.mediaUrl" controls class="post-media" preload="metadata"></video>
+            <img *ngIf="post.mediaType === 'IMAGE'" [src]="apiUrl + post.mediaUrl" class="post-media" alt="Post Image" loading="lazy">
+            <video *ngIf="post.mediaType === 'VIDEO'" [src]="apiUrl + post.mediaUrl" controls class="post-media" preload="metadata"></video>
           </div>
 
           <div class="post-stats" *ngIf="post.likes?.length || post.comments?.length">
