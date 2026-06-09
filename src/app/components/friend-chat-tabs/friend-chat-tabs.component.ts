@@ -35,6 +35,7 @@ export class FriendChatTabsComponent implements OnInit, OnDestroy, AfterViewChec
   friends: any[] = [];
   activeTabs: ChatTab[] = [];
   isFriendListOpen: boolean = false;
+  unreadCounts: { [friendId: string]: number } = {};
 
   // Context Menu for message recall
   contextMenu = {
@@ -63,9 +64,18 @@ export class FriendChatTabsComponent implements OnInit, OnDestroy, AfterViewChec
     if (loginInfo) {
       this.currentUserId = loginInfo.id;
       this.loadFriends();
+      this.loadUnreadCounts();
       this.subscribeToTabService();
       this.connectWebSocketGlobal();
     }
+  }
+
+  loadUnreadCounts() {
+    this.messageService.getUnreadCounts().subscribe({
+      next: (counts: any) => {
+        this.unreadCounts = counts || {};
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -111,6 +121,15 @@ export class FriendChatTabsComponent implements OnInit, OnDestroy, AfterViewChec
   }
 
   openChat(friendId: string) {
+    const jwt = localStorage.getItem('jwt') || AuthDetail.getLoginedInfo()?.jwt;
+    if (jwt) {
+      this.authService.markAllMessagesRead(friendId, jwt).subscribe({
+        next: () => {
+          this.unreadCounts[friendId] = 0;
+        }
+      });
+    }
+
     // Check if already open
     const existingIndex = this.activeTabs.findIndex(t => t.friendId === friendId);
     if (existingIndex > -1) {
@@ -192,13 +211,39 @@ export class FriendChatTabsComponent implements OnInit, OnDestroy, AfterViewChec
     if (tab) {
       tab.minimized = !tab.minimized;
       if (!tab.minimized) {
+        const jwt = localStorage.getItem('jwt') || AuthDetail.getLoginedInfo()?.jwt;
+        if (jwt) {
+          this.authService.markAllMessagesRead(friendId, jwt).subscribe({
+            next: () => {
+              this.unreadCounts[friendId] = 0;
+            }
+          });
+        }
         setTimeout(() => this.scrollToBottom(friendId), 100);
       }
     }
   }
 
   connectWebSocketGlobal() {
-    this.socketSubscription = this.chatService.getMessageSubject().subscribe((liveMsgList: any) => {
+    const jwt = localStorage.getItem('jwt') || AuthDetail.getLoginedInfo()?.jwt;
+    this.chatService.subscribeToNotifications(this.currentUserId);
+    
+    // Subscribe to notifications for unread counts
+    const notifSub = this.chatService.getNotificationSubject().subscribe((notif: any) => {
+      if (notif && notif.type === 'MESSAGE') {
+        const senderId = notif.senderId;
+        const tab = this.activeTabs.find(t => t.friendId === senderId);
+        if (tab && !tab.minimized) {
+          if (jwt) {
+            this.authService.markAllMessagesRead(senderId, jwt).subscribe();
+          }
+        } else {
+          this.unreadCounts[senderId] = (this.unreadCounts[senderId] || 0) + 1;
+        }
+      }
+    });
+
+    const msgSub = this.chatService.getMessageSubject().subscribe((liveMsgList: any) => {
       if (liveMsgList && liveMsgList.length > 0) {
         this.activeTabs.forEach(tab => {
           const matchingMsgs = liveMsgList.filter((m: any) => m.groupId === tab.roomId);
@@ -220,10 +265,15 @@ export class FriendChatTabsComponent implements OnInit, OnDestroy, AfterViewChec
 
               if (tempIndex > -1) {
                 tab.messages[tempIndex] = newMsg;
+                if (!tab.minimized) {
+                  this.unreadCounts[tab.friendId] = 0;
+                  if (jwt) {
+                    this.authService.markAllMessagesRead(tab.friendId, jwt).subscribe();
+                  }
+                }
               } else {
                 const existingIndex = tab.messages.findIndex(m => m.id === newMsg.id);
                 if (existingIndex > -1) {
-                  // Update message properties in-place (e.g. for recall)
                   tab.messages[existingIndex] = { ...tab.messages[existingIndex], ...newMsg };
                 } else {
                   const exists = tab.messages.some(m =>
@@ -231,6 +281,12 @@ export class FriendChatTabsComponent implements OnInit, OnDestroy, AfterViewChec
                   );
                   if (!exists) {
                     tab.messages.push(newMsg);
+                    if (!tab.minimized) {
+                      this.unreadCounts[tab.friendId] = 0;
+                      if (jwt) {
+                        this.authService.markAllMessagesRead(tab.friendId, jwt).subscribe();
+                      }
+                    }
                     setTimeout(() => this.scrollToBottom(tab.friendId), 50);
                   }
                 }
@@ -240,6 +296,9 @@ export class FriendChatTabsComponent implements OnInit, OnDestroy, AfterViewChec
         });
       }
     });
+
+    this.socketSubscription = msgSub;
+    this.socketSubscription.add(notifSub);
   }
 
   onMessageContextMenu(event: MouseEvent, msg: any, tab: ChatTab) {
@@ -415,5 +474,9 @@ export class FriendChatTabsComponent implements OnInit, OnDestroy, AfterViewChec
         container.nativeElement.scrollTop = container.nativeElement.scrollHeight;
       });
     } catch (err) {}
+  }
+
+  getTotalUnreadCount(): number {
+    return Object.values(this.unreadCounts).reduce((sum, val) => sum + val, 0);
   }
 }

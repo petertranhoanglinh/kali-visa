@@ -105,6 +105,7 @@
           <div class="friend-avatar-wrap">
             <img [src]="friend.avatarUrl  ? apiUrl + friend.avatarUrl : 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'" class="friend-avatar" />
             <span class="status-indicator online"></span>
+            <span class="friend-unread-badge" *ngIf="unreadCounts[friend.id] > 0">{{ unreadCounts[friend.id] }}</span>
           </div>
           <div class="friend-details">
             <span class="friend-name">{{ getDisplayName(friend.firstName, friend.lastName, friend.username) }}</span>
@@ -117,7 +118,7 @@
     <!-- Toggle button -->
     <button class="btn-launcher" (click)="toggleFriendList()" [class.active]="isFriendListOpen" title="Trò chuyện với bạn bè">
       <i class="far fa-comment-dots fa-lg"></i>
-      <span class="badge-dot" *ngIf="friends.length > 0"></span>
+      <span class="unread-count-badge" *ngIf="getTotalUnreadCount() > 0">{{ getTotalUnreadCount() }}</span>
     </button>
   </div>
 

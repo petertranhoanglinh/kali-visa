@@ -53,4 +53,11 @@ export class MessageService {
       headers: header
     });
   }
+
+  getUnreadCounts(): Observable<any> {
+    const header : HttpHeaders = AuthDetail.getHeaderJwt();
+    return this._http.get<any>(environment.apiUrl + `/api/messages/unread-counts`, {
+      headers: header
+    });
+  }
 }

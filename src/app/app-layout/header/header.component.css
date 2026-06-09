@@ -759,3 +759,23 @@
   background-color: transparent !important;
   padding: 0;
 }
+
+.btn-notif-delete {
+  background: transparent;
+  border: none;
+  color: #a0a0a0;
+  cursor: pointer;
+  padding: 4px;
+  font-size: 0.85rem;
+  opacity: 0;
+  transition: opacity 0.2s, color 0.2s;
+  align-self: flex-start;
+}
+
+.notif-item:hover .btn-notif-delete {
+  opacity: 1;
+}
+
+.btn-notif-delete:hover {
+  color: #ef4444;
+}

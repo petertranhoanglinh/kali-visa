@@ -546,3 +546,40 @@
   background-color: #000;
   display: block;
 }
+
+.friend-unread-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background-color: #ff4500;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: bold;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid white;
+  padding: 0 3px;
+  z-index: 1;
+}
+
+.unread-count-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background-color: #ff4500;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 800;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+  padding: 0 4px;
+}

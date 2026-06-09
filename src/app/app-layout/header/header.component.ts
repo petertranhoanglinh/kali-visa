@@ -158,15 +158,13 @@ export class HeaderComponent implements OnInit {
         // Listen to live notifications via WebSocket
         this.chatService.subscribeToNotifications(this.currentUserId);
         this.chatService.getNotificationSubject().subscribe((notif: any) => {
-          if (notif) {
+          if (notif && notif.type !== 'MESSAGE_SILENT' && notif.type !== 'MESSAGE') {
             const exists = this.notifications.some(n => n.id === notif.id);
             if (!exists) {
               this.unreadCount++;
               this.notifications.unshift(notif);
               
-              if (notif.type === 'MESSAGE') {
-                this.toastr.info(notif.content, 'Tin nhắn mới', { timeOut: 4000 });
-              } else if (notif.type === 'FRIEND_REQUEST') {
+              if (notif.type === 'FRIEND_REQUEST') {
                 this.toastr.success(notif.content, 'Lời mời kết bạn', { timeOut: 4000 });
               } else if (notif.type === 'FRIEND_ACCEPT') {
                 this.toastr.success(notif.content, 'Chấp nhận kết bạn', { timeOut: 4000 });
@@ -664,6 +662,26 @@ preventDefault(event: Event): void {
           notif.status = 'READ';
           if (this.unreadCount > 0) {
             this.unreadCount--;
+          }
+        }
+      }
+    });
+  }
+
+  deleteNotification(event: Event, notif: any) {
+    event.stopPropagation();
+    const jwt = localStorage.getItem('jwt') || AuthDetail.getLoginedInfo()?.jwt;
+    if (!jwt) return;
+
+    this.authService.deleteNotification(notif.id, jwt).subscribe({
+      next: (res: any) => {
+        if (res && res.code === 200) {
+          this.toastr.success('Đã xóa thông báo');
+          this.notifications = this.notifications.filter(n => n.id !== notif.id);
+          if (notif.status === 'UNREAD' || notif.status === 'PENDING') {
+            if (this.unreadCount > 0) {
+              this.unreadCount--;
+            }
           }
         }
       }
