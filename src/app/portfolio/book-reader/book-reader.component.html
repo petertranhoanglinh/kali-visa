@@ -36,13 +36,12 @@
         <span class="toolbar-page-indicator">Trang {{ currentPageIdx + 1 }} / {{ totalPages }}</span>
       </div>
 
-      <button class="toolbar-btn" (click)="toggleSettings()" title="Cấu hình hiển thị">
-        <i class="fas fa-cog"></i>
-      </button>
+      <!-- Hidden settings placeholder for centering layout -->
+      <div style="width: 36px;"></div>
     </header>
 
     <!-- Reading Content Panel -->
-    <div class="reading-panel" id="readingPanel">
+    <div class="reading-panel" id="readingPanel" (scroll)="onScroll($event)" (wheel)="onWheel($event)">
       <div class="page-paper shadow-paper">
         <div class="loading-spinner-wrap" *ngIf="loading">
           <div class="spinner"></div>
@@ -110,49 +109,4 @@
       </button>
     </footer>
   </main>
-
-  <!-- Right Settings Panel Slider -->
-  <aside class="sidebar-settings" [class.open]="settingsOpen">
-    <div class="settings-header">
-      <h3>Cài đặt hiển thị</h3>
-      <button class="close-btn" (click)="toggleSettings()">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-    <div class="settings-content">
-      <!-- Font Family -->
-      <div class="setting-item">
-        <label>Kiểu chữ</label>
-        <div class="btn-group">
-          <button [class.active]="fontFamily === 'inter'" (click)="changeFont('inter')">Inter</button>
-          <button [class.active]="fontFamily === 'system'" (click)="changeFont('system')">Hệ thống</button>
-          <button [class.active]="fontFamily === 'serif'" (click)="changeFont('serif')">Serif</button>
-        </div>
-      </div>
-
-      <!-- Font Size -->
-      <div class="setting-item">
-        <label>Cỡ chữ: {{ fontSize }}px</label>
-        <div class="btn-group">
-          <button (click)="decreaseFontSize()" [disabled]="fontSize <= 14"><i class="fas fa-minus"></i> Giảm</button>
-          <button (click)="increaseFontSize()" [disabled]="fontSize >= 24"><i class="fas fa-plus"></i> Tăng</button>
-        </div>
-      </div>
-
-      <!-- Themes -->
-      <div class="setting-item">
-        <label>Màu nền</label>
-        <div class="theme-options">
-          <div class="theme-dot dot-sepia" [class.active]="theme === 'sepia'" (click)="changeTheme('sepia')" title="Sepia"></div>
-          <div class="theme-dot dot-light" [class.active]="theme === 'light'" (click)="changeTheme('light')" title="Sáng"></div>
-          <div class="theme-dot dot-dark" [class.active]="theme === 'dark'" (click)="changeTheme('dark')" title="Tối"></div>
-        </div>
-      </div>
-      
-      <div class="shortcut-tip">
-        <p><strong>Mẹo:</strong> Sử dụng các phím mũi tên <strong>Trái (<i class="fas fa-arrow-left"></i>)</strong> / <strong>Phải (<i class="fas fa-arrow-right"></i>)</strong> trên bàn phím để chuyển trang nhanh.</p>
-      </div>
-    </div>
-  </aside>
-
 </div>

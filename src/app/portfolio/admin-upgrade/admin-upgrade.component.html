@@ -1,7 +1,9 @@
 <div class="admin-container animate-fade">
   <header class="admin-header">
-    <h1>Quản lý nâng cấp hạng Tier</h1>
-    <p>Duyệt các yêu cầu thanh toán chuyển khoản từ người dùng.</p>
+    <div class="header-main">
+      <h1>💎 Quản lý nâng cấp hạng Tier</h1>
+      <p>Duyệt và phê duyệt các yêu cầu thanh toán chuyển khoản từ người dùng hệ thống.</p>
+    </div>
   </header>
 
   <div class="loading-overlay" *ngIf="loading">
@@ -10,7 +12,7 @@
 
   <div class="request-grid" *ngIf="pendingRequests.length > 0; else noRequests">
     <div class="request-card" *ngFor="let req of pendingRequests">
-      <div class="card-header">
+      <div class="card-header-cell">
         <span class="user-info">
           <strong>{{ req.username }}</strong>
           <small>ID: {{ req.userId }}</small>
@@ -19,16 +21,16 @@
       </div>
 
       <div class="screenshot-preview">
-        <label>Ảnh xác nhận:</label>
+        <label class="preview-label">Ảnh giao dịch xác nhận:</label>
         <a [href]="apiBase + req.screenshotUrl" target="_blank" class="img-link">
           <img [src]="apiBase + req.screenshotUrl" alt="Screenshot">
-          <div class="zoom-overlay"><i class="fas fa-search-plus"></i> Xem ảnh lớn</div>
+          <div class="zoom-overlay"><i class="fas fa-search-plus"></i> Xem ảnh gốc</div>
         </a>
       </div>
 
-      <div class="card-footer">
+      <div class="card-footer-cell">
         <span class="date">
-          {{ req.createdAt | date:'dd/MM/yyyy HH:mm' }}
+          <span class="date-label"><i class="far fa-calendar-alt"></i> {{ req.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
           <br>
           <span class="duration-info"><i class="fas fa-clock"></i> Thời hạn: <strong>{{ req.durationMonths || 1 }} tháng</strong></span>
         </span>
@@ -42,9 +44,9 @@
 
   <ng-template #noRequests>
     <div class="empty-state" *ngIf="!loading">
-      <i class="fas fa-check-circle"></i>
-      <h3>Đã xử lý hết yêu cầu!</h3>
-      <p>Hiện không có yêu cầu nâng cấp nào đang chờ duyệt.</p>
+      <i class="fas fa-check-circle empty-icon"></i>
+      <h3>Đã xử lý xong tất cả yêu cầu!</h3>
+      <p>Hiện tại không có yêu cầu nâng cấp tài khoản nào đang chờ duyệt.</p>
     </div>
   </ng-template>
 </div>

@@ -2,7 +2,7 @@
   <header class="library-header">
     <div class="header-main">
       <h1>📖 Thư viện Sách Điện tử</h1>
-      <p>Khám phá kho sách đầu tư, tài chính và phân tích doanh nghiệp được chuẩn hóa dạng tài liệu thông minh.</p>
+      <p>Khám phá kho sách đầu tư, tài chính và phân tích doanh nghiệp dưới dạng thư mục tài liệu.</p>
     </div>
     
     <div class="search-bar">
@@ -15,38 +15,46 @@
     <i class="fas fa-exclamation-circle"></i> {{ errorMessage }}
   </div>
 
-  <!-- Library Grid -->
-  <div class="books-grid" *ngIf="!loading && filteredBooks.length > 0">
-    <div class="book-card" *ngFor="let book of filteredBooks">
-      <!-- Book Cover -->
-      <div class="book-cover-wrap" [style.background]="getCoverGradient(book.id)">
-        <div class="cover-design">
-          <i class="fas fa-book-reader cover-icon"></i>
-          <span class="cover-title">{{ book.title }}</span>
-          <span class="cover-author">{{ book.author }}</span>
-        </div>
-        <div class="cover-overlay">
-          <a [routerLink]="['/books', book.id, 'read']" class="btn-primary-read">
-            <i class="fas fa-book-open"></i> Đọc Sách
-          </a>
-        </div>
-      </div>
-
-      <!-- Book Info -->
-      <div class="book-details">
-        <h3 class="book-title" [title]="book.title">{{ book.title }}</h3>
-        <p class="book-author">Tác giả: {{ book.author }}</p>
-        <p class="book-desc" *ngIf="book.description">{{ book.description }}</p>
-        <div class="book-meta">
-          <span class="page-badge">
-            <i class="far fa-file-alt"></i> {{ book.totalPages }} trang
-          </span>
-          <span class="date-badge">
-            <i class="far fa-calendar-alt"></i> {{ book.createdAt | date:'MM/yyyy' }}
-          </span>
-        </div>
-      </div>
-    </div>
+  <!-- Windows Explorer-style Details List -->
+  <div class="explorer-table-wrap" *ngIf="!loading && filteredBooks.length > 0">
+    <table class="explorer-table">
+      <thead>
+        <tr>
+          <th class="col-name">Tên tài liệu</th>
+          <th class="col-author">Tác giả</th>
+          <th class="col-pages">Số trang</th>
+          <th class="col-date">Ngày tạo</th>
+          <th class="col-actions"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let book of filteredBooks" [routerLink]="['/books', book.id, 'read']" class="explorer-row">
+          <td class="col-name-cell">
+            <div class="file-info">
+              <i class="fas fa-file-pdf pdf-file-icon"></i>
+              <div class="name-details">
+                <span class="file-name" [title]="book.title">{{ book.title }}</span>
+                <span class="file-desc-sub" *ngIf="book.description">{{ book.description }}</span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <span class="explorer-text text-author">{{ book.author || 'Chưa rõ' }}</span>
+          </td>
+          <td>
+            <span class="explorer-text text-pages">{{ book.totalPages }} trang</span>
+          </td>
+          <td>
+            <span class="explorer-text text-date">{{ book.createdAt | date:'dd/MM/yyyy' }}</span>
+          </td>
+          <td class="col-actions-cell" (click)="$event.stopPropagation()">
+            <a [routerLink]="['/books', book.id, 'read']" class="btn-read-row">
+              <i class="fas fa-book-open"></i> Đọc
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
   <!-- Loading State -->

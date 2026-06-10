@@ -20,9 +20,10 @@ export class BookReaderComponent implements OnInit, OnDestroy {
   // UI Preferences
   sidebarOpen: boolean = true;
   settingsOpen: boolean = false;
-  theme: string = 'dark'; // 'light', 'dark', 'sepia'
+  theme: string = 'light'; // 'light', 'dark', 'sepia'
   fontFamily: string = 'inter'; // 'inter', 'system', 'serif'
   fontSize: number = 18; // 14px to 24px
+  lastPageTurnTime: number = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -81,8 +82,21 @@ export class BookReaderComponent implements OnInit, OnDestroy {
           this.totalPages = res.data || 0;
           this.pageList = Array.from({ length: this.totalPages }, (_, i) => i);
           
-          // Load the first page
-          this.loadPage(0);
+          // Retrieve saved page from localStorage if exists
+          let initialPage = 0;
+          try {
+            const saved = localStorage.getItem(`book_read_page_${this.bookId}`);
+            if (saved) {
+              const parsed = parseInt(saved, 10);
+              if (!isNaN(parsed) && parsed >= 0 && parsed < this.totalPages) {
+                initialPage = parsed;
+              }
+            }
+          } catch (e) {
+            console.error('Error reading saved page progress', e);
+          }
+          
+          this.loadPage(initialPage);
         }
       },
       error: (err) => {
@@ -110,6 +124,13 @@ export class BookReaderComponent implements OnInit, OnDestroy {
           }
           
           this.currentPage = pageData;
+          
+          // Save progress in localStorage
+          try {
+            localStorage.setItem(`book_read_page_${this.bookId}`, pageIdx.toString());
+          } catch (e) {
+            console.error('Error saving page progress', e);
+          }
           
           // Scroll reading panel to top
           const panel = document.getElementById('readingPanel');
@@ -248,6 +269,41 @@ export class BookReaderComponent implements OnInit, OnDestroy {
   decreaseFontSize(): void {
     if (this.fontSize > 14) {
       this.fontSize -= 1;
+    }
+  }
+
+  onScroll(event: any): void {
+    const element = event.target;
+    // Check if user has scrolled to the bottom of the page (within 10px threshold)
+    const atBottom = element.scrollHeight - element.scrollTop <= element.clientHeight + 10;
+    
+    if (atBottom && !this.loading) {
+      const now = Date.now();
+      // Throttle page transitions to prevent double-skipping (1.5 seconds cooldown)
+      if (now - this.lastPageTurnTime > 1500) {
+        this.lastPageTurnTime = now;
+        this.nextPage();
+      }
+    }
+  }
+
+  onWheel(event: WheelEvent): void {
+    const element = document.getElementById('readingPanel');
+    if (!element || this.loading) return;
+
+    // Detect rolling scroll wheel downwards
+    if (event.deltaY > 0) {
+      const isScrollable = element.scrollHeight > element.clientHeight;
+      // Triggers if container is not scrollable (short page) or already at bottom
+      const atBottom = !isScrollable || (element.scrollHeight - element.scrollTop <= element.clientHeight + 10);
+
+      if (atBottom) {
+        const now = Date.now();
+        if (now - this.lastPageTurnTime > 1500) {
+          this.lastPageTurnTime = now;
+          this.nextPage();
+        }
+      }
     }
   }
 }

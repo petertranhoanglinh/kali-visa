@@ -1,4 +1,4 @@
-<div class="container settings-container">
+<div class="container settings-container animate-fade">
     <div class="card premium-card border-0">
         <!-- Header Gradient -->
         <div class="card-header card-header-gradient d-flex align-items-center justify-content-between">
@@ -28,7 +28,10 @@
                                        placeholder="Ví dụ: 25400">
                                 <span class="input-addon-right">VND</span>
                             </div>
-                            <div class="form-text text-muted mt-2 small">
+                            <div class="money-preview mt-2" *ngIf="exchangeRate">
+                                Định dạng: <span class="currency-highlight">{{ exchangeRate | number:'1.0-0' }} VND</span>
+                            </div>
+                            <div class="form-text text-muted mt-1 small">
                                 Tỷ giá cố định dùng để chuyển đổi tài sản USD sang VND cho toàn hệ thống.
                             </div>
                         </div>
@@ -42,7 +45,10 @@
                                        placeholder="Ví dụ: 199000">
                                 <span class="input-addon-right">VND / Tháng</span>
                             </div>
-                            <div class="form-text text-muted mt-2 small">
+                            <div class="money-preview mt-2" *ngIf="premiumCost">
+                                Định dạng: <span class="currency-highlight">{{ premiumCost | number:'1.0-0' }} VND</span>
+                            </div>
+                            <div class="form-text text-muted mt-1 small">
                                 Phí hiển thị tại màn nâng cấp tài khoản Premium cho người dùng.
                             </div>
                         </div>
@@ -95,9 +101,9 @@
                                 <label class="toggle-switch">
                                     <input type="checkbox" [checked]="telegramAlertEnabled === 'ON'" 
                                            (change)="telegramAlertEnabled = telegramAlertEnabled === 'ON' ? 'OFF' : 'ON'">
-                                    <span class="slider-switch" style="background-color: #cbd5e1; transition: .4s;"></span>
+                                    <span class="slider-switch"></span>
                                 </label>
-                                <span class="status-label" [class.inactive]="telegramAlertEnabled === 'OFF'" style="color: #10b981; font-weight: 700;">
+                                <span class="status-label" [class.active-tg]="telegramAlertEnabled === 'ON'" [class.inactive-tg]="telegramAlertEnabled === 'OFF'">
                                     {{ telegramAlertEnabled === 'ON' ? 'ĐANG BẬT CẢNH BÁO' : 'ĐANG TẮT CẢNH BÁO' }}
                                 </span>
                             </div>
@@ -115,7 +121,7 @@
                                            (change)="maintenanceMode = maintenanceMode === 'ON' ? 'OFF' : 'ON'">
                                     <span class="slider-switch"></span>
                                 </label>
-                                <span class="status-label" [class.active]="maintenanceMode === 'ON'" [class.inactive]="maintenanceMode === 'OFF'">
+                                <span class="status-label" [class.active-maint]="maintenanceMode === 'ON'" [class.inactive-maint]="maintenanceMode === 'OFF'">
                                     {{ maintenanceMode === 'ON' ? 'ĐANG BẬT BẢO TRÌ' : 'HỆ THỐNG HOẠT ĐỘNG BÌNH THƯỜNG' }}
                                 </span>
                             </div>
@@ -148,7 +154,7 @@
                 </div>
 
                 <!-- Action Button -->
-                <div class="d-flex justify-content-end mt-5 border-top pt-4">
+                <div class="d-flex justify-content-end mt-5 border-top pt-4 border-color-custom">
                     <button type="submit" class="btn btn-save-gradient btn-lg" [disabled]="isLoading">
                         <i class="fas fa-check-circle"></i> {{ isLoading ? 'ĐANG LƯU...' : 'LƯU CẤU HÌNH HỆ THỐNG' }}
                     </button>

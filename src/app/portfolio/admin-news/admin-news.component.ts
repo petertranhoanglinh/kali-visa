@@ -7,46 +7,7 @@ import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 @Component({
   selector: 'app-admin-news',
   templateUrl: './admin-news.component.html',
-  styles: [`
-    .admin-modal {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.6); z-index: 1050; display: flex; align-items: center; justify-content: center;
-      padding: 10px;
-    }
-    .admin-modal-content { 
-      width: 100%; 
-      max-width: 900px; 
-      max-height: 95vh;
-    }
-    .badge { font-size: 0.7rem; padding: 0.4em 0.7em; }
-    .sentiment-bullish { color: #10b981; font-weight: bold; }
-    .sentiment-bearish { color: #ef4444; font-weight: bold; }
-    .sentiment-neutral { color: #6b7280; font-weight: bold; }
-    
-    .editor-wrapper {
-      background: white;
-    }
-    ::ng-deep .ck-editor__editable {
-      min-height: 300px;
-      max-height: 50vh;
-    }
-    
-    .line-clamp-2 {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    @media (max-width: 768px) {
-      ::ng-deep .ck-editor__editable {
-        min-height: 200px;
-      }
-      .admin-modal-content {
-        margin: 5px;
-      }
-    }
-  `]
+  styleUrls: ['./admin-news.component.css']
 })
 export class AdminNewsComponent implements OnInit {
   newsList: MarketNews[] = [];
