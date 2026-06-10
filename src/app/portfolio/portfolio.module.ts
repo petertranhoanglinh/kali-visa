@@ -35,6 +35,9 @@ import { AdminNewsComponent } from './admin-news/admin-news.component';
 import { AdminPostsComponent } from './admin-posts/admin-posts.component';
 import { AdminUsersComponent } from './admin-users/admin-users.component';
 import { UserSettingComponent } from './user-setting/user-setting.component';
+import { AdminBooksComponent } from './admin-books/admin-books.component';
+import { BooksComponent } from './books/books.component';
+import { BookReaderComponent } from './book-reader/book-reader.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { UserChatComponent } from './user-chat/user-chat.component';
 
@@ -65,6 +68,9 @@ import { FormsModule } from '@angular/forms';
     AdminPostsComponent,
     AdminUsersComponent,
     UserSettingComponent,
+    AdminBooksComponent,
+    BooksComponent,
+    BookReaderComponent,
     UserProfileComponent,
     UserChatComponent
   ],

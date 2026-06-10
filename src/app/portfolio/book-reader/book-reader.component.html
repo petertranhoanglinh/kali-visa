@@ -1,0 +1,158 @@
+<div class="reader-container" [ngClass]="['theme-' + theme, 'font-' + fontFamily]" [style.fontSize.px]="fontSize">
+  
+  <!-- Left Navigation Sidebar -->
+  <aside class="sidebar-nav" [class.open]="sidebarOpen">
+    <div class="sidebar-header">
+      <a routerLink="/books" class="btn-back">
+        <i class="fas fa-arrow-left"></i> Thư viện
+      </a>
+      <h3>Danh sách trang</h3>
+    </div>
+    <div class="sidebar-content">
+      <div class="book-mini-meta" *ngIf="book">
+        <h4>{{ book.title }}</h4>
+        <p>{{ book.author }}</p>
+      </div>
+      <ul class="page-list">
+        <li *ngFor="let idx of pageList" 
+            [class.active]="idx === currentPageIdx" 
+            (click)="jumpToPage(idx)">
+          <i class="far fa-file-alt"></i> Trang {{ idx + 1 }}
+        </li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Main Content Reading Area -->
+  <main class="reading-area" [class.sidebar-collapsed]="!sidebarOpen">
+    <!-- Top toolbar -->
+    <header class="reader-toolbar">
+      <button class="toolbar-btn" (click)="toggleSidebar()" title="Đóng/Mở thanh điều hướng">
+        <i class="fas" [ngClass]="sidebarOpen ? 'fa-indent' : 'fa-dedent'"></i>
+      </button>
+      
+      <div class="toolbar-center" *ngIf="book">
+        <span class="toolbar-book-title">{{ book.title }}</span>
+        <span class="toolbar-page-indicator">Trang {{ currentPageIdx + 1 }} / {{ totalPages }}</span>
+      </div>
+
+      <button class="toolbar-btn" (click)="toggleSettings()" title="Cấu hình hiển thị">
+        <i class="fas fa-cog"></i>
+      </button>
+    </header>
+
+    <!-- Reading Content Panel -->
+    <div class="reading-panel" id="readingPanel">
+      <div class="page-paper shadow-paper">
+        <div class="loading-spinner-wrap" *ngIf="loading">
+          <div class="spinner"></div>
+          <p>Đang tải trang...</p>
+        </div>
+
+        <div class="page-content-wrapper animate-fade" *ngIf="!loading && currentPage">
+          <!-- Iterate over blocks sorted in logical layout order -->
+          <div class="layout-block" *ngFor="let block of currentPage.blocks">
+            
+            <!-- 1. Title Block -->
+            <h2 class="block-title-header" *ngIf="block.type === 'title'">
+              {{ getBlockText(block) }}
+            </h2>
+
+            <!-- 2. Standard Text Block -->
+            <p class="block-text-paragraph" *ngIf="block.type === 'text'">
+              {{ getBlockText(block) }}
+            </p>
+
+            <!-- 3. Table Block -->
+            <div class="block-table-wrapper" *ngIf="block.type === 'table'">
+              <!-- Option A: Render HTML Table extracted by MinerU -->
+              <div class="table-container" *ngIf="getTableHtml(block)" [innerHTML]="getSafeHtml(getTableHtml(block))"></div>
+              
+              <!-- Option B: Fallback/Alternative Render Table Image if HTML is missing -->
+              <div class="table-image" *ngIf="!getTableHtml(block) && getBlockImagePath(block)">
+                <img [src]="getBlockImagePath(block)" alt="Dữ liệu bảng">
+              </div>
+            </div>
+
+            <!-- 4. Chart Block -->
+            <div class="block-chart-wrapper" *ngIf="block.type === 'chart'">
+              <!-- Render Chart Image -->
+              <div class="chart-image" *ngIf="getBlockImagePath(block)">
+                <img [src]="getBlockImagePath(block)" alt="Biểu đồ số liệu">
+              </div>
+              
+              <!-- Render Chart Caption -->
+              <div class="chart-caption" *ngIf="getChartCaption(block)">
+                <i class="fas fa-chart-bar"></i> {{ getChartCaption(block) }}
+              </div>
+            </div>
+
+            <!-- 5. General Image Block -->
+            <div class="block-image-wrapper" *ngIf="block.type === 'image'">
+              <div class="general-image" *ngIf="getBlockImagePath(block)">
+                <img [src]="getBlockImagePath(block)" alt="Hình ảnh minh họa">
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <footer class="reader-footer">
+      <button class="nav-btn" (click)="prevPage()" [disabled]="currentPageIdx === 0">
+        <i class="fas fa-chevron-left"></i> Trang trước
+      </button>
+      <span class="footer-page-indicator">Trang {{ currentPageIdx + 1 }} / {{ totalPages }}</span>
+      <button class="nav-btn" (click)="nextPage()" [disabled]="currentPageIdx === totalPages - 1">
+        Trang sau <i class="fas fa-chevron-right"></i>
+      </button>
+    </footer>
+  </main>
+
+  <!-- Right Settings Panel Slider -->
+  <aside class="sidebar-settings" [class.open]="settingsOpen">
+    <div class="settings-header">
+      <h3>Cài đặt hiển thị</h3>
+      <button class="close-btn" (click)="toggleSettings()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="settings-content">
+      <!-- Font Family -->
+      <div class="setting-item">
+        <label>Kiểu chữ</label>
+        <div class="btn-group">
+          <button [class.active]="fontFamily === 'inter'" (click)="changeFont('inter')">Inter</button>
+          <button [class.active]="fontFamily === 'system'" (click)="changeFont('system')">Hệ thống</button>
+          <button [class.active]="fontFamily === 'serif'" (click)="changeFont('serif')">Serif</button>
+        </div>
+      </div>
+
+      <!-- Font Size -->
+      <div class="setting-item">
+        <label>Cỡ chữ: {{ fontSize }}px</label>
+        <div class="btn-group">
+          <button (click)="decreaseFontSize()" [disabled]="fontSize <= 14"><i class="fas fa-minus"></i> Giảm</button>
+          <button (click)="increaseFontSize()" [disabled]="fontSize >= 24"><i class="fas fa-plus"></i> Tăng</button>
+        </div>
+      </div>
+
+      <!-- Themes -->
+      <div class="setting-item">
+        <label>Màu nền</label>
+        <div class="theme-options">
+          <div class="theme-dot dot-sepia" [class.active]="theme === 'sepia'" (click)="changeTheme('sepia')" title="Sepia"></div>
+          <div class="theme-dot dot-light" [class.active]="theme === 'light'" (click)="changeTheme('light')" title="Sáng"></div>
+          <div class="theme-dot dot-dark" [class.active]="theme === 'dark'" (click)="changeTheme('dark')" title="Tối"></div>
+        </div>
+      </div>
+      
+      <div class="shortcut-tip">
+        <p><strong>Mẹo:</strong> Sử dụng các phím mũi tên <strong>Trái (<i class="fas fa-arrow-left"></i>)</strong> / <strong>Phải (<i class="fas fa-arrow-right"></i>)</strong> trên bàn phím để chuyển trang nhanh.</p>
+      </div>
+    </div>
+  </aside>
+
+</div>

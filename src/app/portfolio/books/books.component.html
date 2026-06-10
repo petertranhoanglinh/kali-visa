@@ -1,0 +1,65 @@
+<div class="library-container animate-fade">
+  <header class="library-header">
+    <div class="header-main">
+      <h1>📖 Thư viện Sách Điện tử</h1>
+      <p>Khám phá kho sách đầu tư, tài chính và phân tích doanh nghiệp được chuẩn hóa dạng tài liệu thông minh.</p>
+    </div>
+    
+    <div class="search-bar">
+      <i class="fas fa-search search-icon"></i>
+      <input type="text" [(ngModel)]="searchTerm" (input)="applyFilter()" placeholder="Tìm kiếm sách, tác giả, nội dung...">
+    </div>
+  </header>
+
+  <div class="alert alert-error" *ngIf="errorMessage">
+    <i class="fas fa-exclamation-circle"></i> {{ errorMessage }}
+  </div>
+
+  <!-- Library Grid -->
+  <div class="books-grid" *ngIf="!loading && filteredBooks.length > 0">
+    <div class="book-card" *ngFor="let book of filteredBooks">
+      <!-- Book Cover -->
+      <div class="book-cover-wrap" [style.background]="getCoverGradient(book.id)">
+        <div class="cover-design">
+          <i class="fas fa-book-reader cover-icon"></i>
+          <span class="cover-title">{{ book.title }}</span>
+          <span class="cover-author">{{ book.author }}</span>
+        </div>
+        <div class="cover-overlay">
+          <a [routerLink]="['/books', book.id, 'read']" class="btn-primary-read">
+            <i class="fas fa-book-open"></i> Đọc Sách
+          </a>
+        </div>
+      </div>
+
+      <!-- Book Info -->
+      <div class="book-details">
+        <h3 class="book-title" [title]="book.title">{{ book.title }}</h3>
+        <p class="book-author">Tác giả: {{ book.author }}</p>
+        <p class="book-desc" *ngIf="book.description">{{ book.description }}</p>
+        <div class="book-meta">
+          <span class="page-badge">
+            <i class="far fa-file-alt"></i> {{ book.totalPages }} trang
+          </span>
+          <span class="date-badge">
+            <i class="far fa-calendar-alt"></i> {{ book.createdAt | date:'MM/yyyy' }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Đang tải thư viện sách điện tử...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && filteredBooks.length === 0">
+    <i class="fas fa-book-open empty-icon"></i>
+    <h3>Không tìm thấy cuốn sách nào</h3>
+    <p *ngIf="searchTerm">Vui lòng thử tìm kiếm bằng từ khóa khác.</p>
+    <p *ngIf="!searchTerm">Hệ thống chưa tải lên cuốn sách nào. Admin sẽ cập nhật sớm!</p>
+  </div>
+</div>

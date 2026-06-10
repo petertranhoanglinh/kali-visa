@@ -58,7 +58,9 @@ export class HeaderComponent implements OnInit {
     { title: 'Quản Lý Tin Tức', description: 'Biên tập tin tức, bài viết phân tích thị trường', route: '/admin/news', icon: 'fa-edit', category: 'Quản trị' },
     { title: 'Quản Lý Bài Đăng', description: 'Quản trị các bài đăng của thành viên trong cộng đồng', route: '/admin/posts', icon: 'fa-comments', category: 'Quản trị' },
     { title: 'Quản Lý Người Dùng', description: 'Quản trị danh sách người dùng và phân quyền hệ thống', route: '/admin/users', icon: 'fa-users', category: 'Quản trị' },
-    { title: 'Cài Đặt Hệ Thống', description: 'Cấu hình tỷ giá USD, key Gemini xoay vòng và hệ thống', route: '/admin/setting', icon: 'fa-cogs', category: 'Quản trị' }
+    { title: 'Cài Đặt Hệ Thống', description: 'Cấu hình tỷ giá USD, key Gemini xoay vòng và hệ thống', route: '/admin/setting', icon: 'fa-cogs', category: 'Quản trị' },
+    { title: 'Thư viện Sách', description: 'Đọc sách tài chính, phân tích đầu tư cấu trúc hóa thông minh', route: '/books', icon: 'fa-book', category: 'Tính năng chính' },
+    { title: 'Quản Lý Sách', description: 'Quản trị danh sách sách điện tử, tải lên PDF và xử lý cấu trúc OCR', route: '/admin/books', icon: 'fa-book-open', category: 'Quản trị' }
   ];
 
   subMenu: any = [];
@@ -379,9 +381,12 @@ preventDefault(event: Event): void {
       if (currentUrl === '/admin/posts') return 'Quản Lý Post';
       if (currentUrl === '/admin/users') return 'Quản Lý User';
       if (currentUrl === '/admin/setting') return 'Cài Đặt Hệ Thống';
+      if (currentUrl === '/admin/books') return 'Quản Lý Sách';
       return 'Quản trị';
     }
 
+    if (currentUrl === '/books') return 'Thư viện Sách';
+    if (currentUrl.endsWith('/read')) return 'Đọc Sách';
     if (currentUrl === '/dashboard') return 'Tổng Quan';
     if (currentUrl === '/category') return 'Danh Mục';
     if (currentUrl === '/news') return 'Tin Tức AI';
@@ -404,9 +409,12 @@ preventDefault(event: Event): void {
       if (currentUrl === '/admin/posts') return 'fa-comments';
       if (currentUrl === '/admin/users') return 'fa-users';
       if (currentUrl === '/admin/setting') return 'fa-cogs';
+      if (currentUrl === '/admin/books') return 'fa-book-open';
       return 'fa-user-shield';
     }
 
+    if (currentUrl === '/books') return 'fa-book';
+    if (currentUrl.endsWith('/read')) return 'fa-book-reader';
     if (currentUrl === '/dashboard') return 'fa-chart-pie';
     if (currentUrl === '/category') return 'fa-wallet';
     if (currentUrl === '/news') return 'fa-newspaper';
