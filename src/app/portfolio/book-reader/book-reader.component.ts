@@ -1,13 +1,16 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BookService } from '../../service/book.service';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
+import { environment } from 'src/environments/environment';
 
 /**
  * Number of neighbouring pages to preload in each direction.
  * With PRELOAD_RADIUS = 2, we preload pages [current-2, current-1, current+1, current+2].
  */
 const PRELOAD_RADIUS = 2;
+
+declare var katex: any;
 
 @Component({
   selector: 'app-book-reader',
@@ -22,6 +25,8 @@ export class BookReaderComponent implements OnInit, OnDestroy {
   currentPage: any = null;
   loading: boolean = false;
   pageList: number[] = [];
+  viewMode: 'reader' | 'pdf' = 'reader'; // Chế độ đọc mặc định là e-reader
+  safePdfUrl: SafeResourceUrl | null = null;
 
   // ── In-memory page cache ──────────────────────────────────────────────────
   // Stores up to ~5 pages around the current position so navigation is instant.
@@ -50,6 +55,12 @@ export class BookReaderComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    // Tự động đóng sidebars trên thiết bị di động khi khởi tạo
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      this.sidebarOpen = false;
+      this.settingsOpen = false;
+    }
+
     this.route.params.subscribe(params => {
       this.bookId = params['id'];
       if (this.bookId) {
@@ -84,6 +95,10 @@ export class BookReaderComponent implements OnInit, OnDestroy {
       next: (res) => {
         if (res && res.code === 200) {
           this.book = res.data;
+          if (this.book && this.book.pdfUrl) {
+            const rawUrl = `${environment.apiUrl}${this.book.pdfUrl}`;
+            this.safePdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(rawUrl);
+          }
         }
       },
       error: (err) => {
@@ -327,6 +342,72 @@ export class BookReaderComponent implements OnInit, OnDestroy {
     return this.sanitizer.bypassSecurityTrustHtml(html);
   }
 
+  // Helper to convert parsed mathematical HTML elements to clean LaTeX for KaTeX
+  private _convertHtmlToLatex(html: string): string {
+    if (!html) return '';
+    let text = html.replace(/<\/?(strong|em)>/gi, '');
+    
+    // Convert sup and sub tags
+    text = text.replace(/<sup>\s*(.*?)\s*<\/sup>/gi, '^{$1}');
+    text = text.replace(/<sub>\s*(.*?)\s*<\/sub>/gi, '_{$1}');
+    
+    // Convert HTML entities back to LaTeX commands
+    const entityMap: { [key: string]: string } = {
+      '&minus;': '-',
+      '&times;': '\\times',
+      '&divide;': '\\div',
+      '&le;': '\\le',
+      '&ge;': '\\ge',
+      '&ne;': '\\ne',
+      '&approx;': '\\approx',
+      '&infin;': '\\infty',
+      '&pi;': '\\pi',
+      '&rarr;': '\\rightarrow',
+      '&rArr;': '\\Rightarrow',
+      '&hArr;': '\\Leftrightarrow',
+      '&isin;': '\\in',
+      '&notin;': '\\notin',
+      '&plusmn;': '\\pm',
+      '&part;': '\\partial',
+      '&Delta;': '\\Delta',
+      '&sum;': '\\sum',
+      '&int;': '\\int',
+      '&radic;': '\\sqrt'
+    };
+    
+    for (const [entity, latexVal] of Object.entries(entityMap)) {
+      text = text.split(entity).join(latexVal);
+    }
+    
+    // Clean up spaces
+    text = text.replace(/\s*\^\s*{(.*?)}/g, '^{$1}');
+    text = text.replace(/\s*_\s*{(.*?)}/g, '_{$1}');
+    return text.trim();
+  }
+
+  // Compile math blocks using KaTeX if available, falling back to HTML
+  getMathHtml(block: any): SafeHtml {
+    let latex = block.latex;
+    if (!latex && block.content) {
+      latex = this._convertHtmlToLatex(block.content);
+    }
+    
+    if (typeof katex !== 'undefined' && latex) {
+      try {
+        const mathHtml = katex.renderToString(latex, {
+          displayMode: true,
+          throwOnError: false
+        });
+        return this.sanitizer.bypassSecurityTrustHtml(mathHtml);
+      } catch (err) {
+        console.error('KaTeX rendering error:', err);
+      }
+    }
+    
+    // Fallback to plain HTML format
+    return this.getSafeHtml(block.content || this.getBlockText(block));
+  }
+
   // Helper to check block type
   isTextBlock(blockType: string): boolean {
     return blockType === 'text' || blockType === 'title' || blockType === 'paragraph';
@@ -409,10 +490,16 @@ export class BookReaderComponent implements OnInit, OnDestroy {
 
   toggleSidebar(): void {
     this.sidebarOpen = !this.sidebarOpen;
+    if (this.sidebarOpen && typeof window !== 'undefined' && window.innerWidth < 768) {
+      this.settingsOpen = false;
+    }
   }
 
   toggleSettings(): void {
     this.settingsOpen = !this.settingsOpen;
+    if (this.settingsOpen && typeof window !== 'undefined' && window.innerWidth < 768) {
+      this.sidebarOpen = false;
+    }
   }
 
   changeTheme(newTheme: string): void {
@@ -433,5 +520,9 @@ export class BookReaderComponent implements OnInit, OnDestroy {
     if (this.fontSize > 14) {
       this.fontSize -= 1;
     }
+  }
+
+  toggleViewMode(): void {
+    this.viewMode = this.viewMode === 'reader' ? 'pdf' : 'reader';
   }
 }

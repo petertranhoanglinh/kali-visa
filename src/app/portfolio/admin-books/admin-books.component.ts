@@ -90,7 +90,7 @@ export class AdminBooksComponent implements OnInit, OnDestroy {
       next: (res) => {
         this.uploading = false;
         if (res && res.code === 200) {
-          this.successMessage = 'Đã tải lên thành công! Sách đang được MinerU OCR xử lý cấu trúc...';
+          this.successMessage = 'Đã tải lên thành công! Sách đang được Python OCR xử lý cấu trúc...';
           this.resetForm();
           this.loadBooks();
           this.startPolling();

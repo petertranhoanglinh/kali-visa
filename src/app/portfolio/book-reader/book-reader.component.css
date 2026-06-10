@@ -663,3 +663,117 @@
     box-shadow: 10px 0 25px rgba(0, 0, 0, 0.1) !important;
   }
 }
+
+/* Nút bấm chuyển đổi chế độ E-reader / Bản gốc PDF */
+.view-mode-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.25rem !important;
+  width: auto !important;
+  padding: 0 0.85rem !important;
+  border-radius: 6px !important;
+  background-color: rgba(63, 81, 181, 0.08) !important;
+  color: #3f51b5 !important;
+  border: 1px solid rgba(63, 81, 181, 0.15) !important;
+  transition: all 0.2s ease !important;
+}
+
+.view-mode-btn:hover {
+  background-color: rgba(63, 81, 181, 0.15) !important;
+  transform: translateY(-1px);
+}
+
+.theme-dark .view-mode-btn {
+  background-color: rgba(140, 70, 255, 0.12) !important;
+  color: #a875ff !important;
+  border-color: rgba(140, 70, 255, 0.25) !important;
+}
+
+.theme-dark .view-mode-btn:hover {
+  background-color: rgba(140, 70, 255, 0.2) !important;
+}
+
+.theme-sepia .view-mode-btn {
+  background-color: rgba(91, 70, 54, 0.08) !important;
+  color: #5b4636 !important;
+  border-color: rgba(91, 70, 54, 0.15) !important;
+}
+
+.theme-sepia .view-mode-btn:hover {
+  background-color: rgba(91, 70, 54, 0.15) !important;
+}
+
+@media (max-width: 600px) {
+  .view-mode-btn .btn-text {
+    display: none !important; /* Trên mobile nhỏ chỉ hiển thị icon để đỡ chật thanh công cụ */
+  }
+  .view-mode-btn {
+    width: 36px !important;
+    height: 36px !important;
+    padding: 0 !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+  }
+}
+
+/* Math block styling */
+.block-math-wrapper {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 1.15em;
+  text-align: center;
+  margin: 1.75rem 0;
+  padding: 1.25rem 1.5rem;
+  background-color: rgba(63, 81, 181, 0.02);
+  border-radius: 8px;
+  border-left: 4px solid #3f51b5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.01);
+  overflow-x: auto;
+  overflow-y: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+/* KaTeX custom spacing and fonts */
+.block-math-wrapper .katex-display {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Light theme overrides */
+.theme-light .block-math-wrapper {
+  background-color: rgba(63, 81, 181, 0.02);
+  border-left-color: #3f51b5;
+}
+
+/* Dark theme overrides */
+.theme-dark .block-math-wrapper {
+  background-color: rgba(140, 70, 255, 0.03);
+  border-left-color: #8C46FF;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.theme-dark .block-math-wrapper .katex {
+  color: #e0e0e0 !important;
+}
+
+/* Sepia theme overrides */
+.theme-sepia .block-math-wrapper {
+  background-color: rgba(91, 70, 54, 0.03);
+  border-left-color: #5b4636;
+}
+
+.theme-sepia .block-math-wrapper .katex {
+  color: #5b4636 !important;
+}
+
+/* Responsive mobile adjustments */
+@media (max-width: 600px) {
+  .block-math-wrapper {
+    padding: 1rem;
+    margin: 1.25rem 0;
+    font-size: 1.05em;
+    justify-content: flex-start; /* scroll horizontally easier on mobile */
+  }
+}

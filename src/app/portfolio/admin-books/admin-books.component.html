@@ -2,7 +2,7 @@
   <header class="admin-header">
     <div class="header-main">
       <h1>📚 Quản lý Sách (PDF to Layout JSON)</h1>
-      <p>Tải lên sách dạng PDF, hệ thống sẽ tự động cấu trúc hóa thành định dạng JSON qua MinerU để người dùng đọc một cách mượt mà nhất.</p>
+      <p>Tải lên sách dạng PDF, hệ thống sẽ tự động cấu trúc hóa thành định dạng JSON qua python để người dùng đọc một cách mượt mà nhất.</p>
     </div>
     <div class="header-actions">
       <button class="btn-refresh" (click)="loadBooks()">
@@ -49,7 +49,6 @@
               <div class="drop-zone-content" *ngIf="!selectedFile">
                 <i class="fas fa-file-pdf file-icon"></i>
                 <p>Click hoặc kéo thả file PDF vào đây để tải lên</p>
-                <small>Hỗ trợ tối đa 200MB, 200 trang</small>
               </div>
               <div class="drop-zone-content selected" *ngIf="selectedFile">
                 <i class="fas fa-file-pdf file-icon-selected"></i>
