@@ -3,6 +3,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BookService } from '../../service/book.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
+/**
+ * Number of neighbouring pages to preload in each direction.
+ * With PRELOAD_RADIUS = 2, we preload pages [current-2, current-1, current+1, current+2].
+ */
+const PRELOAD_RADIUS = 2;
+
 @Component({
   selector: 'app-book-reader',
   templateUrl: './book-reader.component.html',
@@ -16,7 +22,15 @@ export class BookReaderComponent implements OnInit, OnDestroy {
   currentPage: any = null;
   loading: boolean = false;
   pageList: number[] = [];
-  
+
+  // ── In-memory page cache ──────────────────────────────────────────────────
+  // Stores up to ~5 pages around the current position so navigation is instant.
+  // Key: pageIdx  Value: fully-loaded page data
+  private pageCache = new Map<number, any>();
+
+  // Track which pages are currently being fetched to avoid duplicate requests
+  private pageFetching = new Set<number>();
+
   // UI Preferences
   sidebarOpen: boolean = true;
   settingsOpen: boolean = false;
@@ -24,6 +38,9 @@ export class BookReaderComponent implements OnInit, OnDestroy {
   fontFamily: string = 'inter'; // 'inter', 'system', 'serif'
   fontSize: number = 18; // 14px to 24px
   lastPageTurnTime: number = 0;
+
+  // Scroll-up page turn: track the very first scroll position to detect upward-scroll from top
+  private scrollAtTopLastFrame: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -43,7 +60,8 @@ export class BookReaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // Cleanup listeners if needed
+    this.pageCache.clear();
+    this.pageFetching.clear();
   }
 
   @HostListener('window:keydown', ['$event'])
@@ -106,43 +124,129 @@ export class BookReaderComponent implements OnInit, OnDestroy {
     });
   }
 
+  // ── Core page loading with cache ──────────────────────────────────────────
+
   loadPage(pageIdx: number): void {
     if (pageIdx < 0 || pageIdx >= this.totalPages) return;
-    
-    this.loading = true;
+
     this.currentPageIdx = pageIdx;
-    
+
+    // ── Cache hit: display immediately, no spinner ──
+    if (this.pageCache.has(pageIdx)) {
+      this.currentPage = this.pageCache.get(pageIdx);
+      this.loading = false;
+
+      // Save progress in localStorage
+      this._saveProgress(pageIdx);
+
+      // Scroll reading panel to top smoothly
+      this._scrollPanelToTop();
+
+      // Kick off preloading of neighbour pages (do not await)
+      this._preloadNeighbours(pageIdx);
+      return;
+    }
+
+    // ── Cache miss: fetch from API ──
+    this.loading = true;
+
     this.bookService.getBookPage(this.bookId, pageIdx).subscribe({
       next: (res) => {
         this.loading = false;
         if (res && res.code === 200) {
           const pageData = res.data;
-          
+
           // Sort blocks in ascending index order to maintain logical layout reading flow
           if (pageData && pageData.blocks) {
             pageData.blocks.sort((a: any, b: any) => (a.index || 0) - (b.index || 0));
           }
-          
-          this.currentPage = pageData;
-          
-          // Save progress in localStorage
-          try {
-            localStorage.setItem(`book_read_page_${this.bookId}`, pageIdx.toString());
-          } catch (e) {
-            console.error('Error saving page progress', e);
+
+          // Store in cache
+          this.pageCache.set(pageIdx, pageData);
+          this.pageFetching.delete(pageIdx);
+
+          // Only update the view if this is still the intended page
+          if (this.currentPageIdx === pageIdx) {
+            this.currentPage = pageData;
+            this._saveProgress(pageIdx);
+            this._scrollPanelToTop();
           }
-          
-          // Scroll reading panel to top
-          const panel = document.getElementById('readingPanel');
-          if (panel) panel.scrollTop = 0;
+
+          // Preload neighbours
+          this._preloadNeighbours(pageIdx);
         }
       },
       error: (err) => {
         this.loading = false;
+        this.pageFetching.delete(pageIdx);
         console.error('Error loading page ' + pageIdx, err);
       }
     });
   }
+
+  /**
+   * Preload pages within PRELOAD_RADIUS of the given index.
+   * Results are stored in pageCache but not displayed.
+   */
+  private _preloadNeighbours(centerIdx: number): void {
+    for (let offset = -PRELOAD_RADIUS; offset <= PRELOAD_RADIUS; offset++) {
+      if (offset === 0) continue; // already loaded
+      const targetIdx = centerIdx + offset;
+      if (targetIdx < 0 || targetIdx >= this.totalPages) continue;
+      if (this.pageCache.has(targetIdx) || this.pageFetching.has(targetIdx)) continue;
+
+      this.pageFetching.add(targetIdx);
+      this.bookService.getBookPage(this.bookId, targetIdx).subscribe({
+        next: (res) => {
+          this.pageFetching.delete(targetIdx);
+          if (res && res.code === 200) {
+            const pageData = res.data;
+            if (pageData && pageData.blocks) {
+              pageData.blocks.sort((a: any, b: any) => (a.index || 0) - (b.index || 0));
+            }
+            this.pageCache.set(targetIdx, pageData);
+
+            // Prune old entries that are outside the window [current - RADIUS - 1, current + RADIUS + 1]
+            this._pruneCache(this.currentPageIdx);
+          }
+        },
+        error: () => {
+          this.pageFetching.delete(targetIdx);
+        }
+      });
+    }
+  }
+
+  /**
+   * Remove cache entries that are too far from the current page to keep memory lean.
+   * Keeps 2*PRELOAD_RADIUS + 1 entries max (e.g. 5 pages).
+   */
+  private _pruneCache(currentIdx: number): void {
+    const keepRadius = PRELOAD_RADIUS + 1; // keep one extra page outside the preload window
+    for (const key of Array.from(this.pageCache.keys())) {
+      if (Math.abs(key - currentIdx) > keepRadius) {
+        this.pageCache.delete(key);
+      }
+    }
+  }
+
+  private _saveProgress(pageIdx: number): void {
+    try {
+      localStorage.setItem(`book_read_page_${this.bookId}`, pageIdx.toString());
+    } catch (e) {
+      console.error('Error saving page progress', e);
+    }
+  }
+
+  private _scrollPanelToTop(): void {
+    const panel = document.getElementById('readingPanel');
+    if (panel) {
+      panel.scrollTop = 0;
+      this.scrollAtTopLastFrame = true; // Reset sentinel after page flip
+    }
+  }
+
+  // ── Navigation helpers ────────────────────────────────────────────────────
 
   nextPage(): void {
     if (this.currentPageIdx < this.totalPages - 1) {
@@ -159,6 +263,64 @@ export class BookReaderComponent implements OnInit, OnDestroy {
   jumpToPage(pageIdx: number): void {
     this.loadPage(pageIdx);
   }
+
+  // ── Scroll / Wheel event handlers ─────────────────────────────────────────
+
+  onScroll(event: any): void {
+    const element = event.target as HTMLElement;
+    const scrollTop = element.scrollTop;
+    const atTop = scrollTop <= 0;
+    const atBottom = element.scrollHeight - scrollTop <= element.clientHeight + 10;
+
+    if (!this.loading) {
+      const now = Date.now();
+
+      // Scroll past the bottom → next page
+      if (atBottom && now - this.lastPageTurnTime > 1500) {
+        this.lastPageTurnTime = now;
+        this.nextPage();
+        return;
+      }
+
+      // Scroll past the top → previous page
+      // We trigger only when scrollTop reaches absolute 0 AND the panel was already
+      // at the top in the previous scroll event (prevents accidental flip mid-page).
+      if (atTop && this.scrollAtTopLastFrame && now - this.lastPageTurnTime > 1500) {
+        this.lastPageTurnTime = now;
+        this.prevPage();
+        return;
+      }
+    }
+
+    this.scrollAtTopLastFrame = element.scrollTop <= 0;
+  }
+
+  onWheel(event: WheelEvent): void {
+    const element = document.getElementById('readingPanel');
+    if (!element || this.loading) return;
+
+    const isScrollable = element.scrollHeight > element.clientHeight;
+    const atBottom = !isScrollable || (element.scrollHeight - element.scrollTop <= element.clientHeight + 10);
+    const atTop = element.scrollTop <= 0;
+
+    const now = Date.now();
+
+    if (event.deltaY > 0 && atBottom) {
+      // Wheel DOWN at bottom → next page
+      if (now - this.lastPageTurnTime > 1500) {
+        this.lastPageTurnTime = now;
+        this.nextPage();
+      }
+    } else if (event.deltaY < 0 && atTop) {
+      // Wheel UP at top → previous page
+      if (now - this.lastPageTurnTime > 1500) {
+        this.lastPageTurnTime = now;
+        this.prevPage();
+      }
+    }
+  }
+
+  // ── Block rendering helpers ───────────────────────────────────────────────
 
   // Sanitizes the table HTML to prevent rendering issues in [innerHTML]
   getSafeHtml(html: string): SafeHtml {
@@ -243,7 +405,8 @@ export class BookReaderComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  // UI Controllers
+  // ── UI Controllers ────────────────────────────────────────────────────────
+
   toggleSidebar(): void {
     this.sidebarOpen = !this.sidebarOpen;
   }
@@ -269,41 +432,6 @@ export class BookReaderComponent implements OnInit, OnDestroy {
   decreaseFontSize(): void {
     if (this.fontSize > 14) {
       this.fontSize -= 1;
-    }
-  }
-
-  onScroll(event: any): void {
-    const element = event.target;
-    // Check if user has scrolled to the bottom of the page (within 10px threshold)
-    const atBottom = element.scrollHeight - element.scrollTop <= element.clientHeight + 10;
-    
-    if (atBottom && !this.loading) {
-      const now = Date.now();
-      // Throttle page transitions to prevent double-skipping (1.5 seconds cooldown)
-      if (now - this.lastPageTurnTime > 1500) {
-        this.lastPageTurnTime = now;
-        this.nextPage();
-      }
-    }
-  }
-
-  onWheel(event: WheelEvent): void {
-    const element = document.getElementById('readingPanel');
-    if (!element || this.loading) return;
-
-    // Detect rolling scroll wheel downwards
-    if (event.deltaY > 0) {
-      const isScrollable = element.scrollHeight > element.clientHeight;
-      // Triggers if container is not scrollable (short page) or already at bottom
-      const atBottom = !isScrollable || (element.scrollHeight - element.scrollTop <= element.clientHeight + 10);
-
-      if (atBottom) {
-        const now = Date.now();
-        if (now - this.lastPageTurnTime > 1500) {
-          this.lastPageTurnTime = now;
-          this.nextPage();
-        }
-      }
     }
   }
 }
