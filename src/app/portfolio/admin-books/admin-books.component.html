@@ -43,6 +43,26 @@
           </div>
 
           <div class="form-group">
+            <label>Phương pháp phân tích cấu trúc PDF <span class="required">*</span></label>
+            <div class="parser-options">
+              <label class="radio-label">
+                <input type="radio" name="parser" [(ngModel)]="parser" value="python" required>
+                <div class="radio-text">
+                  <span class="option-title">🐍 Chạy Python local</span>
+                  <span class="option-desc">Sử dụng script python cục bộ</span>
+                </div>
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="parser" [(ngModel)]="parser" value="mineru" required>
+                <div class="radio-text">
+                  <span class="option-title">🌐 Dùng MinerU API</span>
+                  <span class="option-desc">Qua dịch vụ https://mineru.net</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
             <label>Tải lên file PDF <span class="required">*</span></label>
             <div class="file-drop-zone" (click)="fileInput.click()">
               <input type="file" #fileInput id="fileInput" (change)="onFileSelected($event)" accept=".pdf" style="display: none;">

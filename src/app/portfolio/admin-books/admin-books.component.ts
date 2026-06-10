@@ -18,6 +18,7 @@ export class AdminBooksComponent implements OnInit, OnDestroy {
   title: string = '';
   author: string = '';
   description: string = '';
+  parser: string = 'python';
   
   // UI Status
   errorMessage: string = '';
@@ -85,7 +86,8 @@ export class AdminBooksComponent implements OnInit, OnDestroy {
       this.selectedFile,
       this.title,
       this.author,
-      this.description
+      this.description,
+      this.parser
     ).subscribe({
       next: (res) => {
         this.uploading = false;
@@ -128,6 +130,7 @@ export class AdminBooksComponent implements OnInit, OnDestroy {
     this.title = '';
     this.author = '';
     this.description = '';
+    this.parser = 'python';
     const fileInput = document.getElementById('fileInput') as HTMLInputElement;
     if (fileInput) fileInput.value = '';
   }

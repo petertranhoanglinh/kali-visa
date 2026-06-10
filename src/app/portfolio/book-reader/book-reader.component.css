@@ -718,15 +718,14 @@
 
 /* Math block styling */
 .block-math-wrapper {
-  font-family: 'Times New Roman', Times, serif;
-  font-size: 1.15em;
+  font-size: 1.1em;
   text-align: center;
-  margin: 1.75rem 0;
-  padding: 1.25rem 1.5rem;
-  background-color: rgba(63, 81, 181, 0.02);
-  border-radius: 8px;
-  border-left: 4px solid #3f51b5;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.01);
+  margin: 1.25rem 0;
+  padding: 0.5rem 0;
+  background-color: transparent !important;
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
   overflow-x: auto;
   overflow-y: hidden;
   display: flex;
@@ -743,15 +742,13 @@
 
 /* Light theme overrides */
 .theme-light .block-math-wrapper {
-  background-color: rgba(63, 81, 181, 0.02);
-  border-left-color: #3f51b5;
+  background-color: transparent !important;
 }
 
 /* Dark theme overrides */
 .theme-dark .block-math-wrapper {
-  background-color: rgba(140, 70, 255, 0.03);
-  border-left-color: #8C46FF;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  background-color: transparent !important;
+  box-shadow: none !important;
 }
 
 .theme-dark .block-math-wrapper .katex {
@@ -760,8 +757,7 @@
 
 /* Sepia theme overrides */
 .theme-sepia .block-math-wrapper {
-  background-color: rgba(91, 70, 54, 0.03);
-  border-left-color: #5b4636;
+  background-color: transparent !important;
 }
 
 .theme-sepia .block-math-wrapper .katex {

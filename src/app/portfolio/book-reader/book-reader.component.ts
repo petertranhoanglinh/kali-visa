@@ -398,7 +398,9 @@ export class BookReaderComponent implements OnInit, OnDestroy {
           displayMode: true,
           throwOnError: false
         });
-        return this.sanitizer.bypassSecurityTrustHtml(mathHtml);
+        if (mathHtml) {
+          return this.sanitizer.bypassSecurityTrustHtml(mathHtml);
+        }
       } catch (err) {
         console.error('KaTeX rendering error:', err);
       }

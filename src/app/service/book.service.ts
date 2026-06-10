@@ -29,12 +29,13 @@ export class BookService {
   }
 
   // ADMIN ENDPOINTS
-  adminUploadBook(file: File, title: string, author: string, description: string): Observable<any> {
+  adminUploadBook(file: File, title: string, author: string, description: string, parser: string): Observable<any> {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('title', title);
     formData.append('author', author);
     formData.append('description', description);
+    formData.append('parser', parser);
 
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${AuthDetail.getCookie("jwt")}`
