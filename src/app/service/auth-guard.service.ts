@@ -15,6 +15,8 @@ export class AuthGuardService implements CanActivate {
   constructor(private _router: Router, private _authService: AuthService) { }
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
       if(!AuthDetail.isLogin()){
+        // Lưu URL đang truy cập để redirect lại sau khi login
+        sessionStorage.setItem('redirectUrl', state.url);
         this._router.navigate(["/login"]);
         return false;
       }

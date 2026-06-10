@@ -120,7 +120,10 @@ export class LoginPageComponent implements OnInit {
       this.overlayLoadingStore.dispatch(setShowOverlayLoading({ loading: false }));
       this.clearAuth$.unsubscribe();
       this.clearErr$.unsubscribe();
-      location.href = "/";
+      // Lấy URL cần redirect (nếu người dùng vào link cần login)
+      const redirectUrl = sessionStorage.getItem('redirectUrl');
+      sessionStorage.removeItem('redirectUrl');
+      location.href = redirectUrl ? redirectUrl : "/";
     } else {
       this.toastr.error("Login failed: No token received");
       this._router.navigate(["/login"]);
